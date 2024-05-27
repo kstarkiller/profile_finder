@@ -16,10 +16,10 @@ def embed_documents(documents):
     document_embedder = OllamaDocumentEmbedder()
     embed_documents = [document_embedder.run([Document(content=doc)]) for doc in documents]
 
-    # Stocker les documents embeddés
-    with open(r'C:\Users\k.simon\Desktop\test_loads\embeded_documents.txt', 'w') as f:
-        for doc in embed_documents:
-            f.write(f"{doc}\n")
+    # # Stocker les documents embeddés
+    # with open(r'C:\Users\k.simon\Desktop\test_loads\embeded_documents.txt', 'w') as f:
+    #     for doc in embed_documents:
+    #         f.write(f"{doc}\n")
 
     return embed_documents
 
