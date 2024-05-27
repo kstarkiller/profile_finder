@@ -11,20 +11,20 @@ end_time = time.time()
 print(f"Documents chargés en {end_time - start_time} secondes.\n\n")
 
 # Embedding des documents
-start_time = time.time()
-embeded_documents = embed_documents(documents)
-end_time = time.time()
-print(f"Documents embeddés en {end_time - start_time} secondes.\n\n")
+# start_time = time.time()
+# embeded_documents = embed_documents(documents)
+# end_time = time.time()
+# print(f"Documents embeddés en {end_time - start_time} secondes.\n\n")
 
 # Entrée et embedding du prompt
 question = input("Enter your question: ")
-start_time = time.time()
-embeded_question = embed_question(question)
-embed_end_time = time.time()
-print(f"Question embeddée en {end_time - start_time} secondes.\n\n")
+# start_time = time.time()
+# embeded_question = embed_question(question)
+# embed_end_time = time.time()
+# print(f"Question embeddée en {end_time - start_time} secondes.\n\n")
 
 # Génération de la réponse
 start_time = time.time()
-response = generate_response(embeded_question, embeded_documents)
+response = generate_response(question, documents)
 end_time = time.time()
 print(f"\nRéponse générée en {end_time - start_time} secondes.\n\n")

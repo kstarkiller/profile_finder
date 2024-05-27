@@ -27,7 +27,7 @@ def generate_response(embed_question, embed_documents):
 
     # response = ollama.generate(model='phi3', prompt=prompt)
     
-    for part in ollama.chat('phi3', messages=messages, stream=True):
+    for part in ollama.chat('mistral', messages=messages, stream=True):
         print(part['message']['content'], end='', flush=True)
 
     # return response['response']
