@@ -19,6 +19,12 @@ def load_documents(file_path):
         try:
             file_content = textract.process(os.path.join(file_path, filename))
             documents.append(file_content.decode('utf-8'))
+
+            # Stocker les documents
+            # with open(r'C:\Users\k.simon\Desktop\test_loads\documents.txt', 'w') as f:
+            #     for doc in documents:
+            #         f.write(f"{doc}\n")
+
         except textract.exceptions.ExtensionNotSupported as e:
             print(f"Le fichier {filename} a une extension non supportée.")
     return documents
