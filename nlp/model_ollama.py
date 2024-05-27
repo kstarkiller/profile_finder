@@ -1,68 +1,30 @@
-import os
-import ollama
-import textract
 import time
 
-def load_documents(file_path):
-    """
-    Charge les documents à partir du chemin spécifié.
-    De nombreux types de fichiers sont supportés :
-    .doc, .docx, .eml, .epub, .gif, .jpg, .json, .html, .png, .pdf, .pptx, .ps, .rtf, .tiff, .txt, .xlsx, .xls, etc.
-
-    Args:
-        file_path (str): Le chemin vers le répertoire contenant les fichiers.
-
-    Returns:
-        list: Une liste de tuples contenant le nom du fichier et son contenu.
-    """
-    documents = []
-    for filename in os.listdir(file_path):
-        try:
-            file_content = textract.process(os.path.join(file_path, filename))
-            documents.append((filename, file_content.decode('utf-8')))
-        except textract.exceptions.ExtensionNotSupported as e:
-            print(f"Le fichier {filename} a une extension non supportée.")
-    return documents
-
-# Fonction pour générer une réponse
-def generate_response(question, documents):
-    """
-    Génère une réponse à partir d'une question et d'une liste de documents.
-
-    Args:
-        question (str): La question posée.
-        documents (list): Une liste de documents.
-
-    Returns:
-        str: La réponse générée.
-    """
-    prompt = f"""Use the following pieces of context to answer the question at the end.
-    If you don't know the answer, just say that you don't know, don't try to make up an answer.
-    Use two sentences maximum and keep the answer as concise as possible. It is useless to provide all the context, only the relevant parts.
-    Context: {documents[0][1]}
-    Question: {question}"""
-
-    # response = ollama.generate(model='phi3', prompt=prompt)
-    
-    for part in ollama.generate(model='phi3', prompt=prompt, stream=True):
-        print(part['response'], end='', flush=True)
-
-    # return response['response']
+from load_documents import load_documents
+from generate_response import generate_response
+from embedding import embed_documents, embed_question
 
 # Chargement des documents
 start_time = time.time()
 documents = load_documents(r"C:\Users\k.simon\Desktop\test_loads")
 end_time = time.time()
 print(f"Documents chargés en {end_time - start_time} secondes.\n\n")
-# print(f"Chargement des documents : {documents[0][1]}\n\n")
 
-# Prompt pour avoir la question
+# Embedding des documents
+start_time = time.time()
+embeded_documents = embed_documents(documents)
+end_time = time.time()
+print(f"Documents embeddés en {end_time - start_time} secondes.\n\n")
+
+# Entrée et embedding du prompt
 question = input("Enter your question: ")
+start_time = time.time()
+embeded_question = embed_question(question)
+embed_end_time = time.time()
+print(f"Question embeddée en {end_time - start_time} secondes.\n\n")
 
 # Génération de la réponse
 start_time = time.time()
-response = generate_response(question, documents)
+response = generate_response(embeded_question, embeded_documents)
 end_time = time.time()
 print(f"\nRéponse générée en {end_time - start_time} secondes.\n\n")
-
-# print(response)
