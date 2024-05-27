@@ -36,11 +36,15 @@ def generate_response(question, documents):
     Returns:
         str: La réponse générée.
     """
-    prompt = f'Analyse {documents[0][1]} and brievely answer {question}\n\n'
+    prompt = f"""Use the following pieces of context to answer the question at the end.
+    If you don't know the answer, just say that you don't know, don't try to make up an answer.
+    Use two sentences maximum and keep the answer as concise as possible. It is useless to provide all the context, only the relevant parts.
+    Context: {documents[0][1]}
+    Question: {question}"""
 
     # response = ollama.generate(model='phi3', prompt=prompt)
     
-    for part in ollama.generate(model='llama3', prompt=prompt, stream=True):
+    for part in ollama.generate(model='phi3', prompt=prompt, stream=True):
         print(part['response'], end='', flush=True)
 
     # return response['response']
