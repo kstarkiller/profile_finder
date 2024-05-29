@@ -39,12 +39,12 @@ def retrieve_documents(question, collection):
     Returns:
         str: The most similar document to the question.
     '''
-    response = ollama.embeddings(
+    embedded_question = ollama.embeddings(
         prompt=question,
         model="mxbai-embed-large"
         )
     results = collection.query(
-        query_embeddings=[response["embedding"]],
+        query_embeddings=[embedded_question["embedding"]],
         n_results=1
         )
     data = results['documents'][0][0]

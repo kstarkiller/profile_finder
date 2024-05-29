@@ -13,8 +13,8 @@ def generate_response(data, question):
         str: The generated response.
     '''
     output = ollama.generate(
-        model="mistral",
-        prompt=f"Using this data: {data}. Respond to this prompt: {question}"
+        model="llama3",
+        prompt=f"Using this data: {data}. Respond to this prompt: {question}. Don't forget to format dates in the format 'DD-MM-YYYY'."
     )
 
-    return output
+    return output['response']
