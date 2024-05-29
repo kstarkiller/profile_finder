@@ -1,39 +1,52 @@
-from haystack import Document
-from haystack_integrations.components.embedders.ollama.document_embedder import OllamaDocumentEmbedder
-from haystack_integrations.components.embedders.ollama.text_embedder import OllamaTextEmbedder
+import ollama
+import chromadb
 
-# Fonction pour embedder les documents
+# Embedding the documents
 def embed_documents(documents):
-    """
-    Embed les documents à l'aide de Haystack.
+    '''
+    Embeds the documents using the mxbai-embed-large model.
 
     Args:
-        documents (list): Une liste de documents.
+        documents (list): A list of documents to embed.
 
     Returns:
-        list: Une liste de tuples contenant le nom du fichier et son embedding.
-    """
-    document_embedder = OllamaDocumentEmbedder()
-    embed_documents = [document_embedder.run([Document(content=doc)]) for doc in documents]
+        chromadb.Collection: A collection of the embedded documents.
+    '''
+    client = chromadb.Client()
+    collection = client.create_collection(name="docs")
 
-    # # Stocker les documents embeddés
-    # with open(r'C:\Users\k.simon\Desktop\test_loads\embeded_documents.txt', 'w') as f:
-    #     for doc in embed_documents:
-    #         f.write(f"{doc}\n")
+    # store each document in a vector embedding database
+    for i, d in enumerate(documents):
+        response = ollama.embeddings(model="mxbai-embed-large", prompt=d)
+        embedding = response["embedding"]
+        collection.add(
+            ids=[str(i)],
+            embeddings=[embedding],
+            documents=[d]
+        )
+    
+    return collection
 
-    return embed_documents
-
-# Fonction pour embedder la question
-def embed_question(question):
-    """
-    Embed la question à l'aide de Haystack.
+# Embedding the question
+def retrieve_documents(question, collection):
+    '''
+    Embeds the question using the mxbai-embed-large model and queries the collection for the most similar document.
 
     Args:
-        question (str): La question posée.
+        question (str): The question to embed.
+        collection (chromadb.Collection): The collection of embedded documents.
 
     Returns:
-        str: L'embedding de la question.
-    """
-    question_embedder = OllamaTextEmbedder()
-    question_embedding = question_embedder.run(text=question)
-    return question_embedding
+        str: The most similar document to the question.
+    '''
+    response = ollama.embeddings(
+        prompt=question,
+        model="mxbai-embed-large"
+        )
+    results = collection.query(
+        query_embeddings=[response["embedding"]],
+        n_results=1
+        )
+    data = results['documents'][0][0]
+
+    return data
