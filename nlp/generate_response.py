@@ -3,7 +3,7 @@ import ollama
 # Generating a response
 def generate_response(data, question):
     '''
-    Generates a response using the llama3 model.
+    Generates a response using the llama3/Mistral/Aya/Phi3 model.
     
     Args:
         data (str): The data to use for the response.
@@ -13,8 +13,8 @@ def generate_response(data, question):
         str: The generated response.
     '''
     output = ollama.generate(
-        model="aya",
-        prompt=f"""Using this data: {data}. Respond to this prompt: {question}.
+        model="orca-mini",
+        prompt=f"""Using this data: {data}, respond to this prompt: {question}.
         If you don't know the answer, just say that you don't know, don't try to make up an answer.
         Use three sentences maximum and keep the answer as concise as possible."""
         # Don't forget to format dates in the format 'DD-MM-YYYY'."""
