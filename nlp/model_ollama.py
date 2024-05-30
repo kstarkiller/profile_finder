@@ -6,7 +6,7 @@ from embedding import embed_documents, retrieve_documents
 
 # Chargement des documents
 start_time = time.time()
-documents = load_documents(r"C:\Users\k.simon\Desktop\test_loads")
+documents = load_documents(r"C:\Users\k.simon\Desktop\test_og")
 end_time = time.time()
 print(f"Documents chargés en {end_time - start_time} secondes.")
 
