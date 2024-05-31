@@ -1,11 +1,9 @@
 import time
 import uvicorn
 from fastapi import FastAPI
-
 from load_documents import load_documents
 from generate_response import generate_response
 from embedding import embed_documents, retrieve_documents
-
 
 app = FastAPI()
 
@@ -15,31 +13,30 @@ def root():
 
 @app.post("/question")
 def process_question(question: str):
-    # Chargement des documents
+    # Loading the documents
     start_time = time.time()
     documents = load_documents(r"C:\Users\k.simon\Desktop\test_og")
     end_time = time.time()
-    print(f"Documents chargés en {end_time - start_time} secondes.")
+    print(f"Documents loaded in {end_time - start_time} seconds.")
 
-    # Embedding des documents
+    # Embedding the documents
     start_time = time.time()
     collection = embed_documents(documents)
     end_time = time.time()
-    print(f"Documents embeddés en {end_time - start_time} secondes.\n")
+    print(f"Documents embedded in {end_time - start_time} seconds.\n")
 
-    # Entrée et embedding du prompt
-    # question = input("Enter your question: ")
+    # Embedding the prompt and retrieving the documents
     start_time = time.time()
     data = retrieve_documents(question, collection)
     end_time = time.time()
-    print(f"\nRAG effectué en {end_time - start_time} secondes.\n")
+    print(f"\nRAG performed in {end_time - start_time} seconds.\n")
 
-    # Génération de la réponse
+    # Generating the response
     start_time = time.time()
     response = generate_response(data, question)
     print(f"Response: {response}")
     end_time = time.time()
-    print(f"\nRéponse générée en {end_time - start_time} secondes.\n\n")
+    print(f"\nResponse generated in {end_time - start_time} seconds.\n\n")
     
     return {"response": response}
 
