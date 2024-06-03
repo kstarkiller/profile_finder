@@ -4,21 +4,33 @@ from fastapi import FastAPI
 from load_documents import load_documents
 from generate_response import generate_response
 from embedding import embed_documents, retrieve_documents
+from pydantic import BaseModel
 
 DOC_PATH = r"C:\Users\k.simon\Desktop\test_og"
 
 app = FastAPI()
 
-@app.get("/")
+@app.get("/", summary="Root endpoint", description="This is the root endpoint of the API.")
 def root():
+    """Returns a message to confirm that the API is running."""
     return {"message": "API is running"}
 
-@app.get("/test")
+@app.get("/test", summary="Test endpoint", description="This is a test endpoint.")
 def test():
+    """Returns a message to confirm that the test was successful."""
     return {"message": "Test successful!"}
 
-@app.get("/question")
+@app.post("/question", summary="Process question", description="This endpoint processes a question and returns a response.")
 def process_question(question: str):
+    """
+    Process a question and return a response.
+
+    Args:
+        question (str): The question to process.
+
+    Returns:
+        dict: A dictionary containing the response generated.
+    """
     # Loading the documents
     start_time = time.time()
     documents = load_documents(DOC_PATH)
