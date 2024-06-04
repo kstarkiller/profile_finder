@@ -4,11 +4,16 @@ def apply_custom_styles():
     st.markdown("""
         <style>
             /* Modifier le fond de l'ensemble de la page */
+                
             body {
                 background-color: #FAFAFA;
             }
+                
             /* remove default sidebar  */
-                div[data-testid="stSidebarNav"] {display: none;}
+            section[data-testid="stSidebar"]{
+            display: none;
+                
+            }
 
             /* Changer la police et la couleur dans les titres */
             h1 {
