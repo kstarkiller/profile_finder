@@ -20,7 +20,7 @@ def test():
     """Returns a message to confirm that the test was successful."""
     return {"message": "Test successful!"}
 
-@app.post("/question", summary="Process question", description="This endpoint processes a question and returns a response.")
+@app.get("/question", summary="Process question", description="This endpoint processes a question and returns a response.")
 def process_question(question: str):
     """
     Process a question and return a response.
