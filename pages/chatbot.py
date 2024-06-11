@@ -1,3 +1,4 @@
+
 import streamlit as st
 from processing import process_input
 
@@ -16,9 +17,6 @@ def display_accueil():
         if user_input:
             chatbot_response, updated_chat_history = process_input(user_input, st.session_state['chat_history'])
             st.session_state['chat_history'] = updated_chat_history
-
-            # Utiliser chatbot_response ici
-            st.write(f"Chatbot : {chatbot_response}")
 
     # Champ de saisie pour l'utilisateur
     st.text_input("Vous : ", key='temp_input', on_change=update_input)
