@@ -25,11 +25,29 @@ def display_accueil():
         bot_message = st.session_state['chat_history'][i]
         user_message = st.session_state['chat_history'][i - 1]
 
-        # Afficher le message de l'utilisateur
-        st.write(f"Vous : {user_message['content']}")
+        # Afficher le message de l'utilisateur avec une couleur spécifique
+        st.markdown(
+            f"""
+            <div style='margin-bottom: 15px;'>
+                <span style='color: red;'>Vous :</span>
+                <span style='color: black;'>{user_message['content']}</span>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
         
-        # Afficher la réponse du chatbot
-        st.write(f"Chatbot : {bot_message['content']}")
+        # Ajouter un espace entre les messages
+        st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
+
+        st.markdown(
+            f"""
+            <div style='margin-bottom: 15px;'>
+                <span style='color: green;'>Chatbot :</span>
+                <span style='color: black;'>{bot_message['content']}</span>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )    
 
 if __name__ == "__main__":
     display_accueil()

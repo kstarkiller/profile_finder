@@ -3,6 +3,24 @@ from openai import AzureOpenAI
 from config import AZURE_OPENAI_API_KEY, AZURE_OPENAI_ENDPOINT, DEPLOYMENT
 from embedding import find_profiles
 
+def extract_name(user_input):
+    keywords = ["je cherche", "un professionnel", "un profil", "dont le nom est", "nom est", "qui s'appelle", "qui est :"]
+    for keyword in keywords:
+        if keyword in user_input:
+            # Suppression du mot clé et de tout avant
+            user_input = user_input.split(keyword, 1)[-1]
+            break
+    return user_input.strip()
+
+def extract_skills(user_input):
+    keywords = ["compétences en", "compétences suivantes", "les compétences sont", "compétences sont", "qui a des compétences en"]
+    for keyword in keywords:
+        if keyword in user_input:
+            # Suppression du mot clé et de tout avant
+            user_input = user_input.split(keyword, 1)[-1]
+            break
+    return user_input.strip()
+
 # Initialiser le client AzureOpenAI
 client = AzureOpenAI(
     azure_endpoint=AZURE_OPENAI_ENDPOINT,
@@ -23,8 +41,22 @@ def process_input(user_input, chat_history):
     chat_history.append({"role": "user", "content": user_input})
     print(f"Chat history after user input: {chat_history}")
 
-    # Trouver les profils correspondants
-    profiles = find_profiles(user_input)
+    # Détecter les noms dans la requête utilisateur
+    detected_names = extract_name(user_input)
+    print(f"Noms détectés : {detected_names}")
+
+    # Détecter les compétences dans la requête utilisateur
+    detected_skills = extract_skills(user_input)
+    print(f"Compétences détectées : {detected_skills}")
+
+    # Utiliser le premier nom détecté pour la recherche
+    if detected_names:
+        extracted_name = detected_names
+    else:
+        extracted_name = user_input  # Si aucun nom n'est détecté, utiliser l'entrée complète
+
+    # Trouver les profils correspondants en utilisant le nom extrait
+    profiles = find_profiles(extracted_name)
     profiles_text = "\n\n".join(profiles)
     print(f"Profiles text: {profiles_text}")
 

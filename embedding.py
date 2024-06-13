@@ -6,9 +6,15 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.docstore import InMemoryDocstore
 import os
+import unicodedata
+
+# Fonction pour normaliser les noms
+def normalize_text(text):
+    text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8')
+    return text.lower()
 
 # Vérifiez si le fichier existe
-file_path = 'Coaff_V1_cleaned.csv'
+file_path = 'combined_data.csv'
 if not os.path.exists(file_path):
     raise FileNotFoundError(f"{file_path} not found.")
 
@@ -16,10 +22,13 @@ if not os.path.exists(file_path):
 df = pd.read_csv(file_path)
 
 # Colonnes textuelles à embedder
-text_columns = ['PROFIL', 'Membres', 'Missions_en_cours', 'Competences', 'Date_Demarrage', 'Date_de_fin', 'Stream_BT']
+text_columns = ['PROFIL', 'Nom', 'Missions_en_cours', 'Competences', 'Date_Demarrage', 'Date_de_fin', 'Stream_BT']
+
+# Normaliser les colonnes pertinentes
+df['Nom'] = df['Nom'].apply(normalize_text)
 
 # Convertir toutes les valeurs des colonnes spécifiées en chaînes de caractères et combiner les colonnes
-df['combined_text'] = df[text_columns].astype(str).apply(lambda x: ' '.join(x), axis=1)
+df['combined_text'] = df.apply(lambda x: f"Nom: {x['Nom']} Profil: {x['PROFIL']} Competences: {x['Competences']} Missions en cours: {x['Missions_en_cours']} Date de début: {x['Date_Demarrage']} Date de fin: {x['Date_de_fin']} Stream_BT: {x['Stream_BT']}", axis=1)
 
 # Initialisation du modèle d'embedding SentenceTransformer
 model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -51,6 +60,9 @@ print("FAISS index initialisé avec LangChain.")
 
 def find_profiles(user_input):
     try:
+        # Normaliser l'entrée utilisateur
+        user_input = normalize_text(user_input)
+
         # Générer l'embedding de la requête
         query_embedding = model.encode([user_input]).astype(np.float32)
 

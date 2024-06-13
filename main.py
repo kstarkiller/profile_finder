@@ -5,7 +5,7 @@ from pages import chatbot
 
 def main():
     
-    st.title("Avv Matcher")
+    st.title("Profiles Finder")
     chatbot.display_accueil()
     apply_custom_styles()
 
