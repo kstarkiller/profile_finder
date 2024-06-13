@@ -15,6 +15,10 @@ def process_input(user_input, chat_history):
     Fonction pour traiter l'entrée de l'utilisateur avec l'historique de la conversation.
     """
 
+    # Validation de l'entrée utilisateur
+    if not user_input.strip():
+        return "Please enter a valid input.", chat_history
+
     # Ajouter la nouvelle entrée utilisateur à l'historique
     chat_history.append({"role": "user", "content": user_input})
     print(f"Chat history after user input: {chat_history}")
@@ -59,7 +63,7 @@ def process_input(user_input, chat_history):
                 raise AttributeError("First choice message has no 'content' attribute")
         else:
             raise AttributeError("'choices' attribute missing or empty in completion object")
-        
+
     except Exception as e:
         print(f"An error occurred: {e}")
         return "An error occurred while processing the input.", chat_history
