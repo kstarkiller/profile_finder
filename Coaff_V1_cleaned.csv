@@ -1,0 +1,47 @@
+Localisation,COEFF_F212,PROFIL,Membres,Missions_en_cours,Competences,Date_Demarrage,Date_de_fin,Tx_occup,Stream_BT
+Mtp,115,Confirmé,Mariette Bourget,MAIF,SAS,2022-01-10,2024-12-31,1.0,DSIA
+Tours,115,Confirmé,Mireille Rochefort,CHANEL : CORP,SSIS ,2023-10-30,2024-12-31,1.0,MSBI
+Tours,105,Junior,Lyle Ppin,COVEA Dataline,Talend BD,2022-12-19,2024-12-31,1.0,TALEND
+Mtp,100,Junior,Lucille Laboissonnire,MENJS,SAS,2024-01-23,2024-12-31,1.0,DSIA
+Paris,150,Expert,Ansel Pirouet,ICDC,Data Ing + Data S.,2023-04-01,2024-12-31,1.0,DSIA
+Paris,100,Junior,Julien Therrien,EDF: CDS VERONE,,2023-10-16,2024-03-31,1.0,ODI
+Tours,170,Expert,Afrodille Pouliotte,EDF: CDS VERONE,Direction de projet,2023-12-01,2024-06-30,0.4,ODI
+Tours,170,Expert,Afrodille Pouliotte,EDF Data SFR (depuis 03/2022),Direction de projet,2023-12-01,2024-03-31,0.25,ODI
+Tours,170,Expert,Afrodille Pouliotte,EDF : TCO2 GESMA,Direction de projet,2023-12-01,2024-03-31,0.2,ODI
+Tours,170,Expert,Afrodille Pouliotte,EDF Eureka,Direction de projet,2023-12-01,2024-12-31,0.05,ODI
+Tours,170,Expert,Afrodille Pouliotte,Resp Scu Site Tours,Direction de projet,2023-12-01,2024-12-31,0.1,ODI
+Tours,150,Expert,Aymon Bellemare,ELSAN,MsBI/BO,2024-02-05,2024-04-19,1.0,MSBI
+Tours,150,Expert,Aymon Bellemare,ELSAN,MsBI/BO,2024-04-15,2024-12-31,0.5,MSBI
+Tours,150,Expert,Aymon Bellemare,DISPO ICE,MsBI/BO,2024-04-22,2024-04-26,0.5,MSBI
+Tours,150,Expert,Aymon Bellemare,CONGES,MsBI/BO,2024-04-29,2024-05-10,1.0,MSBI
+Tours,150,Expert,Aymon Bellemare,DISPO ICE,MsBI/BO,2024-05-13,2024-06-14,0.5,MSBI
+Tours,150,Expert,Aymon Bellemare,CONGES,MsBI/BO,2024-06-17,2024-06-21,1.0,MSBI
+Tours,150,Expert,Aymon Bellemare,DISPO ICE,MsBI/BO,2024-06-22,2024-12-31,0.5,MSBI
+Tours,170,Expert,Gano Chartier ,"Radio Data
+Mercedes
+BDF MDM
+ASP Limoges",Pilotage BT,2022-12-19,2024-12-31,1.0,Data Management
+Tours,100,Junior,Caroline Gnreux,AIR LIQUIDE,"Talend, Talend BD",2024-01-08,2024-02-23,1.0,TALEND
+Tours,100,Junior,Caroline Gnreux,AIR LIQUIDE,"Talend, Talend BD",2024-02-26,2024-03-15,0.5,TALEND
+Tours,100,Junior,Caroline Gnreux,DISPO ICE,"Talend, Talend BD",2024-02-26,2024-03-15,0.5,TALEND
+Tours,100,Junior,Caroline Gnreux,DISPO ICE,"Talend, Talend BD",2024-03-16,2024-03-31,1.0,TALEND
+Tours,100,Junior,Caroline Gnreux,DISPO ICE,"Talend, Talend BD",2024-04-01,2024-04-09,1.0,TALEND
+Tours,100,Junior,Caroline Gnreux,Arrt Maladie,"Talend, Talend BD",2024-04-10,2024-04-23,1.0,TALEND
+Tours,100,Junior,Caroline Gnreux,DISPO ICE,"Talend, Talend BD",2024-04-24,2024-12-31,1.0,TALEND
+Mtp,130,Sénior,Lirienne Neufville,Eramet,"Power BI, Azure, BO, Qlik",2022-10-17,2024-06-30,1.0,DataViz
+Mtp,130,Sénior,Lirienne Neufville,DISPO ICE,"Power BI, Azure, BO, Qlik",2024-07-01,2024-12-31,1.0,DataViz
+Mtp,130,Sénior,Auguste Gadbois,Temps Partiel,,2014-07-01,2024-12-31,0.2,Data Integration
+Mtp,130,Sénior,Auguste Gadbois,ALGECO,"Informatica stambia, talend, datastage",2023-10-01,2024-04-30,0.4,Data Integration
+Mtp,130,Sénior,Auguste Gadbois,AG2R MCO,"Informatica stambia, talend, datastage",2024-02-05,2024-04-30,0.4,Data Integration
+Paris,120,Confirmé,Annot Legault,CLARINS CDS,Datastage,2023-01-01,2024-12-31,1.0,Data Integration
+Paris,130,Sénior,Denise Beaudoin,ERAMET,Azure,2023-01-01,2024-06-30,1.0,Cloud Azure
+Mtp,150,Expert,Belda Poissonnier,ERAMET,UX,2024-04-01,2024-05-17,0.2,DataViz
+Mtp,150,Expert,Belda Poissonnier,TSV OFFRE,UX,2023-09-18,2024-12-31,0.2,DataViz
+Mtp,150,Expert,Belda Poissonnier,Danone,UX,2024-01-01,2024-04-19,0.4,DataViz
+Mtp,150,Expert,Belda Poissonnier,Danone,UX,2024-04-29,2024-05-31,0.2,DataViz
+Mtp,150,Expert,Belda Poissonnier,Congs,UX,2024-04-22,2024-04-26,0.3,DataViz
+Mtp,150,Expert,Belda Poissonnier,Caisse d'Epargne Midi Pyrnes,UX,2024-04-01,2024-04-19,0.2,DataViz
+Mtp,150,Expert,Belda Poissonnier,Caisse d'Epargne Midi Pyrnes,UX,2024-04-22,2024-05-31,0.4,DataViz
+Mtp,150,Expert,Belda Poissonnier,Caisse d'Epargne Midi Pyrnes,UX,2024-06-03,2024-08-16,0.3,DataViz
+Mtp,150,Expert,Belda Poissonnier,DISPO ICE,UX,2024-06-03,2024-08-16,0.5,DataViz
+Mtp,150,Expert,Belda Poissonnier,DISPO ICE,UX,2024-08-20,2024-12-31,0.8,DataViz

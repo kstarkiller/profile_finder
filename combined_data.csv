@@ -1,0 +1,547 @@
+Localisation,COEFF_F212,PROFIL,Nom,Missions_en_cours,Competences,Date_Demarrage,Date_de_fin,Tx_occup,Stream_BT
+Mtp,115,Confirmé,Mariette Bourget,MAIF,SAS,2022-01-10,2024-12-31,1.0,DSIA
+Tours,115,Confirmé,Mireille Rochefort,CHANEL : CORP,SSIS ,2023-10-30,2024-12-31,1.0,MSBI
+Tours,105,Junior,Lyle Ppin,COVEA Dataline,Talend BD,2022-12-19,2024-12-31,1.0,TALEND
+Mtp,100,Junior,Lucille Laboissonnire,MENJS,SAS,2024-01-23,2024-12-31,1.0,DSIA
+Paris,150,Expert,Ansel Pirouet,ICDC,Data Ing + Data S.,2023-04-01,2024-12-31,1.0,DSIA
+Paris,100,Junior,Julien Therrien,EDF: CDS VERONE,,2023-10-16,2024-03-31,1.0,ODI
+Tours,170,Expert,Afrodille Pouliotte,EDF: CDS VERONE,Direction de projet,2023-12-01,2024-06-30,0.4,ODI
+Tours,170,Expert,Afrodille Pouliotte,EDF Data SFR (depuis 03/2022),Direction de projet,2023-12-01,2024-03-31,0.25,ODI
+Tours,170,Expert,Afrodille Pouliotte,EDF : TCO2 GESMA,Direction de projet,2023-12-01,2024-03-31,0.2,ODI
+Tours,170,Expert,Afrodille Pouliotte,EDF Eureka,Direction de projet,2023-12-01,2024-12-31,0.05,ODI
+Tours,170,Expert,Afrodille Pouliotte,Resp Scu Site Tours,Direction de projet,2023-12-01,2024-12-31,0.1,ODI
+Tours,150,Expert,Aymon Bellemare,ELSAN,MsBI/BO,2024-02-05,2024-04-19,1.0,MSBI
+Tours,150,Expert,Aymon Bellemare,ELSAN,MsBI/BO,2024-04-15,2024-12-31,0.5,MSBI
+Tours,150,Expert,Aymon Bellemare,DISPO ICE,MsBI/BO,2024-04-22,2024-04-26,0.5,MSBI
+Tours,150,Expert,Aymon Bellemare,CONGES,MsBI/BO,2024-04-29,2024-05-10,1.0,MSBI
+Tours,150,Expert,Aymon Bellemare,DISPO ICE,MsBI/BO,2024-05-13,2024-06-14,0.5,MSBI
+Tours,150,Expert,Aymon Bellemare,CONGES,MsBI/BO,2024-06-17,2024-06-21,1.0,MSBI
+Tours,150,Expert,Aymon Bellemare,DISPO ICE,MsBI/BO,2024-06-22,2024-12-31,0.5,MSBI
+Tours,170,Expert,Gano Chartier ,"Radio Data
+Mercedes
+BDF MDM
+ASP Limoges",Pilotage BT,2022-12-19,2024-12-31,1.0,Data Management
+Tours,100,Junior,Caroline Gnreux,AIR LIQUIDE,"Talend, Talend BD",2024-01-08,2024-02-23,1.0,TALEND
+Tours,100,Junior,Caroline Gnreux,AIR LIQUIDE,"Talend, Talend BD",2024-02-26,2024-03-15,0.5,TALEND
+Tours,100,Junior,Caroline Gnreux,DISPO ICE,"Talend, Talend BD",2024-02-26,2024-03-15,0.5,TALEND
+Tours,100,Junior,Caroline Gnreux,DISPO ICE,"Talend, Talend BD",2024-03-16,2024-03-31,1.0,TALEND
+Tours,100,Junior,Caroline Gnreux,DISPO ICE,"Talend, Talend BD",2024-04-01,2024-04-09,1.0,TALEND
+Tours,100,Junior,Caroline Gnreux,Arrt Maladie,"Talend, Talend BD",2024-04-10,2024-04-23,1.0,TALEND
+Tours,100,Junior,Caroline Gnreux,DISPO ICE,"Talend, Talend BD",2024-04-24,2024-12-31,1.0,TALEND
+Mtp,130,Sénior,Lirienne Neufville,Eramet,"Power BI, Azure, BO, Qlik",2022-10-17,2024-06-30,1.0,DataViz
+Mtp,130,Sénior,Lirienne Neufville,DISPO ICE,"Power BI, Azure, BO, Qlik",2024-07-01,2024-12-31,1.0,DataViz
+Mtp,130,Sénior,Auguste Gadbois,Temps Partiel,,2014-07-01,2024-12-31,0.2,Data Integration
+Mtp,130,Sénior,Auguste Gadbois,ALGECO,"Informatica stambia, talend, datastage",2023-10-01,2024-04-30,0.4,Data Integration
+Mtp,130,Sénior,Auguste Gadbois,AG2R MCO,"Informatica stambia, talend, datastage",2024-02-05,2024-04-30,0.4,Data Integration
+Paris,120,Confirmé,Annot Legault,CLARINS CDS,Datastage,2023-01-01,2024-12-31,1.0,Data Integration
+Paris,130,Sénior,Denise Beaudoin,ERAMET,Azure,2023-01-01,2024-06-30,1.0,Cloud Azure
+Mtp,150,Expert,Belda Poissonnier,ERAMET,UX,2024-04-01,2024-05-17,0.2,DataViz
+Mtp,150,Expert,Belda Poissonnier,TSV OFFRE,UX,2023-09-18,2024-12-31,0.2,DataViz
+Mtp,150,Expert,Belda Poissonnier,Danone,UX,2024-01-01,2024-04-19,0.4,DataViz
+Mtp,150,Expert,Belda Poissonnier,Danone,UX,2024-04-29,2024-05-31,0.2,DataViz
+Mtp,150,Expert,Belda Poissonnier,Congs,UX,2024-04-22,2024-04-26,0.3,DataViz
+Mtp,150,Expert,Belda Poissonnier,Caisse d'Epargne Midi Pyrnes,UX,2024-04-01,2024-04-19,0.2,DataViz
+Mtp,150,Expert,Belda Poissonnier,Caisse d'Epargne Midi Pyrnes,UX,2024-04-22,2024-05-31,0.4,DataViz
+Mtp,150,Expert,Belda Poissonnier,Caisse d'Epargne Midi Pyrnes,UX,2024-06-03,2024-08-16,0.3,DataViz
+Mtp,150,Expert,Belda Poissonnier,DISPO ICE,UX,2024-06-03,2024-08-16,0.5,DataViz
+Mtp,150,Expert,Belda Poissonnier,DISPO ICE,UX,2024-08-20,2024-12-31,0.8,DataViz
+Paris,105,Confirmé,Ethan Cross,Haney-Price,Network Administration,2023-04-24,2024-07-13,0.54,MSBI
+Mtp,105,Expert,Joanna Ellis,Glenn and Sons,Java Development,2022-06-19,2024-12-26,0.84,MSBI
+Tours,105,Confirmé,Ashley Wright,Singh Ltd,IT Support,2022-08-11,2025-02-19,0.9,SSIS
+Tours,115,Expert,Annette Porter,"Harris, Gonzalez and Brown",Business Analysis,2022-08-04,2025-04-09,0.16,ODI
+Paris,100,Confirmé,Maria Black,Mejia Ltd,Machine Learning,2023-10-31,2026-01-14,0.33,TALEND
+Mtp,100,Junior,Justin Alvarez,Stewart-Ramos,Network Administration,2023-11-20,2024-10-17,0.93,MSBI
+Paris,115,Expert,Nichole Wilson,Parker-Hammond,Machine Learning,2022-12-08,2025-08-25,0.49,SSIS
+Paris,115,Junior,Jessica Barrett,Davis-Knight,Data Analysis,2023-09-04,2024-11-09,0.16,MSBI
+Paris,115,Expert,Bonnie Smith,"Davis, Smith and Levine",Network Administration,2022-12-28,2025-11-05,0.47,MSBI
+Paris,105,Expert,Hannah Martin,Perez-Bell,Data Analysis,2024-01-31,2025-12-26,0.67,ODI
+Mtp,170,Confirmé,Mark Tran,Johnson-Martinez,Network Administration,2022-12-04,2025-09-26,0.44,SSIS
+Mtp,100,Junior,Deanna Williams,Lara and Sons,Network Administration,2024-03-19,2025-02-14,0.85,MSBI
+Tours,105,Expert,Christine Wallace,Clark PLC,Business Analysis,2024-02-02,2024-11-20,0.72,SSIS
+Mtp,115,Confirmé,Carol Nelson,"Martin, Stokes and Hurley",Database Management,2022-11-28,2025-10-06,0.14,MSBI
+Mtp,100,Junior,Sierra Nelson,Johnson Ltd,Cybersecurity,2023-04-28,2025-06-03,0.29,SSIS
+Mtp,105,Confirmé,Jacob Sellers,Wilson Group,Database Management,2022-11-10,2024-12-12,0.46,DSIA
+Tours,170,Expert,Debra King,Nguyen-Fletcher,Web Development,2023-06-23,2024-09-12,0.67,SSIS
+Mtp,150,Expert,Autumn Medina,"Reynolds, Spence and Valenzuela",Cloud Computing,2023-03-10,2025-01-14,0.29,MSBI
+Mtp,115,Expert,James Jones,"Watts, Scott and Johnson",Python Development,2023-03-18,2026-01-26,0.58,TALEND
+Mtp,150,Confirmé,William Cooper,"Weber, Mendez and Vincent",IT Support,2023-10-31,2025-07-10,0.78,SSIS
+Mtp,100,Expert,Stephen Chambers,"Salazar, Anderson and Thompson",Cybersecurity,2024-04-15,2026-05-11,0.25,TALEND
+Mtp,115,Expert,Patrick Hill,"Rowland, Gonzalez and David",Data Analysis,2023-10-09,2025-04-26,0.4,SSIS
+Paris,105,Confirmé,Kristin Reed,"Young, Weaver and Carr",Cloud Computing,2023-11-02,2025-10-01,0.83,DSIA
+Mtp,115,Junior,Troy Savage,Ramsey LLC,Software Testing,2023-11-01,2025-03-25,0.47,DSIA
+Paris,105,Confirmé,Janet Johnson,Pruitt-Marshall,Cloud Computing,2023-07-11,2024-07-09,0.8,MSBI
+Paris,170,Junior,Richard Yates,Davenport and Sons,Data Analysis,2023-07-20,2025-12-03,0.89,DSIA
+Mtp,150,Junior,Crystal Riggs DVM,Pittman Inc,Software Testing,2023-12-04,2026-03-05,0.67,DSIA
+Tours,115,Junior,Timothy Martin,"Ingram, Freeman and Rivas",Mobile Development,2023-05-01,2024-11-25,0.32,DSIA
+Mtp,170,Expert,Charles Alvarez,Johnson-Davis,Python Development,2024-03-11,2025-05-14,0.22,TALEND
+Tours,100,Confirmé,Amanda Price,"Smith, Francis and Hill",Java Development,2023-03-21,2026-03-27,0.41,DSIA
+Paris,150,Expert,Eddie Weber,Dean PLC,Cybersecurity,2023-11-03,2025-05-16,0.24,ODI
+Mtp,150,Confirmé,John Ford,Schmidt Group,Data Analysis,2023-04-15,2025-10-17,0.13,DSIA
+Paris,105,Confirmé,Robert Taylor,"Brown, Butler and Terrell",Python Development,2024-03-14,2025-05-23,0.55,ODI
+Tours,115,Confirmé,Jason Rogers,Miller-Henderson,IT Support,2023-06-15,2025-12-17,0.66,TALEND
+Tours,115,Expert,Dr. James Davis,Perez PLC,DevOps,2024-02-24,2024-12-24,0.49,SSIS
+Tours,170,Expert,William Anderson,Soto-Brown,Network Administration,2023-09-17,2025-09-23,0.47,MSBI
+Tours,100,Confirmé,Ian Mckinney,"Soto, Perez and Stephens",Cloud Computing,2023-02-22,2025-08-16,0.5,SSIS
+Mtp,115,Expert,Jasmine Medina,French-James,Machine Learning,2023-07-08,2025-01-10,0.24,DSIA
+Mtp,170,Confirmé,Stacie Pitts,"Davis, Juarez and Coleman",Python Development,2023-08-17,2026-04-17,0.99,DSIA
+Mtp,170,Expert,Daniel Keller,Jordan-Jones,Java Development,2024-01-14,2025-11-17,0.9,TALEND
+Tours,100,Expert,Lori Yoder,Wilson and Sons,Cybersecurity,2022-10-14,2025-02-11,0.46,MSBI
+Tours,100,Junior,Jonathon Stephens,"Martinez, Williams and Larsen",DevOps,2022-12-20,2025-02-05,0.88,DSIA
+Tours,100,Confirmé,Michael Taylor,Goodman-Gibson,Business Analysis,2022-08-19,2025-10-21,0.51,SSIS
+Mtp,150,Expert,Autumn Taylor,Walker-Medina,Web Development,2023-04-16,2025-10-31,0.79,TALEND
+Tours,150,Confirmé,Summer Blankenship,Duncan Inc,Mobile Development,2023-07-16,2025-04-13,0.54,SSIS
+Paris,105,Confirmé,Kayla Morrow,Hill and Sons,Mobile Development,2022-09-20,2026-03-06,0.41,ODI
+Mtp,150,Junior,Eric Rogers,"Stevenson, Rodriguez and Chan",Cloud Computing,2023-09-11,2025-05-19,0.81,DSIA
+Tours,115,Confirmé,David Murphy,Johnson-Dickson,Software Testing,2022-10-09,2025-12-12,0.77,DSIA
+Paris,115,Junior,Sherry Pearson,Alexander Inc,DevOps,2022-07-06,2025-10-27,0.31,SSIS
+Tours,150,Junior,Dale Baker,Moreno LLC,Web Development,2023-05-23,2024-06-18,0.48,DSIA
+Paris,170,Junior,George Anderson,Torres Group,Web Development,2023-12-12,2025-09-29,0.71,DSIA
+Tours,115,Confirmé,David Case,Riley Ltd,IT Support,2022-08-13,2025-10-06,0.65,TALEND
+Paris,100,Junior,Angelica Christensen,Calderon-Scott,Business Analysis,2023-12-18,2024-08-11,0.76,MSBI
+Tours,100,Confirmé,Laura Wang,Simpson-Sanchez,Machine Learning,2024-05-29,2024-09-21,0.47,MSBI
+Tours,115,Expert,Janice Griffith,Leonard Inc,Machine Learning,2022-10-18,2025-10-20,0.45,TALEND
+Paris,100,Confirmé,Matthew Black,"Lambert, Williams and Haas",Web Development,2022-12-06,2025-07-11,0.81,TALEND
+Tours,105,Expert,Michael Davis,Owens-Hall,Java Development,2023-04-04,2025-11-27,0.42,ODI
+Mtp,105,Expert,Seth Hall,"Moore, Thomas and Edwards",Cloud Computing,2024-04-27,2025-04-25,0.61,SSIS
+Paris,150,Expert,Phillip Marshall,"York, Black and Hawkins",Machine Learning,2022-07-25,2025-02-27,0.83,MSBI
+Mtp,150,Junior,Michael Williams,"Cooper, Parker and Lopez",Python Development,2024-04-12,2025-08-01,0.39,TALEND
+Paris,170,Expert,Sonya Baker,"Chandler, Pearson and Griffith",Cybersecurity,2024-03-10,2026-03-26,0.14,MSBI
+Paris,170,Expert,Tyler Chavez,Phillips-Silva,Cloud Computing,2024-03-05,2025-06-26,0.31,TALEND
+Paris,115,Junior,Anna West,Hayden-George,DevOps,2023-12-07,2025-03-08,0.23,MSBI
+Mtp,105,Junior,Aaron Adams,Martin-Valdez,Business Analysis,2023-12-04,2024-09-11,0.11,SSIS
+Mtp,100,Confirmé,Megan Cole,Golden-Chan,Cloud Computing,2023-04-27,2025-09-12,0.79,DSIA
+Tours,115,Confirmé,Jeremy Reilly,"Phillips, Nielsen and Mercado",IT Support,2023-06-15,2025-07-13,0.37,SSIS
+Paris,115,Expert,Jennifer Lane,Hernandez-Morse,Web Development,2022-10-09,2025-04-02,0.64,DSIA
+Paris,150,Expert,Tina Welch,Houston Ltd,Project Management,2024-03-25,2025-10-29,0.11,TALEND
+Paris,150,Expert,Eric Logan,Brown-Schneider,Mobile Development,2024-02-12,2025-01-20,0.16,DSIA
+Paris,100,Junior,Jessica Wilkerson,"Sanchez, Lopez and Lambert",Mobile Development,2023-07-13,2024-06-17,0.2,DSIA
+Paris,115,Confirmé,Jon Dickerson,"Martinez, Lawrence and Lawrence",Java Development,2024-04-10,2026-04-23,0.3,MSBI
+Paris,115,Junior,Mariah Davis,Powell and Sons,Database Management,2024-06-11,2025-01-15,0.48,MSBI
+Paris,150,Expert,Whitney Whitehead,Wright-Johnson,Network Administration,2022-07-17,2025-01-04,0.21,MSBI
+Tours,105,Confirmé,Melissa Moore,Armstrong PLC,Mobile Development,2023-04-03,2025-08-21,0.8,TALEND
+Mtp,170,Junior,Andrew Owen,"Smith, Gibson and Burns",IT Support,2023-09-22,2025-06-19,0.5,MSBI
+Mtp,100,Expert,Lawrence Anderson,"Bridges, Mcdonald and Miles",Business Analysis,2023-08-24,2024-10-07,0.72,TALEND
+Tours,115,Confirmé,Kelly Gomez,Lee-Gonzalez,Database Management,2023-10-10,2025-12-16,0.95,MSBI
+Mtp,150,Confirmé,Mrs. Holly Curry,"Porter, Reynolds and Smith",Project Management,2023-01-25,2025-02-09,0.1,TALEND
+Paris,100,Junior,Tara Rodriguez,Mitchell-Armstrong,Cloud Computing,2024-01-08,2024-06-26,0.69,DSIA
+Mtp,170,Confirmé,Nicole Arnold,"Stein, Wilson and Sanchez",Network Administration,2022-11-06,2024-12-07,0.47,DSIA
+Tours,150,Junior,Margaret Hernandez,"Hughes, Hernandez and Pugh",Project Management,2024-06-10,2025-09-27,0.41,SSIS
+Mtp,150,Junior,Andrea Edwards,"Anderson, Woods and Graham",Java Development,2024-01-11,2025-05-21,0.15,ODI
+Tours,115,Junior,Teresa Watkins,Matthews PLC,Software Testing,2023-02-14,2024-08-16,0.72,MSBI
+Paris,170,Expert,Christopher Pope,Bailey-Cole,Data Analysis,2022-07-07,2025-06-18,0.39,TALEND
+Tours,150,Junior,Richard Holland,Foley Ltd,Network Administration,2022-12-13,2025-12-05,0.72,MSBI
+Paris,170,Expert,Troy Erickson,"Spencer, Daniels and Dudley",Cloud Computing,2022-07-02,2026-03-29,0.25,ODI
+Paris,105,Confirmé,Gina Mccarthy,"Dixon, Santos and Berry",Python Development,2024-01-11,2026-05-17,0.86,TALEND
+Mtp,100,Expert,John Owens,Bauer LLC,Business Analysis,2023-12-23,2024-06-22,0.49,MSBI
+Paris,150,Junior,Mason Hall,"Weber, Andrade and Gregory",Python Development,2022-09-05,2024-10-15,0.58,TALEND
+Tours,105,Expert,Anthony Woodard,Roberts-Fleming,IT Support,2023-10-02,2025-09-07,0.39,SSIS
+Mtp,105,Confirmé,Michael Harris,Anderson-Barnes,Python Development,2024-04-29,2024-10-29,0.37,SSIS
+Mtp,105,Confirmé,George Evans,"Casey, Maxwell and Chavez",DevOps,2022-06-29,2025-07-06,0.9,SSIS
+Paris,115,Junior,Russell Marshall,Sanford Ltd,Software Testing,2024-05-10,2024-09-11,0.29,SSIS
+Paris,170,Confirmé,Lisa Miller,"Allen, Dunn and Miller",Project Management,2024-01-05,2025-02-04,0.72,TALEND
+Tours,170,Junior,Cynthia Lawson,"Coleman, Lowe and White",Project Management,2023-11-20,2025-01-11,0.31,ODI
+Mtp,115,Junior,Thomas Bailey,Collins-Jones,Machine Learning,2024-04-02,2024-08-26,0.83,TALEND
+Paris,105,Expert,Kevin Oneill,Newton-Velasquez,DevOps,2023-11-15,2025-12-16,0.68,SSIS
+Tours,105,Confirmé,Janet Rocha,Mccarthy Ltd,Java Development,2022-07-27,2026-01-25,0.51,TALEND
+Paris,115,Expert,Melissa Scott MD,Martinez-White,Business Analysis,2024-06-08,2025-09-02,0.24,MSBI
+Paris,115,Expert,Whitney Smith,Harris Inc,Database Management,2023-11-05,2025-10-09,0.93,SSIS
+Tours,105,Junior,Nancy Hernandez,Martinez and Sons,Software Testing,2023-03-28,2025-03-07,0.77,ODI
+Paris,105,Junior,Trevor Preston,"Johnson, Cruz and Brown",Mobile Development,2023-04-18,2024-07-01,0.69,DSIA
+Mtp,105,Confirmé,Marc Cordova,"Jones, Cantrell and Russell",Network Administration,2024-01-02,2024-11-12,0.93,DSIA
+Tours,170,Expert,Andrew Mcclure,"Carter, Johnson and Cohen",Database Management,2023-05-03,2025-05-17,0.98,DSIA
+Tours,170,Junior,Lori Harper MD,Gallagher LLC,Cloud Computing,2022-08-28,2025-04-03,0.61,TALEND
+Tours,150,Junior,Patricia Garcia,Adams-Henry,Mobile Development,2023-11-27,2026-03-19,0.53,TALEND
+Mtp,150,Confirmé,Dennis Roth,"Curtis, Ball and Thompson",DevOps,2024-02-21,2025-10-02,0.24,TALEND
+Tours,105,Expert,Jill Gonzalez,"Johnson, Lawson and French",Database Management,2022-10-24,2025-10-13,0.14,MSBI
+Paris,100,Junior,Brooke Hanna,Hill-Hill,Cloud Computing,2022-08-27,2025-01-14,0.25,SSIS
+Tours,150,Junior,Marvin Taylor,"Cross, Price and Knight",Mobile Development,2023-03-24,2024-11-19,0.64,SSIS
+Paris,105,Expert,Jane Martinez,Johnston-Ryan,Cybersecurity,2023-05-12,2024-11-04,0.82,DSIA
+Mtp,100,Confirmé,Kathy Lynch,Scott LLC,DevOps,2022-09-08,2025-06-03,0.28,MSBI
+Paris,170,Expert,Mrs. Teresa Vargas MD,Hendricks-Johnson,Java Development,2023-08-20,2024-07-21,0.64,TALEND
+Tours,150,Junior,Daniel Poole,Wang-Jenkins,Cybersecurity,2024-03-04,2024-10-26,0.43,ODI
+Mtp,115,Confirmé,Paige Villanueva,Rosales-Baker,DevOps,2023-05-13,2025-07-03,0.85,TALEND
+Mtp,100,Confirmé,Christian Tucker,Lamb and Sons,IT Support,2024-05-19,2026-04-04,0.25,TALEND
+Paris,115,Expert,Megan Rogers,Velazquez-Ramirez,DevOps,2023-12-18,2025-10-14,0.34,TALEND
+Paris,170,Junior,Sharon Tapia,Howell Inc,Software Testing,2024-02-21,2024-08-10,0.1,ODI
+Tours,115,Expert,Rebecca Briggs,"Knight, Gibbs and Woods",Project Management,2023-02-04,2024-09-09,0.28,DSIA
+Mtp,105,Expert,Dean Williams,"Rich, Carney and Bright",Project Management,2023-02-26,2025-10-11,0.94,ODI
+Mtp,100,Expert,Steven Andrade,"Miller, Davis and Floyd",Mobile Development,2024-04-02,2026-02-11,0.46,SSIS
+Paris,115,Confirmé,Alison Clark,Stevenson LLC,Data Analysis,2022-09-28,2025-04-10,0.89,DSIA
+Paris,115,Junior,Frank Freeman,"Dougherty, Harrington and Ibarra",Cybersecurity,2024-06-04,2025-03-31,0.59,MSBI
+Paris,105,Confirmé,Michelle Valdez,"Lewis, Ortega and Robinson",Data Analysis,2023-06-16,2025-05-05,0.8,ODI
+Tours,115,Junior,Vanessa Meyer,Gibbs Inc,Software Testing,2022-11-12,2026-05-25,0.75,SSIS
+Tours,105,Expert,Jasmine Peters,Buck Inc,Mobile Development,2022-11-11,2024-08-17,0.6,TALEND
+Tours,115,Confirmé,Renee Leon,Miller-Miller,Mobile Development,2024-03-02,2026-02-09,0.27,ODI
+Mtp,150,Expert,Crystal Gutierrez,Davis Inc,Cybersecurity,2023-07-08,2024-09-19,0.62,DSIA
+Tours,170,Confirmé,Carol Hill,Olsen-Bryan,Project Management,2022-09-03,2025-08-15,0.6,ODI
+Paris,150,Junior,Michael Peters,Potter-Kane,IT Support,2024-05-25,2025-08-04,0.19,MSBI
+Tours,100,Junior,Jordan Gutierrez,"Hoover, Marshall and Hill",Cybersecurity,2023-04-08,2024-12-06,0.75,SSIS
+Mtp,170,Junior,Nancy Wise,Robbins-Mcdonald,Web Development,2024-01-04,2025-06-22,0.36,MSBI
+Paris,170,Junior,Melissa Collins,Carroll Group,Project Management,2022-11-22,2024-10-02,0.38,TALEND
+Mtp,105,Expert,Lauren Reyes,"Houston, Mack and Meadows",Web Development,2023-03-24,2025-09-04,0.81,TALEND
+Tours,105,Confirmé,Scott Jensen,Bernard-Lee,Data Analysis,2024-06-12,2025-10-10,0.58,DSIA
+Mtp,115,Junior,Kenneth Robertson,"Hernandez, Garza and Huff",Data Analysis,2024-03-07,2025-07-16,0.8,DSIA
+Mtp,170,Expert,Andrea Thomas,Higgins-Brown,Business Analysis,2024-02-15,2025-06-23,0.69,DSIA
+Mtp,100,Junior,James Lin,Terry-Snyder,DevOps,2023-10-12,2026-05-08,0.97,MSBI
+Paris,100,Junior,Gerald Larsen,"Parks, Farley and Phillips",DevOps,2024-01-31,2025-03-25,0.92,DSIA
+Tours,105,Junior,Kelly French,Clayton-Baker,IT Support,2022-06-14,2025-05-06,0.32,SSIS
+Mtp,170,Junior,John Brown,"Smith, Valdez and Gallegos",Mobile Development,2023-09-22,2025-10-31,0.9,ODI
+Paris,150,Confirmé,Michelle Welch,"Smith, Wright and Alvarez",Network Administration,2022-08-23,2025-05-24,0.24,DSIA
+Mtp,115,Expert,Francisco Smith,Johnson-Ward,Project Management,2023-10-08,2024-08-13,0.25,ODI
+Mtp,170,Junior,John Brown,"Love, Chen and Robinson",Mobile Development,2024-02-23,2025-01-22,0.3,ODI
+Mtp,100,Junior,Karen Wise,"Thompson, Lopez and Callahan",Business Analysis,2023-09-30,2026-02-28,0.34,DSIA
+Mtp,115,Confirmé,Dr. Angel Roberts,Smith PLC,Project Management,2023-01-30,2025-02-07,0.94,ODI
+Paris,100,Junior,Rebecca Walsh,Mata-Hodges,Web Development,2022-09-29,2024-11-05,0.37,TALEND
+Paris,150,Expert,Danny Randall,"Scott, Brown and Hebert",Java Development,2023-09-04,2026-05-15,0.26,SSIS
+Paris,100,Expert,Cynthia Thompson,Anthony-Pittman,Machine Learning,2022-09-01,2026-06-06,0.12,DSIA
+Tours,150,Confirmé,Thomas Small,"Harding, Berry and Zuniga",Software Testing,2024-05-28,2025-10-07,0.25,ODI
+Tours,105,Confirmé,Shelby Stephens,Griffin-Fischer,Web Development,2023-04-10,2026-01-21,0.28,ODI
+Tours,100,Confirmé,Robert Hall,Scott Ltd,Web Development,2023-05-20,2026-04-22,0.16,TALEND
+Mtp,100,Junior,David Cabrera,"Summers, Walls and Jacobson",Python Development,2022-06-19,2025-11-06,0.34,MSBI
+Paris,115,Expert,Hailey Miller,Petersen-Brooks,Data Analysis,2024-05-11,2025-11-13,0.8,MSBI
+Mtp,150,Expert,Patrick Williamson,"Jimenez, Kim and Anderson",Business Analysis,2022-06-24,2024-12-29,0.77,MSBI
+Mtp,105,Junior,William Wheeler,Chavez-Lang,Data Analysis,2024-05-29,2026-01-02,0.13,MSBI
+Paris,105,Expert,Michael Ferguson,Acosta-Davis,Web Development,2023-08-04,2026-01-02,0.36,SSIS
+Tours,100,Confirmé,Jason Romero,Coleman PLC,Cybersecurity,2024-01-08,2026-01-11,0.87,DSIA
+Paris,105,Confirmé,Maria Carter,Ware-Wade,IT Support,2024-04-30,2026-05-13,0.31,MSBI
+Paris,105,Junior,Tina Walton,"Edwards, Deleon and Powell",Business Analysis,2023-01-27,2025-12-07,0.72,SSIS
+Mtp,170,Junior,Eric Shaw,"Bennett, Tate and Fitzgerald",Software Testing,2022-11-03,2025-06-03,0.72,DSIA
+Mtp,105,Junior,Maurice Thompson,"Snyder, Perry and Poole",Web Development,2022-12-29,2024-09-26,0.77,SSIS
+Tours,150,Confirmé,Jessica Smith,"Hernandez, Weeks and Patterson",Web Development,2023-01-03,2024-07-26,0.81,TALEND
+Paris,170,Confirmé,Luis Day,"Miles, Moran and Morales",Machine Learning,2024-01-05,2025-08-01,0.36,MSBI
+Tours,150,Confirmé,Bryan Smith,"Long, Harrison and Perez",Business Analysis,2023-03-03,2024-12-28,0.27,DSIA
+Paris,170,Confirmé,Wanda Parker,Ray LLC,Software Testing,2024-01-12,2026-06-12,0.53,TALEND
+Paris,150,Junior,Karen Short,Steele-Ortiz,Python Development,2024-01-10,2026-04-07,0.59,MSBI
+Tours,100,Expert,Brian Hogan,"Taylor, Miller and Rangel",Web Development,2023-04-06,2025-06-10,0.46,MSBI
+Paris,105,Expert,Yvonne James,"George, Jacobs and Wood",Data Analysis,2023-03-29,2024-07-12,0.93,ODI
+Paris,105,Junior,Theresa Wilson,Camacho-Mcdaniel,Software Testing,2022-11-28,2025-02-12,0.84,DSIA
+Paris,150,Junior,Michael Butler,"Perez, Harrison and Reid",Java Development,2024-02-05,2024-06-19,0.48,TALEND
+Paris,115,Confirmé,Shelby Taylor,West-Robinson,Cybersecurity,2023-06-04,2025-11-28,0.61,DSIA
+Paris,115,Expert,Eric Berry,Lopez LLC,Software Testing,2023-10-23,2024-09-27,0.52,SSIS
+Tours,105,Junior,Kevin Jackson,"Stanley, Smith and Mathis",Software Testing,2023-08-28,2024-10-29,0.7,TALEND
+Tours,150,Expert,Robin Wells,"Horton, Miller and Smith",Data Analysis,2024-03-17,2026-05-24,0.35,MSBI
+Tours,105,Confirmé,Cheryl Nguyen,Miller-Woods,Database Management,2023-05-16,2024-08-05,0.53,MSBI
+Mtp,150,Expert,Sarah Cook,Martin-Booker,Cybersecurity,2023-02-23,2025-03-01,0.68,TALEND
+Paris,115,Confirmé,Michelle Cross,Williams-Harris,Java Development,2023-01-29,2025-07-25,0.83,DSIA
+Tours,150,Junior,Gregory Ponce,Daniels PLC,Business Analysis,2024-04-13,2024-11-29,0.3,SSIS
+Tours,105,Confirmé,Luis Freeman,Graham PLC,Cybersecurity,2023-12-24,2026-03-08,0.28,SSIS
+Paris,115,Junior,Wayne Walters,Lee-Lopez,Mobile Development,2024-03-28,2026-02-23,0.28,TALEND
+Mtp,100,Expert,James Sherman,Randall-Shepherd,Software Testing,2023-04-16,2026-04-22,0.8,SSIS
+Tours,115,Expert,David Davis,Wagner LLC,Database Management,2023-05-28,2024-08-06,0.92,MSBI
+Mtp,115,Confirmé,Keith Burnett,Miller Inc,Project Management,2022-12-02,2025-08-26,0.71,TALEND
+Paris,150,Confirmé,Douglas Sanchez,"Murphy, Blake and Elliott",Software Testing,2024-06-03,2025-12-11,0.7,DSIA
+Paris,105,Expert,Angela Owens,Graves and Sons,Database Management,2023-02-10,2025-08-05,0.33,TALEND
+Paris,150,Junior,Craig Stone,"Moore, Ramos and Murphy",Project Management,2022-12-05,2024-09-24,0.23,DSIA
+Paris,170,Expert,Kevin Hoffman,Lewis-Weiss,Database Management,2023-12-09,2026-05-07,0.87,SSIS
+Mtp,170,Junior,Jeffrey Scott,Huang-Wilson,Business Analysis,2023-04-02,2024-07-23,0.55,ODI
+Mtp,170,Expert,Gary Steele,"Kirby, May and Wade",Machine Learning,2023-03-23,2026-02-26,0.56,TALEND
+Mtp,115,Junior,Daniel Morales DDS,Cole-Richardson,Data Analysis,2023-03-07,2025-08-06,0.55,MSBI
+Mtp,170,Confirmé,Catherine Moore,"Tucker, Nguyen and Baker",Cloud Computing,2023-01-01,2024-11-10,0.97,MSBI
+Mtp,105,Expert,Angela Rodriguez,Ellis Group,Cybersecurity,2023-09-19,2025-08-11,0.5,TALEND
+Tours,115,Expert,Lisa Tyler,"Sanchez, Evans and Cordova",DevOps,2023-05-27,2024-08-28,0.81,MSBI
+Paris,105,Confirmé,Bryan Fox,Walker-Rodriguez,Project Management,2023-05-03,2025-03-20,0.44,MSBI
+Paris,150,Confirmé,Fernando Prince,Baker and Sons,IT Support,2023-07-05,2025-01-04,0.34,MSBI
+Tours,100,Junior,Louis Hogan,Herring-Morgan,Cloud Computing,2022-06-26,2025-08-04,0.75,SSIS
+Paris,105,Confirmé,Amy Jones,Brennan LLC,Cybersecurity,2023-11-11,2025-05-13,0.49,SSIS
+Tours,105,Confirmé,Brandon Henry,Campbell-Norton,Business Analysis,2023-08-28,2024-12-30,0.29,SSIS
+Paris,150,Expert,Anna Berger,Wallace-Morgan,Network Administration,2023-07-18,2024-12-11,0.61,TALEND
+Paris,105,Junior,Carolyn Jones,Mcdaniel-Brown,Database Management,2023-08-10,2026-06-12,0.96,ODI
+Tours,170,Expert,Alexander Grant,Burton-Casey,Cloud Computing,2024-02-08,2024-07-30,0.29,DSIA
+Tours,105,Expert,Patricia Pratt,Sanchez Inc,DevOps,2023-07-11,2026-04-03,0.47,ODI
+Tours,150,Junior,Julie Ashley,White LLC,Data Analysis,2024-05-17,2026-01-08,0.55,MSBI
+Paris,150,Junior,Ronald Miller,"Bartlett, Tate and Robertson",Web Development,2024-02-28,2025-08-13,0.64,MSBI
+Paris,105,Junior,Mark Wright,Howard-Johnson,Software Testing,2023-12-16,2026-02-19,0.56,SSIS
+Paris,100,Expert,Amy Brown,Harrison-Smith,Database Management,2024-05-08,2025-08-02,0.19,SSIS
+Tours,170,Junior,Joseph Murray,Ramos-Kramer,Business Analysis,2022-11-24,2025-03-14,0.53,MSBI
+Mtp,100,Expert,Dustin Franklin,Williams Ltd,Machine Learning,2023-02-11,2024-10-19,0.29,TALEND
+Mtp,170,Junior,Karen Hughes,"Page, Terry and Hall",Web Development,2024-04-13,2026-03-09,0.53,TALEND
+Paris,100,Confirmé,Samantha Larsen,Hardin-Walker,IT Support,2024-03-04,2026-03-01,0.96,TALEND
+Tours,105,Junior,Daniel Wilson MD,Mason Ltd,Cloud Computing,2022-10-21,2025-01-21,0.32,DSIA
+Paris,105,Confirmé,Bethany Figueroa MD,"Luna, Schwartz and Wilson",IT Support,2024-04-24,2024-08-29,0.15,ODI
+Mtp,100,Expert,Anthony Edwards,Lambert Group,Database Management,2022-07-13,2024-12-09,1.0,TALEND
+Paris,150,Expert,Mario Edwards,Smith and Sons,Web Development,2022-09-16,2024-08-08,0.6,MSBI
+Mtp,170,Junior,Kimberly Obrien,Hernandez-Fitzpatrick,Software Testing,2022-12-06,2025-04-29,0.18,TALEND
+Tours,105,Expert,Eric Knox,"Jones, Salazar and Smith",Cybersecurity,2022-10-29,2025-06-18,0.86,MSBI
+Paris,150,Junior,Marvin Lopez,Bray-Jordan,Network Administration,2023-12-03,2024-11-15,0.58,DSIA
+Mtp,105,Junior,Adam Higgins,Hall LLC,Database Management,2024-01-10,2025-02-19,0.38,ODI
+Mtp,105,Confirmé,Lori Camacho,"Roberts, Daniels and Griffin",Database Management,2022-07-03,2025-11-02,0.21,MSBI
+Paris,150,Confirmé,Katherine Obrien,"Collier, Cook and Carlson",Network Administration,2024-01-25,2026-02-27,0.55,SSIS
+Tours,100,Junior,Rhonda Lucas,"Wilson, Cole and Jordan",Python Development,2023-02-08,2024-06-19,0.81,DSIA
+Mtp,170,Junior,Sonya Roberts,Thomas Group,Web Development,2023-07-19,2024-08-22,0.9,DSIA
+Mtp,105,Confirmé,Jonathan Wright,Rodriguez Inc,Cloud Computing,2023-12-08,2024-07-16,0.77,ODI
+Tours,105,Junior,Megan Smith,"Dodson, Smith and Tanner",Java Development,2022-12-15,2024-10-14,0.95,ODI
+Tours,170,Junior,Victoria Mcmillan,Bruce PLC,Data Analysis,2023-11-16,2025-04-19,0.5,TALEND
+Tours,100,Junior,Jonathan Chapman,Wilson-Hammond,Data Analysis,2024-04-08,2024-08-24,0.73,ODI
+Mtp,105,Junior,Deanna Garner MD,White PLC,DevOps,2023-03-12,2024-07-18,0.62,DSIA
+Tours,170,Expert,Lisa Williams,"Maddox, Steele and Larsen",Mobile Development,2022-09-29,2025-10-08,0.43,TALEND
+Mtp,105,Junior,Matthew Ruiz,"Velazquez, Gonzales and Gonzales",Software Testing,2024-03-29,2025-01-23,0.56,MSBI
+Mtp,150,Expert,James Tanner,Rose Inc,Network Administration,2024-04-21,2025-12-08,0.84,MSBI
+Paris,170,Confirmé,Elizabeth Graham,Gould Ltd,Python Development,2022-07-13,2025-11-04,0.92,DSIA
+Tours,100,Junior,Rebecca Williams,Miller-Cox,Cybersecurity,2023-04-15,2026-03-07,0.87,MSBI
+Mtp,115,Junior,Charles Rodriguez,"Vargas, Williams and Stewart",Data Analysis,2023-10-09,2026-04-21,0.87,MSBI
+Tours,115,Expert,Cheryl Scott,"Andrews, Fernandez and Delgado",Java Development,2022-12-26,2026-03-22,0.24,SSIS
+Mtp,100,Confirmé,William Robinson,Cuevas-Deleon,Database Management,2023-11-08,2024-07-21,0.25,DSIA
+Paris,170,Junior,Tiffany Moore,"Marquez, Schmitt and Wise",Network Administration,2022-10-15,2025-10-08,0.92,TALEND
+Mtp,150,Expert,Mary Whitaker,Randall-Haley,DevOps,2023-12-28,2024-08-14,0.84,SSIS
+Tours,105,Expert,Kimberly Jones,"Middleton, Johnson and Cook",Machine Learning,2024-05-29,2024-06-15,0.39,ODI
+Tours,170,Junior,George Campbell,"Finley, Bright and Robinson",Mobile Development,2023-09-12,2026-04-30,1.0,DSIA
+Mtp,115,Junior,Jasmine Pearson,"Patel, Scott and Chambers",Software Testing,2022-11-10,2024-10-24,0.85,MSBI
+Tours,170,Expert,Brian George,Gonzales-Barr,Database Management,2023-10-08,2025-03-09,0.6,TALEND
+Tours,115,Expert,Elizabeth Sellers,"Scott, Wheeler and Page",Data Analysis,2022-11-22,2025-01-23,0.52,ODI
+Mtp,100,Junior,Jacob Lopez,Alexander Group,Java Development,2023-08-27,2024-08-03,0.18,TALEND
+Tours,100,Junior,Ethan Davis,"Hernandez, Smith and Sullivan",Machine Learning,2023-06-02,2024-11-08,0.37,ODI
+Paris,100,Expert,George Herrera,Camacho and Sons,Mobile Development,2023-09-02,2024-11-11,0.88,ODI
+Mtp,150,Expert,Wendy Rios,Dawson-Little,Business Analysis,2024-01-16,2024-12-19,0.23,SSIS
+Paris,170,Expert,Erin Daniels,"Mclean, Barr and Garcia",Machine Learning,2023-06-29,2025-09-25,0.71,MSBI
+Mtp,170,Expert,William Perkins,"Villa, Smith and Massey",IT Support,2023-08-19,2026-02-10,0.74,TALEND
+Mtp,115,Expert,Sandra Mcclain,Jordan-Ramos,Software Testing,2022-10-10,2026-01-14,0.81,MSBI
+Mtp,150,Junior,Monica Smith,Alvarez-Wallace,Network Administration,2023-11-18,2025-10-27,0.12,DSIA
+Mtp,150,Expert,Michael Davis,"Sanders, Porter and Weiss",Software Testing,2023-01-04,2025-01-04,0.48,SSIS
+Paris,150,Expert,Sara Parker,"Grimes, Barrett and Hall",Cybersecurity,2023-08-27,2025-01-08,0.78,MSBI
+Tours,150,Expert,Mary Lee,"Clark, Duke and Thompson",Cybersecurity,2022-08-23,2025-01-30,0.46,ODI
+Tours,150,Expert,Jeanette Clements,Harmon Ltd,IT Support,2022-07-22,2025-09-21,0.7,TALEND
+Paris,100,Confirmé,Thomas Hamilton,White-Barton,Machine Learning,2022-10-19,2025-03-03,0.1,TALEND
+Tours,100,Confirmé,Donald King,"Ingram, Garza and Hayes",Web Development,2024-02-13,2024-12-14,0.32,DSIA
+Mtp,170,Confirmé,Chad Neal,"Barnett, Jones and White",Data Analysis,2024-05-29,2026-02-27,0.66,TALEND
+Paris,150,Junior,Susan Casey,Foster LLC,Web Development,2023-02-28,2025-08-25,0.59,ODI
+Paris,100,Junior,Victoria Cooper,Coleman LLC,Cloud Computing,2024-02-21,2024-07-17,0.95,SSIS
+Mtp,105,Junior,Todd Washington,Gardner-Ramirez,Software Testing,2023-12-08,2025-10-03,0.5,TALEND
+Tours,150,Expert,Jacqueline Snyder,"Kennedy, Martin and Gonzalez",Mobile Development,2022-06-16,2025-11-08,0.11,ODI
+Paris,170,Expert,Anne Gallagher,"Downs, Cabrera and Nicholson",Data Analysis,2022-06-27,2025-09-22,0.38,MSBI
+Tours,170,Junior,Dakota Jacobs,Figueroa Inc,Database Management,2022-07-21,2024-11-30,0.37,TALEND
+Mtp,150,Expert,Rhonda Roberts,"Miller, Griffith and Harris",Data Analysis,2022-12-18,2025-03-18,0.13,TALEND
+Tours,170,Confirmé,Anthony Alexander,Thompson-Freeman,Cybersecurity,2023-06-22,2025-08-15,0.62,ODI
+Paris,115,Expert,Jessica Baker,Nichols LLC,Data Analysis,2024-06-01,2026-06-05,0.47,SSIS
+Mtp,100,Confirmé,Nicholas Guerrero,Harris-Myers,IT Support,2023-12-07,2026-01-19,0.43,ODI
+Mtp,170,Confirmé,Adam Nolan,Castaneda Inc,DevOps,2023-11-25,2024-06-29,0.77,TALEND
+Paris,105,Expert,Alexandra Cross,Howe-Clark,Mobile Development,2023-11-17,2024-10-02,0.38,ODI
+Mtp,115,Expert,Johnny Patel,Brown PLC,DevOps,2023-04-08,2025-11-10,0.92,SSIS
+Paris,150,Confirmé,Heather Blackwell,Stafford-Johnson,Cloud Computing,2023-06-24,2024-09-11,0.22,ODI
+Tours,115,Expert,Heather Moss,Gibbs Inc,Python Development,2024-02-17,2025-12-27,0.54,SSIS
+Tours,100,Expert,Lauren Barnes,Cook-Stokes,DevOps,2024-02-09,2024-08-03,0.17,SSIS
+Mtp,100,Confirmé,Eric Pena,Washington-Bishop,Mobile Development,2022-07-05,2025-07-13,0.27,ODI
+Paris,100,Junior,Rachel Price,Robinson-Moore,Business Analysis,2022-10-16,2025-11-28,0.59,MSBI
+Paris,115,Expert,Matthew Hill DDS,Peters-Johnson,Software Testing,2022-09-22,2026-03-12,0.59,ODI
+Paris,150,Junior,Caleb Murphy,"Brown, Bennett and Johnston",Network Administration,2023-12-04,2026-01-05,0.51,MSBI
+Tours,100,Expert,Jeffrey Turner,"Weber, Sherman and Campbell",Business Analysis,2022-08-09,2025-06-26,0.45,SSIS
+Mtp,115,Expert,Regina Gray,Cox-Briggs,Business Analysis,2022-09-03,2025-10-08,0.28,TALEND
+Paris,115,Junior,Margaret Flores,"Potts, Fields and Allen",Software Testing,2022-12-06,2026-03-12,0.48,MSBI
+Tours,115,Confirmé,Debra Weiss,Ramirez Inc,IT Support,2023-12-05,2024-11-01,0.76,TALEND
+Paris,170,Junior,Mrs. Paige Gordon,"Parker, Cameron and Nelson",Java Development,2023-03-18,2025-02-24,0.76,ODI
+Mtp,100,Junior,Brandon Davidson,Massey-Tate,Java Development,2023-05-29,2025-08-27,0.36,ODI
+Mtp,100,Confirmé,Kathryn Thompson,"Sanchez, Wong and Harding",Data Analysis,2023-05-06,2025-12-28,0.89,MSBI
+Mtp,115,Confirmé,Abigail Hill,Simpson and Sons,Mobile Development,2024-03-19,2024-11-22,0.41,TALEND
+Paris,150,Junior,Lawrence Marquez,"Odom, Dean and Winters",Java Development,2022-12-26,2024-09-06,0.87,ODI
+Paris,150,Confirmé,Eric Hunter,Lawson-Robbins,Project Management,2023-03-25,2024-12-14,0.12,MSBI
+Paris,100,Confirmé,Judy Reed,"Stevens, Hawkins and Stevens",Project Management,2022-08-18,2026-04-11,0.35,DSIA
+Mtp,100,Expert,Maria Mejia,Jackson-Perez,Network Administration,2023-11-14,2024-09-06,0.3,ODI
+Mtp,150,Junior,Kimberly Gonzalez,Baker Group,Mobile Development,2023-03-01,2024-09-24,0.16,ODI
+Mtp,100,Confirmé,Mary Jones,Briggs-Hicks,Data Analysis,2023-06-05,2026-03-07,0.89,DSIA
+Paris,150,Expert,Bryan Williams,Barnes-Boyer,Python Development,2023-10-31,2024-10-08,0.8,SSIS
+Paris,170,Expert,Elizabeth Lawrence,Farley-Liu,Machine Learning,2022-10-06,2025-06-15,0.23,TALEND
+Paris,115,Expert,Robert Watts,Wood Ltd,Cloud Computing,2022-08-01,2024-08-13,0.51,ODI
+Paris,105,Junior,Lisa Clayton,"Moody, Watts and Wheeler",Database Management,2024-06-08,2024-08-31,0.28,ODI
+Tours,170,Confirmé,Mr. Aaron Bell,"Smith, Smith and Parker",Java Development,2024-02-13,2024-07-21,0.87,DSIA
+Mtp,115,Expert,Kenneth Franklin,"Lopez, Bradley and Diaz",Cybersecurity,2023-04-15,2025-12-31,0.99,SSIS
+Paris,150,Expert,Miss Angela Yang,"Rodriguez, Morales and Hawkins",Project Management,2022-10-27,2025-09-10,0.13,DSIA
+Paris,115,Expert,Virginia Hernandez,"Johnson, Crane and Hess",Web Development,2023-10-14,2025-09-20,0.52,DSIA
+Mtp,105,Confirmé,Nancy Davila,Bowen and Sons,Python Development,2022-11-28,2026-05-22,0.3,DSIA
+Mtp,105,Junior,Alejandro Pope,"Hendricks, Price and Singleton",IT Support,2022-12-26,2024-10-06,0.22,MSBI
+Paris,170,Expert,Gregory Gonzales,Hernandez-Guerrero,Network Administration,2023-04-19,2025-01-27,0.78,TALEND
+Paris,105,Confirmé,Christian Scott,Gray Group,Cloud Computing,2023-07-15,2025-06-04,0.47,MSBI
+Paris,105,Expert,Andrew Hooper,Brewer Inc,Data Analysis,2023-08-01,2025-06-14,0.74,SSIS
+Paris,115,Junior,Ms. Jill Mcguire MD,"Hall, Howard and Gill",Web Development,2022-12-20,2025-09-05,0.51,DSIA
+Mtp,115,Expert,Brenda Bright,Burch-Cole,Machine Learning,2023-07-05,2025-12-22,0.4,ODI
+Tours,170,Expert,Amanda Hill,Nichols-Mitchell,Mobile Development,2024-03-27,2025-06-15,0.66,TALEND
+Paris,150,Confirmé,Andrew Alvarez,"Walter, Harmon and Carter",Data Analysis,2022-11-18,2025-10-01,0.29,ODI
+Mtp,170,Confirmé,Craig Lane,Brown-Payne,Java Development,2022-11-18,2025-08-10,0.3,DSIA
+Paris,150,Expert,Lisa Richards,Franklin-Shaw,Cloud Computing,2023-12-15,2025-02-10,0.22,ODI
+Mtp,150,Confirmé,Tracy Campbell,Lopez-Ross,Java Development,2022-07-02,2026-02-12,0.42,DSIA
+Mtp,115,Expert,Emily Mcdaniel,King Group,Cybersecurity,2022-12-31,2025-01-02,0.51,ODI
+Mtp,100,Junior,Kristin Sheppard,Rivera Inc,DevOps,2024-02-02,2024-06-19,0.29,MSBI
+Tours,150,Confirmé,Daniel Bowen,Long-Booth,Web Development,2022-08-05,2025-12-29,0.95,TALEND
+Mtp,100,Junior,Whitney Peterson,Harrison Inc,Mobile Development,2022-07-01,2024-11-08,0.94,ODI
+Tours,170,Confirmé,Laura Ramirez DVM,Taylor-Garcia,Cloud Computing,2023-06-08,2025-09-25,0.3,TALEND
+Mtp,105,Confirmé,Thomas Flores,"Hayes, Miranda and Aguirre",Web Development,2022-06-16,2024-10-10,0.94,MSBI
+Paris,170,Expert,Pamela Chavez,"Ho, Rivers and Romero",Web Development,2023-04-14,2026-01-20,0.22,TALEND
+Tours,115,Expert,Jeremy Edwards,Hampton-Rose,Database Management,2022-11-18,2024-07-18,0.38,TALEND
+Mtp,100,Confirmé,Gail Willis,Robinson Inc,IT Support,2022-12-22,2025-10-14,0.98,MSBI
+Tours,170,Junior,Justin Best,Cross Group,Business Analysis,2023-10-30,2025-04-05,0.46,MSBI
+Mtp,105,Junior,Juan Craig,"Hurley, Lucas and Russell",Software Testing,2023-08-11,2026-02-05,0.63,MSBI
+Paris,105,Confirmé,Joseph Kim,"Barber, White and Barrett",Data Analysis,2022-06-17,2024-11-26,0.6,TALEND
+Mtp,170,Expert,Shannon Clark,Walker LLC,Cloud Computing,2022-07-19,2025-04-07,0.4,DSIA
+Mtp,100,Expert,Jessica Evans,"Gomez, Brooks and Young",IT Support,2023-03-22,2025-10-15,0.12,MSBI
+Paris,105,Expert,Christine Simmons,Garza-Robinson,Network Administration,2022-10-27,2024-10-17,0.19,ODI
+Paris,100,Expert,George Peterson,Hernandez Group,Cloud Computing,2022-07-19,2024-09-11,0.35,SSIS
+Tours,100,Confirmé,Justin Carney,Lopez LLC,Network Administration,2023-02-10,2025-04-01,0.4,SSIS
+Mtp,150,Expert,Michael Williams,Velasquez-Anderson,Software Testing,2022-10-15,2026-03-16,0.64,MSBI
+Tours,115,Junior,Tracy Ramos,Rojas-Rich,Cloud Computing,2024-05-25,2025-12-07,0.14,ODI
+Mtp,170,Junior,Leon Gomez,Russo-Smith,Project Management,2023-09-17,2025-12-16,0.56,ODI
+Tours,115,Junior,Geoffrey Potts,Bennett LLC,Database Management,2023-12-05,2025-09-11,0.53,ODI
+Paris,170,Confirmé,Tyler Glover,Peters-Owen,Data Analysis,2023-11-20,2025-10-15,0.2,TALEND
+Paris,115,Expert,Bryce Ryan,Romero-Romero,DevOps,2023-09-28,2024-06-29,0.88,TALEND
+Paris,115,Junior,Robert Keith,Summers PLC,Network Administration,2022-08-30,2025-07-06,0.23,DSIA
+Mtp,105,Confirmé,Michael Miller,Barrett PLC,Business Analysis,2023-09-16,2025-06-08,0.24,MSBI
+Mtp,150,Confirmé,Shane Mcdonald,"Barker, Adkins and Alvarez",Project Management,2023-02-24,2025-03-28,0.33,DSIA
+Paris,150,Expert,Jesse Byrd,Blair-Jones,Business Analysis,2023-12-16,2024-09-29,0.45,DSIA
+Mtp,170,Expert,John Brown,"Thomas, Green and Hogan",Mobile Development,2023-03-17,2024-12-31,0.32,MSBI
+Paris,150,Junior,Jennifer Walters,Jacobson and Sons,Web Development,2023-04-28,2025-12-31,0.67,DSIA
+Tours,115,Junior,Miss Sandra Moreno,Collins Ltd,Mobile Development,2022-08-29,2024-11-26,0.86,DSIA
+Tours,170,Junior,Jeffrey Russo,Ellis-Osborne,Network Administration,2023-05-23,2024-11-30,0.84,ODI
+Paris,100,Expert,Dean Burke,Lozano-Hayes,DevOps,2022-08-31,2025-10-11,0.59,TALEND
+Paris,105,Confirmé,Daniel Gonzalez,Williams-Allen,Java Development,2022-11-29,2025-05-20,0.21,SSIS
+Tours,100,Expert,Janet Cannon,Carey Ltd,Machine Learning,2023-05-25,2024-07-14,0.76,SSIS
+Mtp,150,Confirmé,Dennis Smith,Hines Group,Project Management,2022-06-18,2024-11-16,0.69,SSIS
+Tours,115,Expert,Elizabeth Golden,"Gilmore, Moore and Dickson",Web Development,2023-01-26,2025-05-25,0.36,TALEND
+Paris,170,Junior,Caitlyn Cox,Gutierrez Ltd,Business Analysis,2024-05-12,2024-08-05,0.38,ODI
+Paris,170,Confirmé,Jennifer Weber,"Jones, Gonzalez and Cook",DevOps,2022-07-26,2024-11-15,1.0,SSIS
+Mtp,150,Expert,Brandon Arellano,"Williamson, Watson and Thompson",IT Support,2023-01-10,2026-03-17,0.11,TALEND
+Tours,150,Expert,David Savage,"Moss, Harris and Harris",IT Support,2024-01-02,2026-04-02,0.69,SSIS
+Tours,100,Expert,Anna Ward,Martinez-Fuller,Project Management,2022-08-27,2025-03-18,0.31,MSBI
+Tours,170,Junior,Caleb Hebert,Fox LLC,Software Testing,2023-11-08,2025-06-29,0.71,MSBI
+Tours,100,Expert,Martin Johnson,Fuentes-Welch,Network Administration,2024-01-21,2024-09-09,0.24,MSBI
+Tours,150,Expert,James Wagner,Pierce-Garza,IT Support,2023-01-06,2025-10-12,0.25,MSBI
+Mtp,100,Junior,Christopher Guzman,Brown-Brooks,Cloud Computing,2023-08-03,2025-05-28,0.46,ODI
+Paris,170,Confirmé,Alexander Lambert,Owen-Hall,Software Testing,2023-08-23,2026-02-02,0.89,ODI
+Paris,105,Junior,Brittany Maddox,"Thomas, Roberts and Carey",Project Management,2023-05-13,2025-11-09,0.31,ODI
+Paris,115,Confirmé,Eric Sharp,Gomez Group,Mobile Development,2024-02-06,2026-03-07,0.55,SSIS
+Tours,115,Expert,Justin Miller,Garcia-Johnson,Python Development,2024-02-10,2026-03-23,0.7,DSIA
+Tours,170,Expert,Jessica Herman,Williams-Kelley,Python Development,2023-08-14,2025-09-19,0.1,MSBI
+Mtp,105,Confirmé,Sara Jones,Huff Group,Network Administration,2023-11-01,2024-09-05,0.96,SSIS
+Paris,105,Junior,Kathy Mcfarland,"Davis, Smith and Johnson",Cybersecurity,2024-02-08,2025-01-24,0.55,MSBI
+Mtp,115,Confirmé,Carolyn James MD,Weaver-Martinez,Java Development,2022-10-04,2024-07-10,0.37,TALEND
+Tours,150,Expert,Sean Thompson,Harvey and Sons,Business Analysis,2023-12-14,2024-12-03,0.37,ODI
+Mtp,115,Confirmé,Olivia Moore,Bowen-Fields,Cybersecurity,2024-01-24,2026-01-07,0.42,MSBI
+Paris,150,Confirmé,Timothy Rodriguez,Kelly Ltd,Project Management,2022-11-18,2026-02-15,0.11,SSIS
+Paris,115,Expert,Laura Jensen MD,"Villegas, Taylor and Turner",Data Analysis,2023-10-01,2026-06-03,0.25,DSIA
+Paris,170,Expert,Stephen Mosley,"Frey, Gilmore and Franco",IT Support,2024-05-23,2024-09-02,0.72,ODI
+Mtp,115,Confirmé,Tonya Atkinson,"Jacobs, Johnson and Banks",Network Administration,2023-02-27,2026-05-02,0.54,DSIA
+Tours,105,Expert,Robert Thomas,Nielsen Inc,Java Development,2022-11-14,2024-08-11,0.35,TALEND
+Tours,115,Junior,Richard Mueller,Robinson-Costa,Machine Learning,2023-12-22,2025-05-30,0.21,TALEND
+Paris,105,Confirmé,John Reeves,Hall Inc,Mobile Development,2023-05-04,2025-10-11,0.55,ODI
+Paris,115,Confirmé,Stephanie Walters,"Rodriguez, Freeman and Yoder",Data Analysis,2022-10-06,2025-10-13,0.58,TALEND
+Paris,105,Confirmé,Becky Turner,Hill-Lewis,Web Development,2023-02-15,2025-10-11,0.58,ODI
+Tours,105,Confirmé,Lee Mcknight,"Davis, Anderson and Pierce",Machine Learning,2024-01-21,2024-10-19,0.33,DSIA
+Paris,170,Confirmé,Logan Freeman,"Garcia, Klein and Bowman",DevOps,2022-07-25,2024-09-03,0.78,MSBI
+Mtp,115,Confirmé,Dr. Jason Griffin,Johnston PLC,Cloud Computing,2023-05-09,2024-11-17,0.33,TALEND
+Tours,115,Expert,Timothy Franklin,"Clay, Mejia and Friedman",Cloud Computing,2023-11-09,2024-09-11,0.59,TALEND
+Mtp,115,Junior,Victoria Brown,Lynch PLC,Database Management,2023-11-11,2024-07-06,0.51,ODI
+Tours,115,Expert,Mitchell Kline,"Reynolds, Martin and Garcia",Software Testing,2022-11-05,2026-04-17,0.53,SSIS
+Paris,115,Expert,Tiffany Lee,Williams-Roberts,Business Analysis,2023-12-29,2025-05-12,0.71,TALEND
+Tours,100,Expert,Peggy Lane,"Chang, Ramirez and Richards",IT Support,2023-03-31,2025-06-21,0.59,DSIA
+Paris,170,Junior,Lori Sanchez,"Klein, Lee and Kennedy",Network Administration,2023-04-11,2025-10-18,0.91,TALEND
+Tours,115,Confirmé,Scott Cox,Love-Summers,DevOps,2024-04-15,2025-08-01,0.26,MSBI
+Mtp,170,Junior,Andrew Gonzalez,Ponce Group,Software Testing,2023-02-23,2025-08-05,0.45,ODI
+Tours,150,Junior,Jonathan Patton,Myers LLC,Software Testing,2023-09-07,2026-06-11,0.73,DSIA
+Mtp,170,Junior,Anthony Leon,Hendrix Ltd,Software Testing,2022-06-27,2025-07-22,0.11,DSIA
+Paris,105,Confirmé,Gregory Johnston,Moss-Chen,Web Development,2022-08-16,2025-07-19,0.47,TALEND
+Tours,150,Expert,John Crawford,"Bryan, Hooper and Holmes",Mobile Development,2022-06-13,2026-04-27,0.47,ODI
+Paris,100,Expert,Scott Rivera,Petersen Group,Cybersecurity,2022-10-14,2026-03-14,0.34,SSIS
+Tours,150,Junior,Janet Garcia,"Freeman, Garcia and Baker",Web Development,2022-10-09,2025-06-08,0.42,DSIA
+Paris,100,Expert,Douglas Johnson,Olson-Huff,Machine Learning,2023-06-04,2025-02-08,0.43,TALEND
+Mtp,100,Confirmé,Michael Brown,Lane-Daniels,Business Analysis,2024-05-06,2024-11-19,0.63,DSIA
+Mtp,115,Expert,Judith Davis,"Johnston, Sheppard and Harris",Business Analysis,2023-04-07,2025-12-15,0.51,ODI
+Tours,170,Junior,Morgan Shepherd,"Bartlett, Phillips and Smith",Java Development,2022-12-30,2025-12-14,0.61,MSBI
+Paris,150,Confirmé,Thomas Carlson,Santiago LLC,Business Analysis,2022-08-19,2026-03-31,0.98,MSBI
+Paris,100,Junior,Amanda Sandoval,"Becker, Mueller and Williams",Business Analysis,2022-07-28,2024-09-29,0.11,TALEND
+Paris,150,Junior,Duane Scott,Mccarthy Ltd,Web Development,2022-06-30,2024-06-21,0.8,TALEND
+Mtp,170,Junior,Sharon Hughes,"Kemp, Strickland and Singh",Project Management,2024-05-02,2025-04-08,0.58,MSBI
+Tours,150,Expert,Jared Adams,Holt-Gray,Web Development,2023-06-01,2024-09-06,0.84,TALEND
+Mtp,105,Confirmé,Becky Perry,Schmitt Inc,Cloud Computing,2024-03-14,2025-09-09,0.88,ODI
+Paris,115,Junior,Mark Aguirre,Rojas Ltd,Cybersecurity,2024-03-02,2025-08-01,0.4,SSIS
+Mtp,105,Confirmé,Connor Haney,Castro-Perkins,Mobile Development,2022-10-25,2025-06-03,0.31,DSIA
+Paris,100,Expert,Angela Stephens,"Williams, Thornton and Snyder",Mobile Development,2022-07-11,2025-05-01,0.37,SSIS
+Paris,115,Junior,Molly Henry,Lawrence Group,Network Administration,2024-05-07,2025-07-11,0.78,SSIS
+Paris,115,Junior,Jennifer Fletcher,Harrison-Cook,Java Development,2024-01-12,2026-03-06,0.91,ODI
+Tours,170,Expert,Michael Parsons,West Group,Machine Learning,2023-10-10,2025-08-27,0.74,MSBI
+Paris,105,Confirmé,Jeffrey Perry,"Brown, Brown and Gillespie",Database Management,2022-12-14,2025-06-02,0.47,ODI
+Mtp,100,Junior,Jaime Smith,"Reid, Jones and Bradley",Project Management,2023-08-08,2026-02-11,0.12,DSIA
+Tours,150,Confirmé,Luis Summers,"Williams, Mejia and Williams",Cybersecurity,2022-12-28,2024-10-17,0.77,TALEND
+Tours,100,Confirmé,Thomas Francis,White-Mcclure,Database Management,2022-12-26,2026-01-12,0.47,SSIS
+Tours,100,Expert,Tyler Reyes,"Owens, Gordon and Jimenez",Cloud Computing,2022-11-03,2026-02-18,0.53,TALEND
+Paris,105,Junior,Mary Ramirez,Raymond-Lozano,Cybersecurity,2023-06-28,2025-10-18,0.21,MSBI
+Tours,100,Junior,Curtis Small,"Owen, Bell and Garcia",Machine Learning,2023-03-13,2025-08-31,0.57,MSBI
+Tours,105,Junior,Brandon Livingston DVM,Wyatt-Wood,Project Management,2023-05-09,2024-10-18,0.27,DSIA
+Paris,170,Expert,Sara Vargas,"Cook, Peterson and Hall",Database Management,2023-02-07,2025-03-16,0.32,TALEND
+Tours,105,Expert,Christina Owens,Johnson Ltd,IT Support,2024-04-30,2025-11-08,0.49,SSIS
+Paris,100,Confirmé,Corey Reese,Sanchez PLC,Web Development,2024-05-18,2026-02-05,0.54,DSIA
+Paris,115,Expert,Jeffrey Pacheco,Stuart Group,Database Management,2022-10-18,2026-04-06,0.69,MSBI
+Mtp,115,Expert,Danielle Brandt,Sanchez-Kelly,Mobile Development,2024-03-27,2026-02-01,0.84,SSIS
+Paris,150,Confirmé,Kristin Villegas,Liu and Sons,Business Analysis,2023-12-07,2025-11-28,0.5,MSBI
+Mtp,115,Junior,Dr. Dawn Hale DDS,Brown LLC,Machine Learning,2024-02-05,2024-09-03,0.41,DSIA
+Tours,170,Expert,Randy Carey,Smith-Keith,Python Development,2023-10-28,2026-03-30,0.19,DSIA
+Mtp,170,Junior,Samuel Gill,Bell and Sons,Python Development,2024-06-09,2024-12-25,0.87,MSBI
+Mtp,115,Junior,Melissa Ochoa,Snyder-Pruitt,IT Support,2024-02-10,2025-11-25,0.27,DSIA
+Mtp,115,Junior,Amber Carpenter,Martin Ltd,DevOps,2024-01-04,2025-06-06,0.84,MSBI
+Paris,170,Expert,Robin Valencia,Mills-Salazar,Machine Learning,2023-08-02,2024-12-23,0.33,SSIS
+Tours,105,Expert,Keith Ford,Khan Ltd,Web Development,2023-01-22,2026-04-12,0.52,ODI
+Paris,115,Confirmé,Deborah Cabrera,Jones Group,Software Testing,2022-12-30,2025-08-01,0.45,SSIS
+Paris,115,Confirmé,Nicole Mcdonald,Choi-Ray,Data Analysis,2023-10-09,2025-11-12,0.41,SSIS
+Tours,115,Expert,Linda Mccarty,Nguyen and Sons,Machine Learning,2023-12-14,2025-03-25,0.57,ODI
+Paris,100,Confirmé,Diana Medina,Reed Group,Business Analysis,2022-12-17,2025-11-24,0.49,TALEND
+Tours,100,Confirmé,Karen Bush,"Jackson, Hubbard and Richardson",Business Analysis,2023-06-03,2026-06-09,0.57,TALEND
+Paris,170,Confirmé,Francisco Browning,Edwards and Sons,Data Analysis,2022-08-29,2024-06-13,0.98,SSIS
+Tours,115,Junior,Robert Byrd,Smith Inc,Network Administration,2022-11-03,2026-01-27,0.71,ODI
+Paris,105,Expert,Stephen Norris,Henderson-Medina,DevOps,2023-07-02,2026-02-08,0.96,MSBI
+Tours,170,Confirmé,Megan Ortiz,Ray Group,Business Analysis,2024-03-10,2025-05-01,0.4,ODI
+Mtp,150,Confirmé,John Contreras,Russell-Anderson,Web Development,2023-09-23,2024-08-18,0.11,SSIS
+Paris,115,Confirmé,Sarah Jones,Norris-Boyd,Machine Learning,2022-11-09,2024-07-12,0.59,MSBI
+Mtp,105,Confirmé,Mr. Bradley Wright MD,Lopez and Sons,Database Management,2024-01-07,2026-01-24,0.36,MSBI
+Mtp,115,Junior,Jonathan Thornton,Morgan-Cobb,Web Development,2023-03-30,2026-03-04,0.87,SSIS
+Mtp,150,Confirmé,Haley Jimenez,"Austin, Gregory and Fleming",Machine Learning,2023-06-15,2024-11-30,0.38,TALEND
+Mtp,150,Expert,Christina Harris,Heath Group,Mobile Development,2024-02-15,2024-08-23,0.69,SSIS
+Tours,170,Confirmé,Gloria Sanchez,"Green, Dunn and Norman",Business Analysis,2023-08-04,2025-06-30,0.31,ODI
+Mtp,115,Expert,Edward Smith,Parsons-Robinson,Web Development,2024-01-11,2025-12-22,0.44,MSBI
+Paris,150,Expert,Karen Lewis,"West, Carter and Martin",IT Support,2023-05-17,2025-05-18,0.48,ODI
+Mtp,115,Confirmé,Michael Hogan,Carr Inc,DevOps,2024-03-30,2025-07-17,0.9,ODI
+Mtp,170,Expert,Dawn Smith,"Edwards, Greer and Page",Web Development,2023-06-11,2025-04-21,0.32,TALEND
+Tours,105,Junior,Craig Parker,Watson Ltd,Cybersecurity,2023-08-14,2026-01-14,0.85,MSBI
+Tours,170,Confirmé,Emily Andrews,Valenzuela and Sons,Project Management,2022-09-15,2026-04-19,0.98,DSIA
+Tours,115,Confirmé,Mark George,Page-Lee,Machine Learning,2023-04-10,2025-05-08,0.56,SSIS
+Mtp,115,Expert,Jason Curtis,Mathews Ltd,Cybersecurity,2022-10-09,2025-10-31,0.52,DSIA
+Paris,105,Confirmé,Sabrina Bailey,"Costa, Gonzalez and Riley",Cloud Computing,2023-02-15,2025-12-10,0.65,DSIA
+Paris,105,Junior,Paula Bailey,"Tyler, Gentry and Wood",Cybersecurity,2023-05-22,2025-08-30,0.77,SSIS
+Tours,100,Confirmé,Gloria Rivera,"Morris, Chavez and Reyes",Java Development,2024-05-30,2025-04-12,0.76,ODI
+Paris,105,Confirmé,Spencer Cruz,Blanchard Inc,Java Development,2023-03-26,2024-11-30,0.16,MSBI
+Mtp,115,Expert,Margaret Miranda,Russell Group,Project Management,2022-09-08,2025-12-07,0.46,SSIS
+Tours,100,Confirmé,Christopher Meyer,Kelley LLC,Web Development,2023-02-13,2026-01-15,0.41,DSIA
+Mtp,115,Expert,Melanie Jones,"Garrett, Liu and Patterson",Network Administration,2023-06-07,2025-06-28,0.99,DSIA
+Paris,150,Expert,John Martin,Fernandez Group,Web Development,2023-08-29,2025-06-09,0.74,DSIA
+Tours,100,Confirmé,Robert Trevino,Haynes-Wilson,Data Analysis,2023-03-08,2025-03-31,0.7,SSIS
+Tours,150,Expert,Shannon Jones,Stone-Larsen,Cybersecurity,2023-01-22,2026-03-19,0.17,SSIS
+Tours,115,Expert,Larry Lopez,Hernandez-Hill,IT Support,2023-12-06,2026-02-04,0.22,ODI
+Tours,150,Confirmé,Austin Jones,Martin-Mathews,Project Management,2023-01-22,2025-11-02,0.99,DSIA
+Mtp,170,Junior,Jacqueline Munoz,"Barrett, Whitehead and Lee",Java Development,2023-07-18,2026-03-14,0.37,DSIA
+Paris,105,Confirmé,Jennifer Taylor,Hinton LLC,Machine Learning,2022-07-16,2025-11-20,0.11,MSBI
+Paris,150,Expert,Leah Johnson,Murillo-Herman,Python Development,2023-12-25,2024-07-11,0.62,TALEND
+Tours,150,Confirmé,Kim Rojas,"Chapman, Beck and Sanders",Project Management,2022-09-14,2026-01-07,0.96,TALEND
+Tours,115,Expert,Billy Rivera,Wallace PLC,Database Management,2023-06-22,2025-02-04,0.59,TALEND
+Tours,150,Confirmé,Melissa Ramirez,Morgan-Crawford,Machine Learning,2024-02-26,2025-08-22,0.65,TALEND
+Paris,105,Expert,Travis Cuevas,"Morgan, Diaz and Norris",Cybersecurity,2023-01-06,2026-02-05,0.22,MSBI
+Paris,170,Expert,Michelle Price,"Williamson, Phillips and Duarte",Software Testing,2023-12-16,2024-12-08,0.51,MSBI
+Mtp,150,Junior,Victoria Conner,Lara-Morris,Business Analysis,2024-06-01,2025-10-15,0.82,TALEND
+Paris,100,Junior,Amy Smith,"Skinner, Wallace and Nelson",Java Development,2024-04-18,2025-07-08,0.21,ODI
+Mtp,150,Junior,Kelsey Harris,Tucker Inc,Mobile Development,2024-01-15,2024-12-03,0.3,TALEND
+Mtp,170,Junior,Patrick Nguyen,Hill LLC,Machine Learning,2023-04-01,2025-06-10,0.13,TALEND
+Paris,100,Confirmé,Marisa Garcia,Macias-Gonzalez,Web Development,2023-10-08,2025-07-17,0.9,TALEND
+Mtp,115,Expert,Rebecca Richards,"Robinson, Wood and Erickson",Mobile Development,2024-01-30,2024-10-26,0.32,DSIA
+Paris,100,Junior,Joseph Mclaughlin,Lane Inc,Machine Learning,2023-03-13,2025-04-04,0.51,TALEND
+Paris,105,Junior,Shelly Boyer,"West, Winters and Patel",Machine Learning,2023-03-22,2025-08-23,0.26,SSIS
+Mtp,100,Junior,David Patel,"Johnson, Smith and Greer",Machine Learning,2022-11-04,2024-11-20,0.89,TALEND
+Tours,115,Junior,Deborah Khan,Smith Group,Database Management,2022-07-19,2024-09-04,0.65,MSBI
+Tours,100,Confirmé,Carol Horton,Wagner LLC,IT Support,2023-03-09,2025-03-22,0.69,MSBI
+Paris,115,Expert,Timothy White,Merritt-Zamora,Python Development,2022-11-10,2026-05-01,0.25,ODI
+Tours,100,Junior,Donna Gomez,"Webb, Winters and Williams",Python Development,2022-10-30,2024-12-03,0.89,DSIA
+Tours,170,Confirmé,Donald Brown,Thomas-Wheeler,Software Testing,2024-03-16,2024-12-17,0.57,ODI
+Tours,170,Junior,Todd Beasley,Randall-Pittman,Software Testing,2023-12-29,2025-06-24,0.91,SSIS
+Mtp,170,Expert,Gregory Dennis,"Rosario, Smith and Shelton",Machine Learning,2024-03-03,2024-10-30,0.79,MSBI
+Tours,115,Junior,Megan Hill,"Herrera, Zavala and Lee",Web Development,2024-04-03,2025-08-30,0.9,MSBI
+Tours,150,Expert,Corey Riley,"Schaefer, Murphy and Williams",Java Development,2023-09-15,2024-07-11,0.94,TALEND
+Tours,170,Expert,Jason Grant,"Bautista, Davis and Wright",Cloud Computing,2024-04-29,2025-10-28,0.39,DSIA
+Tours,100,Confirmé,Stephanie Keller,Sanders-Green,IT Support,2022-09-22,2026-03-08,0.84,MSBI
+Paris,170,Junior,Amanda Gardner,Green and Sons,DevOps,2023-11-09,2026-03-16,0.96,TALEND
+Tours,105,Expert,Francisco Turner,"Curry, Parker and Long",Mobile Development,2022-06-22,2024-09-22,0.91,MSBI
+Tours,105,Confirmé,Fernando Evans,Fowler Ltd,Python Development,2024-04-02,2025-10-22,0.56,DSIA
+Tours,100,Junior,Frank Torres,"Booker, King and Bauer",Software Testing,2024-05-18,2025-01-07,0.65,MSBI
+Tours,115,Confirmé,Jeremiah Velez,Chang-Melton,Cybersecurity,2023-06-03,2025-02-03,0.17,SSIS
+Paris,115,Expert,Jason Johnson,Weber Group,DevOps,2023-09-22,2025-06-30,0.87,TALEND
