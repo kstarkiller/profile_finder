@@ -38,8 +38,8 @@ def test(input: TestInput):
     """Returns the user input as a response."""
     return {"message": input.message + " Success"}
 
-@app.post("/question", summary="Process question", description="This endpoint processes a question and returns a response.")
-def process_question(question: TestInput):
+@app.get("/question", summary="Process question", description="This endpoint processes a question and returns a response.")
+def process_question(question: str):
     """
     Process a question and return a response.
 
