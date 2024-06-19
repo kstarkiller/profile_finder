@@ -1,7 +1,7 @@
 import os
 from openai import AzureOpenAI
 
-from ..processing_data.data_processing import data_processing
+from ..processing_data.processing import data_processing
 
 def embedding_text(client, text, model): # model = "azure deployment name"
     """
