@@ -5,6 +5,9 @@ config.py
 venv/
 .env
 
+# indexes
+*.faiss
+
 # Fichiers temporaires Python
 *.pyc
 __pycache__/

@@ -20,5 +20,5 @@ index = faiss.IndexFlatIP(embeddings.shape[1])
 index.add(embeddings)
 
 # Save the index
-faiss.write_index(index, "embedding_data\index\index.faiss")
+faiss.write_index(index, r"embedding_data\index\faker_coaff.faiss")
 print("Index saved successfully.")
