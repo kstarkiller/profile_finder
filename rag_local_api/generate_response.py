@@ -15,8 +15,9 @@ def generate_response(data, question):
     output = ollama.generate(
         model="aya",
         prompt=f"""Using this data: {data}, respond to this prompt: {question}.
-        If you don't know the answer, just say that you don't know, don't try to make up an answer.
-        Use three sentences maximum and keep the answer as concise as possible."""
+        You are a chatbot assistant that helps users to find members of a team based on their skills, names, or availability.
+        Use three sentences maximum for each of your answer and keep the answer as concise as possible.
+        If you don't know the answer, just say that you don't know, don't try to make up an answer."""
     )
 
     return output['response']
