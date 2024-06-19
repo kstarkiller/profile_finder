@@ -8,13 +8,15 @@ from langchain.docstore import InMemoryDocstore
 import os
 import unicodedata
 
+
 # Fonction pour normaliser les noms
 def normalize_text(text):
-    text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8')
+    text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("utf-8")
     return text.lower()
 
+
 # Vérifiez si le fichier existe
-file_path = 'combined_data.csv'
+file_path = "combined_data.csv"
 if not os.path.exists(file_path):
     raise FileNotFoundError(f"{file_path} not found.")
 
@@ -22,19 +24,32 @@ if not os.path.exists(file_path):
 df = pd.read_csv(file_path)
 
 # Colonnes textuelles à embedder
-text_columns = ['PROFIL', 'Nom', 'Missions_en_cours', 'Competences', 'Date_Demarrage', 'Date_de_fin', 'Stream_BT']
+text_columns = [
+    "PROFIL",
+    "Nom",
+    "Missions_en_cours",
+    "Competences",
+    "Date_Demarrage",
+    "Date_de_fin",
+    "Stream_BT",
+]
 
 # Normaliser les colonnes pertinentes
-df['Nom'] = df['Nom'].apply(normalize_text)
+df["Nom"] = df["Nom"].apply(normalize_text)
 
 # Convertir toutes les valeurs des colonnes spécifiées en chaînes de caractères et combiner les colonnes
-df['combined_text'] = df.apply(lambda x: f"Nom: {x['Nom']} Profil: {x['PROFIL']} Competences: {x['Competences']} Missions en cours: {x['Missions_en_cours']} Date de début: {x['Date_Demarrage']} Date de fin: {x['Date_de_fin']} Stream_BT: {x['Stream_BT']}", axis=1)
+df["combined_text"] = df.apply(
+    lambda x: f"Nom: {x['Nom']} Profil: {x['PROFIL']} Competences: {x['Competences']} Missions en cours: {x['Missions_en_cours']} Date de début: {x['Date_Demarrage']} Date de fin: {x['Date_de_fin']} Stream_BT: {x['Stream_BT']}",
+    axis=1,
+)
 
 # Initialisation du modèle d'embedding SentenceTransformer
-model = SentenceTransformer('all-MiniLM-L6-v2')
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
 # Générer les embeddings pour les textes combinés
-embeddings = model.encode(df['combined_text'].tolist(), show_progress_bar=True).astype(np.float32)
+embeddings = model.encode(df["combined_text"].tolist(), show_progress_bar=True).astype(
+    np.float32
+)
 
 # Créer l'index FAISS
 dimension = embeddings.shape[1]
@@ -46,17 +61,27 @@ index.add(embeddings)
 print("Index FAISS créé et ajouté avec les embeddings.")
 
 # Utiliser LangChain pour gérer les embeddings et la recherche
-embedding_function = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2')
+embedding_function = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2"
+)
 
 # Créer un docstore en mémoire
-docstore = InMemoryDocstore({str(i): doc for i, doc in enumerate(df['combined_text'].tolist())})
+docstore = InMemoryDocstore(
+    {str(i): doc for i, doc in enumerate(df["combined_text"].tolist())}
+)
 
 # Créer un mapping de l'index vers le docstore
 index_to_docstore_id = {i: str(i) for i in range(len(df))}
 
 # Initialiser FAISS dans LangChain
-faiss_index = FAISS(embedding_function=embedding_function, index=index, docstore=docstore, index_to_docstore_id=index_to_docstore_id)
+faiss_index = FAISS(
+    embedding_function=embedding_function,
+    index=index,
+    docstore=docstore,
+    index_to_docstore_id=index_to_docstore_id,
+)
 print("FAISS index initialisé avec LangChain.")
+
 
 def find_profiles(user_input):
     try:
@@ -75,7 +100,7 @@ def find_profiles(user_input):
         # Préparer la liste des profils trouvés
         profiles = []
         for idx in indices[0]:
-            profile_text = df.iloc[int(idx)]['combined_text']
+            profile_text = df.iloc[int(idx)]["combined_text"]
             profiles.append(profile_text)
 
         return profiles

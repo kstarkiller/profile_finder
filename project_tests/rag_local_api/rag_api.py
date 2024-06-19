@@ -25,20 +25,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/", summary="Root endpoint", description="This is the root endpoint of the API.")
+
+@app.get(
+    "/", summary="Root endpoint", description="This is the root endpoint of the API."
+)
 def root():
     """Returns a message to confirm that the API is running."""
     return {"message": "API is running"}
 
+
 class TestInput(BaseModel):
     message: str
+
 
 @app.post("/test", summary="Test endpoint", description="This is a test endpoint.")
 def test(input: TestInput):
     """Returns the user input as a response."""
     return {"message": input.message + " Success"}
 
-@app.get("/question", summary="Process question", description="This endpoint processes a question and returns a response.")
+
+@app.get(
+    "/question",
+    summary="Process question",
+    description="This endpoint processes a question and returns a response.",
+)
 def process_question(question: str):
     """
     Process a question and return a response.
@@ -66,22 +76,27 @@ def process_question(question: str):
 
     # Embedding the question and retrieving the documents
     start_time = time.time()
-    data = retrieve_documents(question.message, collection)  # Pass the message string directly
+    data = retrieve_documents(
+        question.message, collection
+    )  # Pass the message string directly
     end_time = time.time()
     print(f"\nRAG performed in {end_time - start_time} seconds.\n")
 
     # Add question and retrieved data and generating response
     start_time = time.time()
     try:
-        response = generate_response(data, question.message)  # Pass the message string directly
+        response = generate_response(
+            data, question.message
+        )  # Pass the message string directly
     except Exception as e:
         print(f"Error generating response: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
     print(f"Response: {response}" + "success")
     end_time = time.time()
     print(f"\nResponse generated in {end_time - start_time} seconds.\n\n")
-    
+
     return {"response": response}
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

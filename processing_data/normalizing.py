@@ -1,5 +1,6 @@
 import re
 
+
 # s is input text
 def normalize_text(s):
     """
@@ -9,12 +10,12 @@ def normalize_text(s):
     :return: str
     """
     # remove all special characters
-    s = re.sub(r'\s+',  ' ', s).strip()
-    s = re.sub(r". ,","",s) 
+    s = re.sub(r"\s+", " ", s).strip()
+    s = re.sub(r". ,", "", s)
 
     # replace all instances of multiple spaces
-    s = s.replace("..",".")
-    s = s.replace(". .",".")
+    s = s.replace("..", ".")
+    s = s.replace(". .", ".")
     s = s.replace("\n", "")
     s = s.replace("\t", "")
     s = s.replace("\r", "")
@@ -24,6 +25,6 @@ def normalize_text(s):
     s = s.strip()
 
     # replace underscores with spaces
-    s = s.replace('_', ' ')
-    
+    s = s.replace("_", " ")
+
     return s

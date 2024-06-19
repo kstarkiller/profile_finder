@@ -1,9 +1,10 @@
 import ollama
 import chromadb
 
+
 # Embedding the documents
 def embed_documents(documents):
-    '''
+    """
     Embeds the documents using the mxbai-embed-large model.
 
     Args:
@@ -11,7 +12,7 @@ def embed_documents(documents):
 
     Returns:
         chromadb.Collection: A collection of the embedded documents.
-    '''
+    """
     client = chromadb.Client()
     collection = client.create_collection(name="docs")
 
@@ -19,17 +20,14 @@ def embed_documents(documents):
     for i, d in enumerate(documents):
         response = ollama.embeddings(model="mxbai-embed-large", prompt=d)
         embedding = response["embedding"]
-        collection.add(
-            ids=[str(i)],
-            embeddings=[embedding],
-            documents=[d]
-        )
-    
+        collection.add(ids=[str(i)], embeddings=[embedding], documents=[d])
+
     return collection
+
 
 # Embedding the question
 def retrieve_documents(question, collection):
-    '''
+    """
     Embeds the question using the mxbai-embed-large model and queries the collection for the most similar document.
 
     Args:
@@ -38,15 +36,11 @@ def retrieve_documents(question, collection):
 
     Returns:
         str: The most similar document to the question.
-    '''
-    embedded_question = ollama.embeddings(
-        prompt=question,
-        model="mxbai-embed-large"
-        )
+    """
+    embedded_question = ollama.embeddings(prompt=question, model="mxbai-embed-large")
     results = collection.query(
-        query_embeddings=[embedded_question["embedding"]],
-        n_results=1
-        )
-    data = results['documents'][0][0]
+        query_embeddings=[embedded_question["embedding"]], n_results=1
+    )
+    data = results["documents"][0][0]
 
     return data

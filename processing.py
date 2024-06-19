@@ -4,9 +4,21 @@ from openai import AzureOpenAI
 from config import AZURE_OPENAI_API_KEY, AZURE_OPENAI_ENDPOINT, DEPLOYMENT
 from embedding import find_profiles
 
+
 def extract_name(user_input):
-    keywords = ["je cherche", "un professionnel", "un profil", "un membre", "dont le nom est", "nom est",
-                "qui s'appelle", "qui est :", "un expert", "un junior", "un confirmé"]
+    keywords = [
+        "je cherche",
+        "un professionnel",
+        "un profil",
+        "un membre",
+        "dont le nom est",
+        "nom est",
+        "qui s'appelle",
+        "qui est :",
+        "un expert",
+        "un junior",
+        "un confirmé",
+    ]
     for keyword in keywords:
         if keyword in user_input:
             # Suppression du mot clé et de tout avant
@@ -14,15 +26,27 @@ def extract_name(user_input):
             break
     return user_input.strip()
 
+
 def extract_skills(user_input):
-    keywords = ["compétences en", "compétences suivantes", "les compétences sont", "compétences sont", "qui a des compétences en",
-                "expert en", "spécialiste en", "compétences :", "juniors en", "confirmés en"]
+    keywords = [
+        "compétences en",
+        "compétences suivantes",
+        "les compétences sont",
+        "compétences sont",
+        "qui a des compétences en",
+        "expert en",
+        "spécialiste en",
+        "compétences :",
+        "juniors en",
+        "confirmés en",
+    ]
     for keyword in keywords:
         if keyword in user_input:
             # Suppression du mot clé et de tout avant
             user_input = user_input.split(keyword, 1)[-1]
             break
     return user_input.strip()
+
 
 # Initialiser le client AzureOpenAI
 client = AzureOpenAI(
@@ -30,6 +54,7 @@ client = AzureOpenAI(
     api_key=AZURE_OPENAI_API_KEY,
     api_version="2024-02-01",
 )
+
 
 def process_input(user_input, chat_history):
     """
@@ -39,7 +64,7 @@ def process_input(user_input, chat_history):
     starting_content = """You are a chatbot assistant that helps users to find members of a team based on their skills, names, experiences or availability.
     Use three sentences maximum for each of your answer and keep the answer as concise as possible.
     If you don't know the answer, just say that you don't know, don't try to make up an answer."""
-    
+
     chat_history = [{"role": "system", "content": starting_content}]
 
     # Validation de l'entrée utilisateur
@@ -98,8 +123,8 @@ def process_input(user_input, chat_history):
 
     #             # Conserver uniquement les 10 dernières paires (utilisateur-chatbot) ainsi que le contexte de départ (system)
     #             if len(chat_history) > 10:
-    #                 chat_history = chat_history[0] + chat_history[-10:] 
-                
+    #                 chat_history = chat_history[0] + chat_history[-10:]
+
     #             pprint(f"Chat history after trimming: {chat_history}")
 
     #             return response, chat_history[1:]
