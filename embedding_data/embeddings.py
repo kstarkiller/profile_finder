@@ -1,7 +1,7 @@
 import os
 from openai import AzureOpenAI
 
-from data_processing import data_processing
+from ..processing_data.data_processing import data_processing
 
 def embedding_text(client, text, model): # model = "azure deployment name"
     """
@@ -45,6 +45,6 @@ model = "aiprofilesmatching-text-embedding-3-large"
 df = generate_embeddings(client, df, "embeddings", "combined", model)
 
 # Save the processed data
-df.to_csv("processing_datas/datas/embedded_data.csv", index=False)
+df.to_csv("embedding_datas/datas/embedded_data.csv", index=False)
 
 print("Data processed and saved successfully.")
