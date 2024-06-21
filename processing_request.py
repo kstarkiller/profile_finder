@@ -13,13 +13,16 @@ client = AzureOpenAI(
     api_version="2024-02-01",
 )
 
+
 def process_input(user_input, chat_history):
     # Validation de l'entrée utilisateur
     if not user_input[-1]["query"].strip():
         return "Please enter a valid input.", chat_history[1:]
-    
+
     if len(user_input[-1]) > 1:
-        user_query = str(user_input[-1]["context"]) + ", " + str(user_input[-1]["query"])
+        user_query = (
+            str(user_input[-1]["context"]) + ", " + str(user_input[-1]["query"])
+        )
     else:
         user_query = str(user_input[-1]["query"])
 
@@ -69,6 +72,7 @@ def process_input(user_input, chat_history):
     except Exception as e:
         print(f"An error occurred: {e}")
         return "An error occurred while processing the input.", chat_history
+
 
 # user_input = "Donne-moi le taux d'occupation de Afrodille Pouliotte en juillet 2024"
 # chat_history = []

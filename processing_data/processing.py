@@ -6,6 +6,7 @@ from processing_data.normalizing import normalize_text
 
 pd.options.mode.chained_assignment = None
 
+
 def count_tokens(df, tokenizer):
     """
     Count the number of tokens for each row in the dataframe
@@ -18,15 +19,17 @@ def count_tokens(df, tokenizer):
     tokenizer = tiktoken.get_encoding(tokenizer)
 
     # Joining all values of a row into one column
-    df["combined"] = df.apply(lambda row: f"Localisation: {row['Localisation']}, " +
-                                        f"Nom: {row['Nom']}, " +
-                                        f"Compétences: {row['Competences']}, " +
-                                        f"Mission en cours: {row['Missions en cours']}, " +
-                                        f"Date de début de mission: {row['Date Demarrage']}, " +
-                                        f"Date de fin de mission: {row['Date de fin']}, " +
-                                        f"Taux d'occupation: {row['Taux occupation']}",
-                            axis=1)
-    
+    df["combined"] = df.apply(
+        lambda row: f"Localisation: {row['Localisation']}, "
+        + f"Nom: {row['Nom']}, "
+        + f"Compétences: {row['Competences']}, "
+        + f"Mission en cours: {row['Missions en cours']}, "
+        + f"Date de début de mission: {row['Date Demarrage']}, "
+        + f"Date de fin de mission: {row['Date de fin']}, "
+        + f"Taux d'occupation: {row['Taux occupation']}",
+        axis=1,
+    )
+
     # Tokenizing the combined column
     df["n_tokens"] = df["combined"].apply(lambda x: len(tokenizer.encode(x)))
 

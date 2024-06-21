@@ -16,6 +16,7 @@ index = faiss.read_index(
     r"C:\Users\k.simon\Projet\avv-matcher\embedding_data\index\faker_coaff.faiss"
 )
 
+
 def find_profiles(user_input):
     try:
         # Normaliser l'entrée utilisateur
