@@ -6,7 +6,6 @@ from processing_data.normalizing import normalize_text
 
 pd.options.mode.chained_assignment = None
 
-
 def count_tokens(df, tokenizer):
     """
     Count the number of tokens for each row in the dataframe
@@ -19,8 +18,15 @@ def count_tokens(df, tokenizer):
     tokenizer = tiktoken.get_encoding(tokenizer)
 
     # Joining all values of a row into one column
-    df["combined"] = df.apply(lambda x: " ".join(x), axis=1)
-
+    df["combined"] = df.apply(lambda row: f"Localisation: {row['Localisation']}, " +
+                                        f"Nom: {row['Nom']}, " +
+                                        f"Compétences: {row['Competences']}, " +
+                                        f"Mission en cours: {row['Missions en cours']}, " +
+                                        f"Date de début de mission: {row['Date Demarrage']}, " +
+                                        f"Date de fin de mission: {row['Date de fin']}, " +
+                                        f"Taux d'occupation: {row['Taux occupation']}",
+                            axis=1)
+    
     # Tokenizing the combined column
     df["n_tokens"] = df["combined"].apply(lambda x: len(tokenizer.encode(x)))
 
@@ -54,14 +60,14 @@ def data_processing(file_path, tokenizer):
         df[col] = df[col].apply(normalize_text)
 
     # Changing the name and  value of the column 'Tx occup'
-    df.rename(columns={"Tx occup": "Taux d'occupation"}, inplace=True)
-    df["Taux d'occupation"] = df["Taux d'occupation"].apply(
+    df.rename(columns={"Tx occup": "Taux occupation"}, inplace=True)
+    df["Taux occupation"] = df["Taux occupation"].apply(
         lambda x: f"{int(float(x) * 100)}%"
     )
 
     df, total_token = count_tokens(df, tokenizer)
 
     # Save the processed data
-    df.to_csv("processing_datas/datas/processed_data.csv", index=False)
+    df.to_csv("processing_data/datas/processed_data.csv", index=False)
 
     return df, total_token
