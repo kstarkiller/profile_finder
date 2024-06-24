@@ -1,7 +1,9 @@
 import streamlit as st
 
+
 def apply_custom_styles():
-    st.markdown("""
+    st.markdown(
+        """
         <style>
             /* Modifier le fond de l'ensemble de la page */
                 
@@ -45,5 +47,6 @@ def apply_custom_styles():
             /* Ajoutez ici d'autres styles selon vos préférences */
 
         </style>
-        """, unsafe_allow_html=True)
-
+        """,
+        unsafe_allow_html=True,
+    )

@@ -5,6 +5,9 @@ config.py
 venv/
 .env
 
+# indexes
+*.faiss
+
 # Fichiers temporaires Python
 *.pyc
 __pycache__/
@@ -18,3 +21,6 @@ Thumbs.db
 .idea/
 .vscode/
 *.sublime-workspace
+
+# Credentials et endpoint Azure
+config.py
