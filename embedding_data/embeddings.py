@@ -1,6 +1,8 @@
 import os
 import sys
 from openai import AzureOpenAI
+import json
+import pandas as pd
 
 
 def embedding_text(text, model):  # model = "azure deployment name"
@@ -36,3 +38,10 @@ def generate_embeddings(df, embedding_column, embedded_column, model):
 
     df[embedding_column] = df[embedded_column].apply(lambda x: embedding_text(x, model))
     return df
+
+df = pd.read_csv(r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\combined_data.csv")
+
+df = generate_embeddings(df, "embedding", "Combined", "aiprofilesmatching-text-embedding-3-large")
+
+# Save the dataframe
+df.to_csv(r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\embedded_data.csv", index=False)

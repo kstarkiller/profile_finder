@@ -72,9 +72,3 @@ def process_input(user_input, chat_history):
     except Exception as e:
         print(f"An error occurred: {e}")
         return "An error occurred while processing the input.", chat_history
-
-
-# user_input = "Donne-moi le taux d'occupation de Afrodille Pouliotte en juillet 2024"
-# chat_history = []
-
-# process_input(user_input, chat_history)

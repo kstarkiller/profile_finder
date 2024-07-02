@@ -8,12 +8,12 @@ from processing_data.normalizing import normalize_text
 model = "aiprofilesmatching-text-embedding-3-large"
 
 # Charger les données
-file_path = "processing_data/datas/embedded_data.csv"
+file_path = "processing_data/datas/embedded_data_v2.csv"
 df = pd.read_csv(file_path)
 
 # Charger l'index FAISS
 index = faiss.read_index(
-    r"C:\Users\k.simon\Projet\avv-matcher\embedding_data\index\faker_coaff.faiss"
+    r"C:\Users\k.simon\Projet\avv-matcher\embedding_data\index\faker_coaff_v2.faiss"
 )
 
 
@@ -28,7 +28,7 @@ def find_profiles(user_input):
         query_embedded = query_embedded / np.linalg.norm(query_embedded)
 
         # Recherche des vecteurs les plus similaires
-        distances, indices = index.search(query_embedded, k=5)
+        distances, indices = index.search(query_embedded, k=10)
 
         # Préparer la liste des profils trouvés
         profiles = []
