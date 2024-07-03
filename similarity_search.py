@@ -8,12 +8,12 @@ from processing_data.normalizing import normalize_text
 model = "aiprofilesmatching-text-embedding-3-large"
 
 # Charger les données
-file_path = "processing_data/datas/embedded_data_v2.csv"
+file_path = "processing_data/datas/embedded_data.csv"
 df = pd.read_csv(file_path)
 
 # Charger l'index FAISS
 index = faiss.read_index(
-    r"C:\Users\k.simon\Projet\avv-matcher\embedding_data\index\faker_coaff_v2.faiss"
+    r"C:\Users\k.simon\Projet\avv-matcher\embedding_data\index\complete_index.faiss"
 )
 
 
@@ -34,7 +34,7 @@ def find_profiles(user_input):
         profiles = []
         for idx in indices[0]:
             if idx < len(df):
-                profile_text = df.iloc[int(idx)]["combined"]
+                profile_text = df.iloc[int(idx)]["Combined"]
                 profiles.append(profile_text)
             else:
                 print(f"Index out of bounds: {idx}")
