@@ -18,7 +18,7 @@ def embedding_text(text, model):  # model = "azure deployment name"
     client = AzureOpenAI(
         api_key=os.getenv("AZURE_OPENAI_API_KEY"),
         api_version="2024-02-01",
-        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"), # type: ignore
     )
 
     return client.embeddings.create(input=[text], model=model).data[0].embedding

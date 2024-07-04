@@ -13,7 +13,7 @@ df = pd.read_csv(file_path)
 
 # Charger l'index FAISS
 index = faiss.read_index(
-    r"C:\Users\k.simon\Projet\avv-matcher\embedding_data\index\complete_index.faiss"
+    "embedding_data/index/complete_index.faiss"
 )
 
 

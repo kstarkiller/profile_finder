@@ -5,8 +5,11 @@ from pages import chatbot
 
 def main():
     st.title("Profiles Finder")
-    chatbot.display_accueil()
-    apply_custom_styles()
+    try:
+        chatbot.display_accueil()
+        apply_custom_styles()
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
 
 
 if __name__ == "__main__":
