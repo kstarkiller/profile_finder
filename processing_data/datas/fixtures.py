@@ -1,17 +1,28 @@
 import pandas as pd
 from faker import Faker
 import random
+import os
+
+# Paths according to the OS
+if os.name == 'posix':
+    psa_rm_path = r"processing_data/datas/UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
+    coaff_path = r"processing_data/datas/Coaff_V1_cleaned.csv"
+    fixtures_coaff = r"processing_data/datas/fixtures_coaff.csv"
+    fixtures_psarm = r"processing_data/datas/fixtures_psarm.csv"
+else:
+    psa_rm_path = r"processing_data\datas\UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
+    coaff_path = r"processing_data\datas\Coaff_V1_cleaned.csv"
+    fixtures_coaff = r"processing_data\datas\fixtures_coaff.csv"
+    fixtures_psarm = r"processing_data\datas\fixtures_psarm.csv"
+
 
 fake = Faker()
 
 # Récupération des données
-psa_rm_path = r"processing_data/datas/UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
 psa_rm_df = pd.read_excel(psa_rm_path)
 
 # Lire les données existantes à partir du fichier COAFF
-coaff_df = pd.read_csv(
-    r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\Coaff_V1_cleaned.csv"
-)
+coaff_df = pd.read_csv(coaff_path)
 
 # Renommer la colonne 'Membres' en 'Nom'
 if "Membres" in coaff_df.columns:
@@ -233,15 +244,9 @@ new_coaff, coaff_rows = generate_fake_coaff(names)
 new_psarm, psarm_rows = generate_fake_psarm(names)
 
 # Enregistrer le résultat dans un nouveau fichier CSV
-new_coaff.to_csv(
-    r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\fixtures_coaff.csv",
-    index=False,
-)
+new_coaff.to_csv(fixtures_coaff, index=False)
 
-new_psarm.to_csv(
-    r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\fixtures_psarm.csv",
-    index=False,
-)
+new_psarm.to_csv(fixtures_psarm, index=False)
 
 print(f"Création d'un fichier PSA RM avec {psarm_rows} nouvelles lignes de données.")
 print(f"Création d'un fichier COAFF avec {coaff_rows} nouvelles lignes de données.")

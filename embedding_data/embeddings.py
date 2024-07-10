@@ -1,9 +1,14 @@
 import os
-import sys
 from openai import AzureOpenAI
-import json
 import pandas as pd
 
+# Paths according to the OS
+if os.name == 'posix':
+    combined_result_path = "/home/kevin/simplon/briefs/avv-matcher/processing_data/datas/combined_result.csv"
+    embedded_data_path = "/home/kevin/simplon/briefs/avv-matcher/processing_data/datas/embedded_datas.csv"
+else:
+    combined_result_path = r"C:\Users\simon\Projet\avv-matcher\processing_data\datas\combined_result.csv"
+    embedded_data_path = r"C:\Users\simon\Projet\avv-matcher\processing_data\datas\embedded_datas.csv"
 
 def embedding_text(text, model):  # model = "azure deployment name"
     """
@@ -16,9 +21,9 @@ def embedding_text(text, model):  # model = "azure deployment name"
 
     # Initialize the AzureOpenAI client
     client = AzureOpenAI(
-        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+        api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
         api_version="2024-02-01",
-        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"), # type: ignore
+        azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT"), # type: ignore
     )
 
     return client.embeddings.create(input=[text], model=model).data[0].embedding
@@ -39,9 +44,9 @@ def generate_embeddings(df, embedding_column, embedded_column, model):
     df[embedding_column] = df[embedded_column].apply(lambda x: embedding_text(x, model))
     return df
 
-df = pd.read_csv(r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\combined_data.csv")
+df = pd.read_csv(combined_result_path)
 
 df = generate_embeddings(df, "embedding", "Combined", "aiprofilesmatching-text-embedding-3-large")
 
 # Save the dataframe
-df.to_csv(r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\embedded_data.csv", index=False)
+df.to_csv(embedded_data_path, index=False)
