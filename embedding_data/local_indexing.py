@@ -8,8 +8,8 @@ if os.name == 'posix':
     embedded_data_path = "/home/kevin/simplon/briefs/avv-matcher/processing_data/datas/embedded_datas.csv"
     complete_index_path = "/home/kevin/simplon/briefs/avv-matcher/embedding_data/index/complete_index.faiss"
 else:
-    embedded_data_path = r"C:\Users\simon\Projet\avv-matcher\processing_data\datas\embedded_datas.csv"
-    complete_index_path = r"C:\Users\simon\Projet\avv-matcher\embedding_data\index\complete_index.faiss"
+    embedded_data_path = r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\embedded_datas.csv"
+    complete_index_path = r"C:\Users\k.simon\Projet\avv-matcher\embedding_data\index\complete_index.faiss"
 
 # Load data
 df = pd.read_csv(embedded_data_path)
