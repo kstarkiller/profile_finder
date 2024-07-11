@@ -67,5 +67,31 @@ def index_documents(search_client, documents, batch_size=100, max_retries=3):
         if retries == max_retries:
             print(f"Failed to index batch after {max_retries} retries")
 
-documents = [validate_document(doc) for doc in documents]
-index_documents(search_client, documents)
+def clear_index(search_client, batch_size=100):
+    try:
+        while True:
+            # Récupérer tous les IDs des documents dans l'index
+            results = search_client.search("*", select="id", top=1000)
+            all_ids = [doc['id'] for doc in results]
+            if not all_ids:
+                break  # Sortir de la boucle si aucun document n'est trouvé
+
+            # Supprimer les documents par lots
+            for i in range(0, len(all_ids), batch_size):
+                batch_ids = all_ids[i:i+batch_size]
+                results = search_client.delete_documents(documents=[{"id": id} for id in batch_ids])
+                print(f"Batch {i//batch_size + 1}: {len(results)} documents deleted")
+
+        print("Index cleared successfully")
+    except Exception as e:
+        print(f"An error occurred while clearing the index: {str(e)}")
+
+# # Avant d'indexer les nouveaux documents, videz l'index
+# print("Clearing the index...")
+# clear_index(search_client)
+# clear_index(search_client)
+
+# # Ensuite, procédez à l'indexation des nouveaux documents
+# print("Indexing new documents...")
+# documents = [validate_document(doc) for doc in documents]
+# index_documents(search_client, documents)

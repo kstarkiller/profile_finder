@@ -38,7 +38,7 @@ for column in psa_rm_df.columns:
     unique_values[column] = psa_rm_df[column].unique().tolist()
 
 # Remplacer les valeurs de la clé 'Nom' et 'Supervisor Name' par des fausses valeurs grâce à faker
-unique_values['Nom'] = [fake.name() for _ in range(len(unique_values['Nom']))]
+unique_values['Nom'] = [fake.name() for _ in range(len(unique_values['Nom'])-500)]
 unique_values['Supervisor Name'] = [fake.name() for _ in range(len(unique_values['Supervisor Name']))]
 
 # Liste des compétences IT spécifiques
@@ -62,6 +62,7 @@ fonctions = [
 
 # Liste des nom des membres
 names = unique_values["Nom"]
+print(f"Nombre de noms uniques: {len(names)}")
 supervisors = unique_values["Supervisor Name"]
 
 # Liste des missions en cours
@@ -96,10 +97,15 @@ def generate_fake_coaff(names):
         num_missions = random.randint(3, 8)
         start_date = fake.date_between(start_date="-1y", end_date="today")
         occupancy_rate = random.choice([0.2, 0.5, 0.8])
+        available_company_names = company_names[:]
 
         # Générer des données pour chaque mission
         for i in range(num_missions):
-            missions_en_cours = random.choice(company_names)
+            if available_company_names: 
+                missions_en_cours = random.choice(available_company_names)
+                available_company_names.remove(missions_en_cours)
+            else:
+                break
 
             # Si la mission actuelle est "congés", sa date de début est la date de fin de la mission précédente plus 1 jour
             date_demarrage = (
@@ -146,6 +152,7 @@ def generate_fake_coaff(names):
                 occupancy_rate = random.choice([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
             else:
                 occupancy_rate = round((1 - row["Tx_occup"]), 1)
+
 
             coaff_rows += 1
     return pd.DataFrame(fake_data), coaff_rows

@@ -4,12 +4,17 @@ import streamlit as st
 from processing_request import process_input
 
 # Contexte du chatbot
+# starting_context = f"""
+# You are a french chatbot assistant that helps users to find members of a team based on their skills, names, experiences or availability.
+# When the availabilities of a member are not indicated, it means that the member is available except if he is on a mission.
+# Keep the answer as concise as possible, do not summarize the data and don't hesitate to use list or table to present datas.
+# Today is {date.today()} : use this information to provide a better answer.
+# If you don't know the answer, just say that you don't know, don't try to make up an answer.
+# """
 starting_context = f"""
-You are a french chatbot assistant that helps users to find members of a team based on their skills, names, experiences or availability.
-When the availabilities of a member are not indicated, it means that the member is available except if he is on a mission.
-Keep the answer as concise as possible, do not summarize the data and don't hesitate to use list or table to present datas.
-Today is {date.today()} : use this information to provide a better answer.
-If you don't know the answer, just say that you don't know, don't try to make up an answer.
+Today it's {date.today()} and you're a French chatbot assistant that helps users find team members based on the data provided.
+Keep the answer concise and don't hesitate to use a table to present the data.
+If you don't know the answer, just say you don't know, don't try to make up an answer.
 """
 
 

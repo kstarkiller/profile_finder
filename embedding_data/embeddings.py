@@ -42,11 +42,13 @@ def generate_embeddings(df, embedding_column, embedded_column, model):
     """
 
     df[embedding_column] = df[embedded_column].apply(lambda x: embedding_text(x, model))
-    return df
 
-df = pd.read_csv(combined_result_path)
+    # Return a dataframe with only embedded and embedding columns
+    return df[[embedded_column, embedding_column]]
 
-df = generate_embeddings(df, "embedding", "Combined", "aiprofilesmatching-text-embedding-3-large")
+# df = pd.read_csv(combined_result_path)
 
-# Save the dataframe
-df.to_csv(embedded_data_path, index=False)
+# embedded_df = generate_embeddings(df, "embedding", "Combined", "aiprofilesmatching-text-embedding-3-large")
+
+# # Save the dataframe
+# embedded_df.to_csv(embedded_data_path, index=False)
