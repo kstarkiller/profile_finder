@@ -5,6 +5,11 @@ config.py
 venv/
 .env
 
+# Fichiers
+*.csv
+*.xlsx
+*.xls
+
 # indexes
 *.faiss
 

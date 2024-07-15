@@ -1,18 +1,17 @@
 import os
 from pprint import pprint
 from openai import AzureOpenAI
-from config import AZURE_OPENAI_API_KEY, AZURE_OPENAI_ENDPOINT, DEPLOYMENT_LLM
-from similarity_search import find_profiles
+from az_search import find_profiles_azure
 
-model = DEPLOYMENT_LLM
+LLM = "aiprofilesmatching-gpt4"
+EMBEDDER = "aiprofilesmatching-text-embedding-3-large"
 
 # Initialiser le client AzureOpenAI
 client = AzureOpenAI(
-    azure_endpoint=AZURE_OPENAI_ENDPOINT,
-    api_key=AZURE_OPENAI_API_KEY,
+    api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
     api_version="2024-02-01",
+    azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT"), # type: ignore
 )
-
 
 def process_input(user_input, chat_history):
     # Validation de l'entrée utilisateur
@@ -27,7 +26,7 @@ def process_input(user_input, chat_history):
         user_query = str(user_input[-1]["query"])
 
     # Prétraitement de l'entrée utilisateur
-    profiles = find_profiles(user_query)
+    profiles = find_profiles_azure(user_query, EMBEDDER)
     # Convertir les profils en string
     profiles = [str(profile) for profile in profiles]
 
@@ -44,7 +43,7 @@ def process_input(user_input, chat_history):
     # Créer une requête de complétion de chat en utilisant le client Azure OpenAI
     try:
         completion = client.chat.completions.create(
-            model=DEPLOYMENT_LLM, messages=chat_history
+            model=LLM, messages=chat_history
         )
 
         # Récupérer la réponse du modèle
@@ -72,9 +71,3 @@ def process_input(user_input, chat_history):
     except Exception as e:
         print(f"An error occurred: {e}")
         return "An error occurred while processing the input.", chat_history
-
-
-# user_input = "Donne-moi le taux d'occupation de Afrodille Pouliotte en juillet 2024"
-# chat_history = []
-
-# process_input(user_input, chat_history)

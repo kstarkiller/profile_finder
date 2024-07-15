@@ -7,10 +7,12 @@ from processing_data.normalizing import normalize_text
 pd.options.mode.chained_assignment = None
 
 
-def count_tokens(df, tokenizer):
+def tokenizing(df, tokenizer="cl100k_base"):
     """
     Count the number of tokens for each row in the dataframe
     and the total number of tokens in the dataframe.
+
+    Use tokenizer cl100k_base if not specified.
 
     :param df: DataFrame
     :param tokenizer: str
@@ -20,13 +22,29 @@ def count_tokens(df, tokenizer):
 
     # Joining all values of a row into one column
     df["combined"] = df.apply(
-        lambda row: f"Localisation: {row['Localisation']}, "
-        + f"Nom: {row['Nom']}, "
-        + f"Compétences: {row['Competences']}, "
-        + f"Mission en cours: {row['Missions en cours']}, "
-        + f"Date de début de mission: {row['Date Demarrage']}, "
-        + f"Date de fin de mission: {row['Date de fin']}, "
-        + f"Taux d'occupation: {row['Taux occupation']}",
+        lambda row: f"Nom: {row['Nom']}, "
+        + f"Localisation: {row['Localisation']}, "
+        + f"Fonction: '{row['Competences']}', "
+        + (
+            "Disponible, "
+            if row["Missions en cours"] == "DISPO ICE"
+            else f"Mission: '{row['Missions en cours']}', "
+        )
+        + (
+            f"Dates de disponibilité: {row['Date Demarrage']} - {row['Date de fin']}, "
+            if row["Missions en cours"] == "DISPO ICE"
+            else f"Dates de mission: {row['Date Demarrage']} - {row['Date de fin']}, "
+        )
+        + (
+            f"Mois de disponibilité: '{row['Mois']}', "
+            if row["Missions en cours"] == "DISPO ICE"
+            else f"Mois de mission: '{row['Mois']}', "
+        )
+        + (
+            f"Taux d'occupation: {int((1 - float(row['Taux occupation']))*100)}%"
+            if row["Missions en cours"] == "DISPO ICE"
+            else f"Taux d'occupation: {int(float(row['Taux occupation'])*100)}%"
+        ),
         axis=1,
     )
 
@@ -39,7 +57,7 @@ def count_tokens(df, tokenizer):
     return df, total_tokens
 
 
-def data_processing(file_path, tokenizer):
+def data_processing_coaff(file_path, tokenizer):
     """
     Load the data from a csv file and normalize it.
     Then use count_tokens() to count the number of tokens in the dataframe.
@@ -62,15 +80,41 @@ def data_processing(file_path, tokenizer):
     for col in df.columns:
         df[col] = df[col].apply(normalize_text)
 
-    # Changing the name and  value of the column 'Tx occup'
+    # Changing the name of the column 'Tx occup'
     df.rename(columns={"Tx occup": "Taux occupation"}, inplace=True)
-    df["Taux occupation"] = df["Taux occupation"].apply(
-        lambda x: f"{int(float(x) * 100)}%"
+
+    # Replace "," by "-" in the "Competences" column
+    df["Competences"] = df["Competences"].apply(lambda x: x.replace(", ", " - "))
+
+    # Pour chaque ligne, récupérer tous les mois entre les dates de début et de fin, et les convertir en chaîne
+    df["Mois"] = df.apply(
+        lambda row: ", ".join(
+            pd.date_range(
+                row["Date Demarrage"], row["Date de fin"], freq="MS"
+            ).strftime("%B %Y")
+        ),
+        axis=1,
     )
 
-    df, total_token = count_tokens(df, tokenizer)
+    # Si le mois de Date Demarrage et le mois de Date de fin sont égaux, ajouter ce mois à la colonne "Mois"
+    df["Mois"] = df.apply(
+        lambda row: (
+            f"{pd.to_datetime(row['Date Demarrage']).strftime('%B %Y')}"
+            if pd.to_datetime(row["Date Demarrage"]).month
+            == pd.to_datetime(row["Date de fin"]).month
+            else row["Mois"]
+        ),
+        axis=1,
+    )
+
+    # Combine the values of the columns into one column and count tokens
+    df, total_token = tokenizing(df, tokenizer)
 
     # Save the processed data
-    df.to_csv("processing_data/datas/processed_data.csv", index=False)
+    df.to_csv("processing_data/datas/processed_data_v2.csv", index=False)
 
     return df, total_token
+
+
+
+data_processing_coaff("processing_data/datas/fixtures_coaff.csv", "cl100k_base")
