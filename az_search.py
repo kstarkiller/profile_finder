@@ -5,12 +5,12 @@ import os
 import pandas as pd
 import numpy as np
 
-from embedding_data.embeddings import embedding_text
+from indexing_data.embeddings import embedding_text
 from processing_data.normalizing import normalize_text
 
 model = "aiprofilesmatching-text-embedding-3-large"
 
-# Paths according to the OS
+# Paths according to the used OS
 if os.name == 'posix':
     file_path = "/home/kevin/simplon/briefs/avv-matcher/processing_data/datas/embedded_datas.csv"
 else:
@@ -21,6 +21,10 @@ df = pd.read_csv(file_path)
 search_service_endpoint = os.environ.get("AZURE_SEARCH_ENDPOINT")
 search_service_api_key =  os.environ.get("AZURE_SEARCH_API_KEY")
 index_name = "aiprofilesmatching-index"
+
+# Check if the credentials are correctly loaded
+if not search_service_endpoint or not search_service_api_key:
+    raise ValueError("Both AZURE_SEARCH_ENDPOINT and AZURE_SEARCH_API_KEY environment variables must be set.")
 
 # Créez un client de recherche
 credential = AzureKeyCredential(search_service_api_key)

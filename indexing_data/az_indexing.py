@@ -8,12 +8,16 @@ import os
 
 # Paths according to the OS
 if os.name == 'posix':
-    embedded_data_path = "/home/kevin/simplon/briefs/avv-matcher/processing_data/datas/embedded_datas.csv"
+    embedded_data_path = "/home/kevin/simplon/briefs/avv-matcher/processing_data/datas/embedded_datas.csv"  
 else:
     embedded_data_path = r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\embedded_datas.csv"
 
 search_service_endpoint = os.environ.get("AZURE_SEARCH_ENDPOINT")
-search_service_api_key =  os.environ.get("AZURE_SEARCH_API_KEY")
+search_service_api_key =  os.environ.get("AZURE_SEARCH_API_KEY")  
+
+# Check if the credentials are correctly loaded
+if not search_service_endpoint or not search_service_api_key:
+    raise ValueError("Both AZURE_SEARCH_ENDPOINT and AZURE_SEARCH_API_KEY environment variables must be set.")
 
 credential = AzureKeyCredential(search_service_api_key)
 search_client = SearchClient(endpoint=search_service_endpoint, index_name="aiprofilesmatching-index", credential=credential)
@@ -86,12 +90,12 @@ def clear_index(search_client, batch_size=100):
     except Exception as e:
         print(f"An error occurred while clearing the index: {str(e)}")
 
-# # Avant d'indexer les nouveaux documents, videz l'index
-# print("Clearing the index...")
-# clear_index(search_client)
-# clear_index(search_client)
+# Avant d'indexer les nouveaux documents, videz l'index
+print("Clearing the index...")
+clear_index(search_client)
+clear_index(search_client)
 
-# # Ensuite, procédez à l'indexation des nouveaux documents
-# print("Indexing new documents...")
-# documents = [validate_document(doc) for doc in documents]
-# index_documents(search_client, documents)
+# Ensuite, procédez à l'indexation des nouveaux documents
+print("Indexing new documents...")
+documents = [validate_document(doc) for doc in documents]
+index_documents(search_client, documents)
