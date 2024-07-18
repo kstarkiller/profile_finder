@@ -12,9 +12,9 @@ model = "aiprofilesmatching-text-embedding-3-large"
 
 # Paths according to the used OS
 if os.name == 'posix':
-    file_path = "/home/kevin/simplon/briefs/avv-matcher/processing_data/datas/embedded_datas.csv"
+    file_path = "processing_data/datas/embedded_datas.csv"
 else:
-    file_path = r"C:\Users\simon\Projet\avv-matcher\processing_data\datas\embedded_datas.csv"
+    file_path = r"processing_data\datas\embedded_datas.csv"
 
 df = pd.read_csv(file_path)
 

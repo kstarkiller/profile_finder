@@ -114,7 +114,3 @@ def data_processing_coaff(file_path, tokenizer):
     df.to_csv("processing_data/datas/processed_data_v2.csv", index=False)
 
     return df, total_token
-
-
-
-data_processing_coaff("processing_data/datas/fixtures_coaff.csv", "cl100k_base")

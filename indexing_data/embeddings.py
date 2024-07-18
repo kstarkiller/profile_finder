@@ -1,11 +1,10 @@
 import os
 from openai import AzureOpenAI
-import pandas as pd
 
 # Paths according to the OS
 if os.name == 'posix':
-    combined_result_path = "/home/kevin/simplon/briefs/avv-matcher/processing_data/datas/combined_result.csv"
-    embedded_data_path = "/home/kevin/simplon/briefs/avv-matcher/processing_data/datas/embedded_datas.csv"
+    combined_result_path = "../processing_data/datas/combined_result.csv"
+    embedded_data_path = "../processing_data/datas/embedded_datas.csv"
 else:
     combined_result_path = r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\combined_result.csv"
     embedded_data_path = r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\embedded_datas.csv"
@@ -45,10 +44,3 @@ def generate_embeddings(df, embedding_column, embedded_column, model):
 
     # Return a dataframe with only embedded and embedding columns
     return df[[embedded_column, embedding_column]]
-
-# df = pd.read_csv(combined_result_path)
-
-# embedded_df = generate_embeddings(df, "embedding", "Combined", "aiprofilesmatching-text-embedding-3-large")
-
-# # Save the dataframe
-# embedded_df.to_csv(embedded_data_path, index=False)

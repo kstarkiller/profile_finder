@@ -9,13 +9,23 @@ venv/
 *.csv
 *.xlsx
 *.xls
+*.svg
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
 
 # indexes
 *.faiss
 
-# Fichiers temporaires Python
+# Ignore les fichiers compilés et les artefacts de construction
+*.o
 *.pyc
+*.pyo
+*.pyd
 __pycache__/
+
 
 # Dossiers et fichiers souvent utilisés pour les projets de développement
 node_modules/
