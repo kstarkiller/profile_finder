@@ -2,7 +2,7 @@ from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from azure.search.documents.models import VectorizedQuery
 import os
-import pandas as pd
+import pandas as pd 
 import numpy as np
 
 from embedding_data.embeddings import embedding_text
@@ -14,7 +14,7 @@ model = "aiprofilesmatching-text-embedding-3-large"
 if os.name == 'posix':
     file_path = "/home/kevin/simplon/briefs/avv-matcher/processing_data/datas/embedded_datas.csv"
 else:
-    file_path = r"C:\Users\simon\Projet\avv-matcher\processing_data\datas\embedded_datas.csv"
+    file_path = r"C:\Users\thibaut.boguszewski\Desktop\avv-matcher\processing_data\datas\Coaff_V1_cleaned.csv"
 
 df = pd.read_csv(file_path)
 
