@@ -3,7 +3,6 @@ from azure.search.documents import SearchClient
 from azure.search.documents.models import VectorizedQuery
 import os
 import pandas as pd
-import numpy as np
 
 from indexing_data.embeddings import embedding_text
 from processing_data.normalizing import normalize_text

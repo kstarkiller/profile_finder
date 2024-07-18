@@ -11,10 +11,10 @@ venv/
 *.xls
 *.svg
 
-# Docker
-Dockerfile
-docker-compose.yml
-.dockerignore
+# # Docker
+# Dockerfile
+# docker-compose.yml
+# .dockerignore
 
 # indexes
 *.faiss
@@ -36,6 +36,3 @@ Thumbs.db
 .idea/
 .vscode/
 *.sublime-workspace
-
-# Credentials et endpoint Azure
-config.py

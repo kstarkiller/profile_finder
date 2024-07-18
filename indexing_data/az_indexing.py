@@ -8,9 +8,9 @@ import os
 
 # Paths according to the OS
 if os.name == 'posix':
-    embedded_data_path = "../processing_data/datas/embedded_datas.csv"  
+    embedded_data_path = "app/processing_data/datas/embedded_datas.csv"  
 else:
-    embedded_data_path = r"..\processing_data\datas\embedded_datas.csv"
+    embedded_data_path = r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\embedded_datas.csv"
 
 search_service_endpoint = os.environ.get("AZURE_SEARCH_ENDPOINT")
 search_service_api_key =  os.environ.get("AZURE_SEARCH_API_KEY")  
