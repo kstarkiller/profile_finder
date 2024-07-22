@@ -11,7 +11,7 @@ variables:
 build:
   stage: build
   only:
-    - deploy
+    - dev_kevin
   script:
     - echo "Building Docker image..."
     - docker build -t $IMAGE_NAME .
@@ -22,7 +22,7 @@ build:
 deploy:
   stage: deploy
   only:
-    - deploy
+    - dev_kevin
   script:
     - echo "Deploying to Azure App Service..."
     - az webapp config container set --name $AZURE_APP_NAME --resource-group $AZURE_RESOURCE_GROUP --docker-custom-image-name $IMAGE_NAME
