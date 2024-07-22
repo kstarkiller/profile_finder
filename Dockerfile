@@ -36,4 +36,4 @@ ENV AZURE_SEARCH_API_KEY=${AZURE_SEARCH_API_KEY}
 ENV AZURE_SEARCH_ENDPOINT=${AZURE_SEARCH_ENDPOINT}
 
 # Run app.py when the container launches
-CMD ["streamlit", "run", "main.py", "--server.port=8080", "--server.enableCORS=false"]
+CMD ["streamlit", "run", "main.py", "--server.port=8080"]
