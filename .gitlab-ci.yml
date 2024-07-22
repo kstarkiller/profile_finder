@@ -1,0 +1,28 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  REGISTRY_URL: aiprofilesmatchingacr.azurecr.io
+  IMAGE_NAME: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
+  AZURE_APP_NAME: aiprofilesmatchingWebApp
+  AZURE_RESOURCE_GROUP: rg-cgi-weu-cloud-genAIshowcase-dev
+
+build:
+  stage: build
+  only:
+    - deploy
+  script:
+    - echo "Building Docker image..."
+    - docker build -t $IMAGE_NAME .
+    - echo "Pushing image to Azure Container Registry..."
+    - az acr login --name $REGISTRY_URL
+    - docker push $IMAGE_NAME
+
+deploy:
+  stage: deploy
+  only:
+    - deploy
+  script:
+    - echo "Deploying to Azure App Service..."
+    - az webapp config container set --name $AZURE_APP_NAME --resource-group $AZURE_RESOURCE_GROUP --docker-custom-image-name $IMAGE_NAME
