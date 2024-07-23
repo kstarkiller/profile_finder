@@ -10,6 +10,9 @@ variables:
 
 build:
   stage: build
+  image: docker:19.03.12
+  services:
+    - docker:dind
   only:
     - dev_kevin
   script:
