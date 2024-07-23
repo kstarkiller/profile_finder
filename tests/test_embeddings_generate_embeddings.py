@@ -1,9 +1,9 @@
-#python -m unittest tests.test_generate_embeddings
+#python -m unittest tests.test_embeddings_generate_embeddings
 
 import unittest
 from unittest.mock import patch, MagicMock
 import pandas as pd
-from embedding_data.embeddings import embedding_text, generate_embeddings
+from embedding_data.embeddings import generate_embeddings
 
 class TestGenerateEmbeddings(unittest.TestCase):
 

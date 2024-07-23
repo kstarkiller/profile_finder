@@ -111,8 +111,8 @@ def clear_index(search_client, batch_size=100):
             # Supprimer les documents par lots
             for i in range(0, len(all_ids), batch_size):
                 batch_ids = all_ids[i:i+batch_size]
-                results = search_client.delete_documents(documents=[{"id": id} for id in batch_ids])
-                print(f"Batch {i//batch_size + 1}: {len(results)} documents deleted")
+                search_client.delete_documents(documents=[{"id": id} for id in batch_ids])
+                print(f"Batch {i//batch_size + 1}: {len(batch_ids)} documents deleted")
 
         print("Index cleared successfully")
     except Exception as e:

@@ -18,6 +18,12 @@ def tokenizing(df, tokenizer="cl100k_base"):
     :param tokenizer: str
     :return: DataFrame, int
     """
+    # (TU)
+    if df.empty:
+        df["combined"] = []
+        df["n_tokens"] = []
+        return df, 0
+    
     tokenizer = tiktoken.get_encoding(tokenizer)
 
     # Joining all values of a row into one column
