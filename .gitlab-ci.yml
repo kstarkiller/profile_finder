@@ -22,11 +22,11 @@ build:
 deploy:
   stage: deploy
   image: mcr.microsoft.com/azure-cli:latest
-  services:
-    - docker:dind
   only:
     - dev_kevin
   script:
+    - echo "Logging into Azure..."
+    - az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
     - echo "Pushing image to Azure Container Registry..."
     - az acr login --name $REGISTRY_URL
     - docker push $IMAGE_NAME
