@@ -21,9 +21,14 @@ build:
 
 deploy:
   stage: deploy
-  image: mcr.microsoft.com/azure-cli:latest
+  image: docker:19.03.12
+  services:
+    - docker:dind
   only:
     - dev_kevin
+  before_script:
+    - apk add --no-cache py-pip
+    - pip install --no-cache-dir azure-cli
   script:
     - echo "Pushing image to Azure Container Registry..."
     - az acr login --name $REGISTRY_URL
