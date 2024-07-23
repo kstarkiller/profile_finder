@@ -18,7 +18,10 @@ build:
   script:
     - echo "Installing Azure CLI..."
     - apk add --no-cache curl
-    - curl -sL https://aka.ms/InstallAzureCLIDeb | sh
+    - apk add --no-cache py-pip
+    - apk add --no-cache --virtual=build gcc libffi-dev musl-dev openssl-dev python3-dev make
+    - pip install azure-cli
+    - apk del --purge build
     - echo "Building Docker image..."
     - docker build -t $IMAGE_NAME .
     - echo "Pushing image to Azure Container Registry..."
