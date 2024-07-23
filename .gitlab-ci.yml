@@ -16,6 +16,9 @@ build:
   only:
     - dev_kevin
   script:
+    - echo "Installing Azure CLI..."
+    - apk add --no-cache curl
+    - curl -sL https://aka.ms/InstallAzureCLIDeb | sh
     - echo "Building Docker image..."
     - docker build -t $IMAGE_NAME .
     - echo "Pushing image to Azure Container Registry..."

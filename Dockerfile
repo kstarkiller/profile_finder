@@ -1,39 +1,39 @@
-# Utilisez une image Python officielle comme image parente
+# Description: Dockerfile for the AI based Profile Matching Streamlit app
+# Authors: Kevin SIMON, Thibaut BOGUSZEWSKI
+# Version: 1.0
+# Date: 2024-07-18
+
+# Use an official Python runtime as a parent image
 FROM python:3.11.9-slim
 
-# Définissez le répertoire de travail
+# Set the working directory
 WORKDIR /app
 
-# Copiez le contenu du répertoire actuel dans le conteneur à /app
+# Copy the current directory contents into the container at /app
 COPY . /app
 
-# Installez les paquets nécessaires spécifiés dans requirements.txt
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+# Install any needed packages specified in requirements.txt
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Installez l'outil CLI d'Azure
-RUN apt-get update && \
-    apt-get install -y curl gnupg && \
-    curl -sL https://aka.ms/InstallAzureCLIDeb | bash
-
-# Créez un utilisateur non-root et passez à cet utilisateur
+# Create a non-root user and switch to it
 RUN useradd -m appuser
 USER appuser
 
-# Rendez le port 8080 disponible pour le monde extérieur à ce conteneur
+# Make port 8080 available to the world outside this container
 EXPOSE 8080
 
-# Définissez les arguments de construction
+# Define build arguments
 ARG AZURE_OPENAI_API_KEY
 ARG AZURE_OPENAI_ENDPOINT
 ARG AZURE_SEARCH_API_KEY
 ARG AZURE_SEARCH_ENDPOINT
 
-# Définissez les variables d'environnement à partir des arguments de construction
+# Set environment variables from build arguments
 ENV AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY}
 ENV AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT}
 ENV AZURE_SEARCH_API_KEY=${AZURE_SEARCH_API_KEY}
 ENV AZURE_SEARCH_ENDPOINT=${AZURE_SEARCH_ENDPOINT}
 
-# Exécutez app.py lorsque le conteneur se lance
+# Run app.py when the container launches
 CMD ["streamlit", "run", "main.py", "--server.port=8080"]
