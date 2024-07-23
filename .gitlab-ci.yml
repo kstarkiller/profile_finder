@@ -17,11 +17,7 @@ build:
     - dev_kevin
   script:
     - echo "Building Docker image..."
-    - docker build --build-arg AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY" \
-      --build-arg AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT" \
-      --build-arg AZURE_SEARCH_API_KEY="$AZURE_SEARCH_API_KEY" \
-      --build-arg AZURE_SEARCH_ENDPOINT="$AZURE_SEARCH_ENDPOINT" \
-      -t $IMAGE_NAME .
+    - docker build --build-arg AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY" --build-arg AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT" --build-arg AZURE_SEARCH_API_KEY="$AZURE_SEARCH_API_KEY" --build-arg AZURE_SEARCH_ENDPOINT="$AZURE_SEARCH_ENDPOINT" -t $IMAGE_NAME .
 
 deploy:
   stage: deploy
