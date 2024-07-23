@@ -3,14 +3,10 @@ stages:
   - deploy
 
 variables:
-  REGISTRY_URL: aiprofilesmatchingacr.azurecr.io
+  REGISTRY_URL: aiprofilesmatchingacr
   IMAGE_NAME: aiprofilesmatchingacr.azurecr.io/aiprofilesmatching_image
   AZURE_APP_NAME: aiprofilesmatchingWebApp
   AZURE_RESOURCE_GROUP: rg-cgi-weu-cloud-genAIshowcase-dev
-  AZURE_OPENAI_API_KEY: $AZURE_OPENAI_API_KEY
-  AZURE_OPENAI_ENDPOINT: $AZURE_OPENAI_ENDPOINT
-  AZURE_SEARCH_API_KEY: $AZURE_SEARCH_API_KEY
-  AZURE_SEARCH_ENDPOINT: $AZURE_SEARCH_ENDPOINT
 
 build:
   stage: build
@@ -22,16 +18,14 @@ build:
   script:
     - echo "Building Docker image..."
     - docker build --build-arg AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY" \
-    --build-arg AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT" \
-    --build-arg AZURE_SEARCH_API_KEY="$AZURE_SEARCH_API_KEY" \
-    --build-arg AZURE_SEARCH_ENDPOINT="$AZURE_SEARCH_ENDPOINT" \
-    -t $IMAGE_NAME .
+      --build-arg AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT" \
+      --build-arg AZURE_SEARCH_API_KEY="$AZURE_SEARCH_API_KEY" \
+      --build-arg AZURE_SEARCH_ENDPOINT="$AZURE_SEARCH_ENDPOINT" \
+      -t $IMAGE_NAME .
 
 deploy:
   stage: deploy
   image: mcr.microsoft.com/azure-cli:latest
-  services:
-    - docker:dind
   only:
     - dev_kevin
   script:
