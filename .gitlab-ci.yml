@@ -4,13 +4,9 @@ stages:
 
 variables:
   REGISTRY_URL: aiprofilesmatchingacr.azurecr.io
-  IMAGE_NAME: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
+  IMAGE_NAME: aiprofilesmatchingacr.azurecr.io/aiprofilesmatching_image
   AZURE_APP_NAME: aiprofilesmatchingWebApp
   AZURE_RESOURCE_GROUP: rg-cgi-weu-cloud-genAIshowcase-dev
-
-before_script:
-  - apk add --no-cache curl bash jq
-  - curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 
 build:
   stage: build
@@ -22,19 +18,15 @@ build:
   script:
     - echo "Building Docker image..."
     - docker build -t $IMAGE_NAME .
-    - echo "Pushing image to Azure Container Registry..."
-    - az acr login --name $REGISTRY_URL
-    - docker push $IMAGE_NAME
 
 deploy:
   stage: deploy
-  image: docker:19.03.12
-  services:
-    - docker:dind
+  image: mcr.microsoft.com/azure-cli:latest
   only:
     - dev_kevin
   script:
-    - apk add --no-cache curl bash jq
-    - curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+    - echo "Pushing image to Azure Container Registry..."
+    - az acr login --name $REGISTRY_URL
+    - docker push $IMAGE_NAME
     - echo "Deploying to Azure App Service..."
     - az webapp config container set --name $AZURE_APP_NAME --resource-group $AZURE_RESOURCE_GROUP --docker-custom-image-name $IMAGE_NAME
