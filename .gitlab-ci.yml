@@ -13,7 +13,7 @@ build:
   image: docker:19.03.12
   services:
     - docker:dind
-    - microsoft/azure-cli:2.0.72
+    - microsoft/azure-cli:latest
   only:
     - dev_kevin
   script:
