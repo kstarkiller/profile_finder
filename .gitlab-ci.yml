@@ -28,7 +28,7 @@ deploy:
     - dev_kevin
   before_script:
     - apk update
-    - apk add --no-cache py3-pip gcc musl-dev libffi-dev python3-dev
+    - apk add --no-cache py3-pip gcc musl-dev libffi-dev python3-dev rust cargo
     - pip install --no-cache-dir azure-cli
   script:
     - echo "Pushing image to Azure Container Registry..."
