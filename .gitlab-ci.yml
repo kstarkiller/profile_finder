@@ -4,13 +4,13 @@ stages:
 
 variables:
   REGISTRY_URL: aiprofilesmatchingacr.azurecr.io
-  IMAGE_NAME: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
+  IMAGE_NAME: aiprofilesmatchingacr.azurecr.io/aiprofilesmatching_image
   AZURE_APP_NAME: aiprofilesmatchingWebApp
   AZURE_RESOURCE_GROUP: rg-cgi-weu-cloud-genAIshowcase-dev
 
 build:
   stage: build
-  image: docker:19.03.12
+  image: mcr.microsoft.com/azure-cli:latest
   services:
     - docker:dind
   only:
