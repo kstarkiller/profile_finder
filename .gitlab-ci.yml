@@ -15,22 +15,16 @@ test:
     - dev_kevin
   image: python:3.11.9
   before_script:
-    # Vérifier que les variables d'environnement sont définies
-    - if [ -z "$AZURE_OPENAI_API_KEY" ] || \
-      [ -z "$AZURE_OPENAI_ENDPOINT" ] || \
-      [ -z "$AZURE_SEARCH_API_KEY" ] || \
-      [ -z "$AZURE_SEARCH_ENDPOINT" ] || \
-      [ -z "$AZURE_SP_ID"] || \
-      [ -z "$AZURE_SP_SECRET" ] || \
-      [ -z "$AZURE_TENANT" ] || \
-      [ -z "$IMAGE_TAG" ]; then
-        echo "Une ou plusieurs variables d'environnement ne sont pas définies"
-        exit 1
-    fi
+    - |
+      # Vérifier que les variables d'environnement sont définies
+      for var in AZURE_OPENAI_API_KEY AZURE_OPENAI_ENDPOINT AZURE_SEARCH_API_KEY AZURE_SEARCH_ENDPOINT AZURE_SP_ID AZURE_SP_SECRET AZURE_TENANT IMAGE_TAG; do
+        if [ -z "${!var}" ]; then
+          echo "La variable d'environnement $var n'est pas définie"
+          exit 1
+        fi
+      done
   script:
-    - set -e # Arrêter le script en cas d'erreur
     - pip install -r requirements.txt
-    # Exécuter l'ensemble des tests unitaires
     - python -m unittest discover -s tests
 
 build:
@@ -43,28 +37,21 @@ build:
   needs:
     - test
   before_script:
-    # Vérifier que les variables d'environnement sont définies
-    - if [ -z "$AZURE_OPENAI_API_KEY" ] || \
-      [ -z "$AZURE_OPENAI_ENDPOINT" ] || \
-      [ -z "$AZURE_SEARCH_API_KEY" ] || \
-      [ -z "$AZURE_SEARCH_ENDPOINT" ] || \
-      [ -z "$AZURE_SP_ID"] || \
-      [ -z "$AZURE_SP_SECRET" ] || \
-      [ -z "$AZURE_TENANT" ] || \
-      [ -z "$IMAGE_TAG" ]; then
-        echo "Une ou plusieurs variables d'environnement ne sont pas définies"
-        exit 1
-    fi
+    - |
+      # Vérifier que les variables d'environnement sont définies
+      for var in AZURE_OPENAI_API_KEY AZURE_OPENAI_ENDPOINT AZURE_SEARCH_API_KEY AZURE_SEARCH_ENDPOINT AZURE_SP_ID AZURE_SP_SECRET AZURE_TENANT IMAGE_TAG; do
+        if [ -z "${!var}" ]; then
+          echo "La variable d'environnement $var n'est pas définie"
+          exit 1
+        fi
+      done
   script:
-    - set -e # Arrêter le script en cas d'erreur
-    # Construire l'image Docker
     - docker build \
         --build-arg AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY" \
         --build-arg AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT" \
         --build-arg AZURE_SEARCH_API_KEY="$AZURE_SEARCH_API_KEY" \
         --build-arg AZURE_SEARCH_ENDPOINT="$AZURE_SEARCH_ENDPOINT" \
         -t $IMAGE_TAG .
-    # Push de l'image dans le registre Azure Container Registry
     - docker push $IMAGE_TAG
 
 deploy:
@@ -75,31 +62,25 @@ deploy:
   needs:
     - build
   before_script:
-    # Vérifier que les variables d'environnement sont définies
-    - if [ -z "$AZURE_OPENAI_API_KEY" ] || \
-      [ -z "$AZURE_OPENAI_ENDPOINT" ] || \
-      [ -z "$AZURE_SEARCH_API_KEY" ] || \
-      [ -z "$AZURE_SEARCH_ENDPOINT" ] || \
-      [ -z "$AZURE_SP_ID"] || \
-      [ -z "$AZURE_SP_SECRET" ] || \
-      [ -z "$AZURE_TENANT" ] || \
-      [ -z "$IMAGE_TAG" ]; then
-        echo "Une ou plusieurs variables d'environnement ne sont pas définies"
-        exit 1
-    fi
+    - |
+      # Vérifier que les variables d'environnement sont définies
+      for var in AZURE_OPENAI_API_KEY AZURE_OPENAI_ENDPOINT AZURE_SEARCH_API_KEY AZURE_SEARCH_ENDPOINT AZURE_SP_ID AZURE_SP_SECRET AZURE_TENANT IMAGE_TAG; do
+        if [ -z "${!var}" ]; then
+          echo "La variable d'environnement $var n'est pas définie"
+          exit 1
+        fi
+      done
   script:
-    - set -e # Arrêter le script en cas d'erreur
-    # Se connecter à Azure
     - az login --service-principal \
         -u "$AZURE_SP_ID" \
         -p "$AZURE_SP_SECRET" \
         --tenant "$AZURE_TENANT"
-    # Récupérer le mot de passe de l'ACR
     - ACR_PASSWORD=$(az acr credential show --name $AZURE_ACR --query "passwords[0].value" -o tsv)
-    # Vérifier que le mot de passe a bien été récupéré
-    - if [ -z "$ACR_PASSWORD" ]; then \
-        echo "Échec de la récupération du mot de passe ACR"; exit 1; fi
-    # Mettre à jour le conteneur de l'application web
+    - |
+      if [ -z "$ACR_PASSWORD" ]; then
+        echo "Échec de la récupération du mot de passe ACR"
+        exit 1
+      fi
     - az webapp config container set \
         --name $AZURE_WEBAPP \
         --resource-group $AZURE_RG \
@@ -107,7 +88,6 @@ deploy:
         --docker-registry-server-url https://$AZURE_ACR.azurecr.io \
         --docker-registry-server-user $AZURE_ACR \
         --docker-registry-server-password $ACR_PASSWORD
-    # Redémarrer l'application web
     - az webapp restart \
         --name $AZURE_WEBAPP \
         --resource-group $AZURE_RG
