@@ -1,20 +1,15 @@
-  #!/bin/sh
-  set -e
+#!/bin/bash
+set -e
 
-  required_vars=(
-    "AZURE_OPENAI_API_KEY"
-    "AZURE_OPENAI_ENDPOINT"
-    "AZURE_SEARCH_API_KEY"
-    "AZURE_SEARCH_ENDPOINT"
-    "AZURE_SP_ID"
-    "AZURE_SP_SECRET"
-    "AZURE_TENANT"
-  )
-
-  for var in "${required_vars[@]}"
-  do
-    if [ -z "${!var}" ]; then
-      echo "Error: $var is not set."
-      exit 1
-    fi
-  done
+# Vérifier que les variables d'environnement sont définies
+if [ -z "$AZURE_OPENAI_API_KEY" ] || \
+   [ -z "$AZURE_OPENAI_ENDPOINT" ] || \
+   [ -z "$AZURE_SEARCH_API_KEY" ] || \
+   [ -z "$AZURE_SEARCH_ENDPOINT" ] || \
+   [ -z "$AZURE_SP_ID"] || \
+   [ -z "$AZURE_SP_SECRET" ] || \
+   [ -z "$AZURE_TENANT" ] || \
+   [ -z "$IMAGE_TAG" ]; then
+    echo "Une ou plusieurs variables d'environnement ne sont pas définies"
+    exit 1
+fi
