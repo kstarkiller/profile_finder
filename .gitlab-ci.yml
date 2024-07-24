@@ -16,6 +16,7 @@ test:
   image: python:3.11.9
   before_script:
     - |
+      #!/bin/bash
       # Vérifier que les variables d'environnement sont définies
       for var in AZURE_OPENAI_API_KEY AZURE_OPENAI_ENDPOINT AZURE_SEARCH_API_KEY AZURE_SEARCH_ENDPOINT AZURE_SP_ID AZURE_SP_SECRET AZURE_TENANT IMAGE_TAG; do
         if [ -z "${!var}" ]; then
@@ -38,6 +39,7 @@ build:
     - test
   before_script:
     - |
+      #!/bin/bash
       # Vérifier que les variables d'environnement sont définies
       for var in AZURE_OPENAI_API_KEY AZURE_OPENAI_ENDPOINT AZURE_SEARCH_API_KEY AZURE_SEARCH_ENDPOINT AZURE_SP_ID AZURE_SP_SECRET AZURE_TENANT IMAGE_TAG; do
         if [ -z "${!var}" ]; then
@@ -63,6 +65,7 @@ deploy:
     - build
   before_script:
     - |
+      #!/bin/bash
       # Vérifier que les variables d'environnement sont définies
       for var in AZURE_OPENAI_API_KEY AZURE_OPENAI_ENDPOINT AZURE_SEARCH_API_KEY AZURE_SEARCH_ENDPOINT AZURE_SP_ID AZURE_SP_SECRET AZURE_TENANT IMAGE_TAG; do
         if [ -z "${!var}" ]; then
