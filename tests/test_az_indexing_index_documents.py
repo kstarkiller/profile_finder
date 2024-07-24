@@ -1,5 +1,3 @@
-# python -m unittest tests.test_az_indexing_index_documents
-
 import unittest
 from unittest.mock import MagicMock, patch
 from azure.core.exceptions import HttpResponseError
@@ -108,6 +106,59 @@ class TestIndexDocuments(unittest.TestCase):
 
         self.assertEqual(str(context.exception), "Failed to index batch after 3 retries")
         self.assertEqual(search_client.upload_documents.call_count, 3)
+
+
+    # Nouveau test : gestion des documents avec des ID en double
+    @patch('time.sleep', return_value=None)
+    def test_index_documents_duplicate_ids(self, mock_sleep):
+        search_client = MagicMock()
+        search_client.upload_documents.side_effect = [
+            [1, 2, 3],
+            [4, 5]
+        ]
+
+        documents = [{"id": 1}, {"id": 2}, {"id": 1}, {"id": 3}, {"id": 4}, {"id": 5}]
+        index_documents(search_client, documents, batch_size=3)
+
+        self.assertEqual(search_client.upload_documents.call_count, 2)
+        search_client.upload_documents.assert_any_call(documents=[{"id": 1}, {"id": 2}, {"id": 1}])
+        search_client.upload_documents.assert_any_call(documents=[{"id": 3}, {"id": 4}, {"id": 5}])
+
+    # Nouveau test : gestion de l'indexation avec une taille de batch de 1
+    @patch('time.sleep', return_value=None)
+    def test_index_documents_batch_size_one(self, mock_sleep):
+        search_client = MagicMock()
+        search_client.upload_documents.side_effect = [
+            [1],
+            [2],
+            [3]
+        ]
+
+        documents = [{"id": 1}, {"id": 2}, {"id": 3}]
+        index_documents(search_client, documents, batch_size=1)
+
+        self.assertEqual(search_client.upload_documents.call_count, 3)
+        search_client.upload_documents.assert_any_call(documents=[{"id": 1}])
+        search_client.upload_documents.assert_any_call(documents=[{"id": 2}])
+        search_client.upload_documents.assert_any_call(documents=[{"id": 3}])
+
+    # Nouveau test : gestion d'une réponse vide de l'API
+    @patch('time.sleep', return_value=None)
+    def test_index_documents_empty_response(self, mock_sleep):
+        search_client = MagicMock()
+        search_client.upload_documents.side_effect = [
+            [],
+            [],
+            []
+        ]
+
+        documents = [{"id": 1}, {"id": 2}, {"id": 3}]
+        index_documents(search_client, documents, batch_size=1)
+
+        self.assertEqual(search_client.upload_documents.call_count, 3)
+        search_client.upload_documents.assert_any_call(documents=[{"id": 1}])
+        search_client.upload_documents.assert_any_call(documents=[{"id": 2}])
+        search_client.upload_documents.assert_any_call(documents=[{"id": 3}])
 
 if __name__ == '__main__':
     unittest.main()
