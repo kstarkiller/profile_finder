@@ -3,14 +3,14 @@ from azure.search.documents import SearchClient
 from azure.core.exceptions import HttpResponseError
 import time
 import numpy as np
-import pandas as pd
+# import pandas as pd
 import os
 
-# Paths according to the OS
-if os.name == 'posix':
-    embedded_data_path = "app/processing_data/datas/embedded_datas.csv"  
-else:
-    embedded_data_path = r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\embedded_datas.csv"
+# # Paths according to the OS
+# if os.name == 'posix':
+#     embedded_data_path = "app/processing_data/datas/embedded_datas.csv"  
+# else:
+#     embedded_data_path = r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\embedded_datas.csv"
 
 search_service_endpoint = os.environ.get("AZURE_SEARCH_ENDPOINT")
 search_service_api_key =  os.environ.get("AZURE_SEARCH_API_KEY")  
@@ -22,22 +22,24 @@ if not search_service_endpoint or not search_service_api_key:
 credential = AzureKeyCredential(search_service_api_key)
 search_client = SearchClient(endpoint=search_service_endpoint, index_name="aiprofilesmatching-index", credential=credential)
 
-df = pd.read_csv(embedded_data_path)
+# df = pd.read_csv(embedded_data_path)
 
-documents = []
-for index, row in df.iterrows():
-    embedding = row["embedding"]
-    if isinstance(embedding, np.ndarray):
-        embedding = embedding.tolist()
-    elif isinstance(embedding, str):
-        embedding = [float(x) for x in embedding.strip('[]').split(',')]
-    
-    document = {
-        "id": str(index),
-        "content": row["Combined"],
-        "content_vector": embedding
-    }
-    documents.append(document)
+def create_documents(df):
+    documents = []
+    for index, row in df.iterrows():
+        embedding = row["embedding"]
+        if isinstance(embedding, np.ndarray):
+            embedding = embedding.tolist()
+        elif isinstance(embedding, str):
+            embedding = [float(x) for x in embedding.strip('[]').split(',')]
+
+        document = {
+            "id": str(index),
+            "content": row["Combined"],
+            "content_vector": embedding
+        }
+        documents.append(document)
+    return documents
 
 def validate_document(doc):
     if len(doc["content_vector"]) != 3072:
