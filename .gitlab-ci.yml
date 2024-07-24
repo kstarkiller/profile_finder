@@ -9,7 +9,6 @@ variables:
   AZURE_WEBAPP: aiprofilesmatchingWebApp
   AZURE_RG: rg-cgi-weu-cloud-genAIshowcase-dev
 
-# Définitiion d'un modèle de vérification des variables d'environnement
 .check_variables: &check_variables
   before_script:
     - if [ -z "$AZURE_OPENAI_API_KEY" ]; then echo "La variable d'environnement AZURE_OPENAI_API_KEY n'est pas définie"; exit 1; fi
