@@ -9,21 +9,23 @@ variables:
   AZURE_WEBAPP: aiprofilesmatchingWebApp
   AZURE_RG: rg-cgi-weu-cloud-genAIshowcase-dev
 
+# Définitiion d'un modèle de vérification des variables d'environnement
+check_variables:
+  before_script:
+    - if [ -z "$AZURE_OPENAI_API_KEY" ]; then echo "La variable d'environnement AZURE_OPENAI_API_KEY n'est pas définie"; exit 1; fi
+    - if [ -z "$AZURE_OPENAI_ENDPOINT" ]; then echo "La variable d'environnement AZURE_OPENAI_ENDPOINT n'est pas définie"; exit 1; fi
+    - if [ -z "$AZURE_SEARCH_API_KEY" ]; then echo "La variable d'environnement AZURE_SEARCH_API_KEY n'est pas définie"; exit 1; fi
+    - if [ -z "$AZURE_SEARCH_ENDPOINT" ]; then echo "La variable d'environnement AZURE_SEARCH_ENDPOINT n'est pas définie"; exit 1; fi
+    - if [ -z "$AZURE_SP_ID" ]; then echo "La variable d'environnement AZURE_SP_ID n'est pas définie"; exit 1; fi
+    - if [ -z "$AZURE_SP_SECRET" ]; then echo "La variable d'environnement AZURE_SP_SECRET n'est pas définie"; exit 1; fi
+    - if [ -z "$AZURE_TENANT" ]; then echo "La variable d'environnement AZURE_TENANT n'est pas définie"; exit 1; fi
+
 test:
   stage: test
   only:
     - dev_kevin
   image: python:3.11.9
-  before_script:
-    - |
-      #!/bin/bash
-      # Vérifier que les variables d'environnement sont définies
-      for var in AZURE_OPENAI_API_KEY AZURE_OPENAI_ENDPOINT AZURE_SEARCH_API_KEY AZURE_SEARCH_ENDPOINT AZURE_SP_ID AZURE_SP_SECRET AZURE_TENANT IMAGE_TAG; do
-        if [ -z "${!var}" ]; then
-          echo "La variable d'environnement $var n'est pas définie"
-          exit 1
-        fi
-      done
+  extends: check_variables
   script:
     - pip install -r requirements.txt
     - python -m unittest discover -s tests
@@ -37,16 +39,7 @@ build:
     - docker:20.10.16-dind
   needs:
     - test
-  before_script:
-    - |
-      #!/bin/bash
-      # Vérifier que les variables d'environnement sont définies
-      for var in AZURE_OPENAI_API_KEY AZURE_OPENAI_ENDPOINT AZURE_SEARCH_API_KEY AZURE_SEARCH_ENDPOINT AZURE_SP_ID AZURE_SP_SECRET AZURE_TENANT IMAGE_TAG; do
-        if [ -z "${!var}" ]; then
-          echo "La variable d'environnement $var n'est pas définie"
-          exit 1
-        fi
-      done
+  extends: check_variables
   script:
     - docker build \
         --build-arg AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY" \
@@ -63,27 +56,14 @@ deploy:
   image: mcr.microsoft.com/azure-cli
   needs:
     - build
-  before_script:
-    - |
-      #!/bin/bash
-      # Vérifier que les variables d'environnement sont définies
-      for var in AZURE_OPENAI_API_KEY AZURE_OPENAI_ENDPOINT AZURE_SEARCH_API_KEY AZURE_SEARCH_ENDPOINT AZURE_SP_ID AZURE_SP_SECRET AZURE_TENANT IMAGE_TAG; do
-        if [ -z "${!var}" ]; then
-          echo "La variable d'environnement $var n'est pas définie"
-          exit 1
-        fi
-      done
+  extends: check_variables
   script:
     - az login --service-principal \
         -u "$AZURE_SP_ID" \
         -p "$AZURE_SP_SECRET" \
         --tenant "$AZURE_TENANT"
     - ACR_PASSWORD=$(az acr credential show --name $AZURE_ACR --query "passwords[0].value" -o tsv)
-    - |
-      if [ -z "$ACR_PASSWORD" ]; then
-        echo "Échec de la récupération du mot de passe ACR"
-        exit 1
-      fi
+    - if [ -z "$ACR_PASSWORD" ]; then echo "Échec de la récupération du mot de passe ACR"; exit 1; fi
     - az webapp config container set \
         --name $AZURE_WEBAPP \
         --resource-group $AZURE_RG \
