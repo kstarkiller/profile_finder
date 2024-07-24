@@ -10,7 +10,7 @@ variables:
   AZURE_RG: rg-cgi-weu-cloud-genAIshowcase-dev
 
 # Définitiion d'un modèle de vérification des variables d'environnement
-check_variables:
+.check_variables: &check_variables
   before_script:
     - if [ -z "$AZURE_OPENAI_API_KEY" ]; then echo "La variable d'environnement AZURE_OPENAI_API_KEY n'est pas définie"; exit 1; fi
     - if [ -z "$AZURE_OPENAI_ENDPOINT" ]; then echo "La variable d'environnement AZURE_OPENAI_ENDPOINT n'est pas définie"; exit 1; fi
@@ -25,7 +25,8 @@ test:
   only:
     - dev_kevin
   image: python:3.11.9
-  extends: check_variables
+  before_script:
+    - *check_variables
   script:
     - pip install -r requirements.txt
     - python -m unittest discover -s tests
@@ -39,7 +40,8 @@ build:
     - docker:20.10.16-dind
   needs:
     - test
-  extends: check_variables
+  before_script:
+    - *check_variables
   script:
     - docker build \
         --build-arg AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY" \
@@ -56,7 +58,8 @@ deploy:
   image: mcr.microsoft.com/azure-cli
   needs:
     - build
-  extends: check_variables
+  before_script:
+    - *check_variables
   script:
     - az login --service-principal \
         -u "$AZURE_SP_ID" \
