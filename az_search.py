@@ -2,20 +2,20 @@ from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from azure.search.documents.models import VectorizedQuery
 import os
-import pandas as pd
+# import pandas as pd
 
 from indexing_data.embeddings import embedding_text
 from processing_data.normalizing import normalize_text
 
 model = "aiprofilesmatching-text-embedding-3-large"
 
-# Paths according to the used OS
-if os.name == 'posix':
-    file_path = "processing_data/datas/embedded_datas.csv"
-else:
-    file_path = r"processing_data\datas\embedded_datas.csv"
+# # Paths according to the used OS
+# if os.name == 'posix':
+#     file_path = "processing_data/datas/embedded_datas.csv"
+# else:
+#     file_path = r"processing_data\datas\embedded_datas.csv"
 
-df = pd.read_csv(file_path)
+# df = pd.read_csv(file_path)
 
 search_service_endpoint = os.environ.get("AZURE_SEARCH_ENDPOINT")
 search_service_api_key =  os.environ.get("AZURE_SEARCH_API_KEY")
