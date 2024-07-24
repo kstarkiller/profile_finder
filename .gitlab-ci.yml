@@ -13,7 +13,7 @@ variables:
 .check_env_vars:
   before_script:
     - chmod +x check_env_vars.sh
-    - .check_env_vars.sh
+    - /check_env_vars.sh
 
 test:
   stage: test
