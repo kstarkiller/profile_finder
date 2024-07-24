@@ -9,8 +9,13 @@ variables:
   AZURE_WEBAPP: aiprofilesmatchingWebApp
   AZURE_RG: rg-cgi-weu-cloud-genAIshowcase-dev
 
-# Définir un modèle vérifiant la présence des variables d'environnement
-.check_env_vars:
+# Définir des modèles vérifiant la présence des variables d'environnement
+app/check_env_vars:
+  before_script:
+    - chmod +x check_env_vars.sh
+    - app/check_env_vars.sh
+
+check_env_vars:
   before_script:
     - chmod +x check_env_vars.sh
     - ./check_env_vars.sh
@@ -20,7 +25,7 @@ test:
   only:
     - dev_kevin
   image: python:3.11.9
-  extends: .check_env_vars
+  extends: check_env_vars
   script:
     - set -e # Arrêter le script en cas d'erreur
     - pip install -r requirements.txt
@@ -36,7 +41,7 @@ build:
     - docker:20.10.16-dind
   needs:
     - test
-  extends: .check_env_vars # Utiliser le modèle pour vérifier les variables d'environnement
+  extends: app/check_env_vars # Utiliser le modèle pour vérifier les variables d'environnement
   script:
     - set -e # Arrêter le script en cas d'erreur
     # Construire l'image Docker
@@ -56,7 +61,7 @@ deploy:
   image: mcr.microsoft.com/azure-cli
   needs:
     - build
-  extends: .check_env_vars # Utiliser le modèle pour vérifier les variables d'environnement
+  extends: check_env_vars # Utiliser le modèle pour vérifier les variables d'environnement
   script:
     - set -e # Arrêter le script en cas d'erreur
     # Se connecter à Azure
