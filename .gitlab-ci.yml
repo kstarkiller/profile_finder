@@ -23,6 +23,11 @@ test:
   script:
     - set -e # Arrêter le script en cas d'erreur
     - pip install -r requirements.txt
+    # Créer des variables d'environnement pour les clés API
+    - export AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY"
+    - export AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT"
+    - export AZURE_SEARCH_API_KEY="$AZURE_SEARCH_API_KEY"
+    - export AZURE_SEARCH_ENDPOINT="$AZURE_SEARCH_ENDPOINT"
     # Exécuter l'ensemble des tests unitaires
     - python -m unittest discover -s tests
 
