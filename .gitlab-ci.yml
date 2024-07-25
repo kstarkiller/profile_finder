@@ -33,8 +33,8 @@ build:
   variables:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
-  needs:
-    - test
+  # needs:
+  #   - test
   extends: .check_variables
   before_script:
     - apt-get update && apt-get install -y ca-certificates curl apt-transport-https lsb-release gnupg
