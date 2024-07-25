@@ -8,6 +8,8 @@ variables:
   AZURE_ACR: aiprofilesmatchingacr
   AZURE_WEBAPP: aiprofilesmatchingWebApp
   AZURE_RG: rg-cgi-weu-cloud-genAIshowcase-dev
+  DOCKER_HOST: tcp://docker:2376
+  DOCKER_TLS_CERTDIR: ""
 
 .check_variables:
   before_script:
@@ -29,10 +31,9 @@ build:
     - dev_kevin
   image: ubuntu:20.04
   services:
-    - docker:20.10.16-dind
-  variables:
-    DOCKER_HOST: tcp://docker:2376
-    DOCKER_TLS_CERTDIR: ""
+    - name: docker:20.10.16-dind
+      alias: docker
+      command: ["--tls=false"]
   needs:
     - test
   extends: .check_variables
@@ -43,10 +44,9 @@ build:
     - echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list
     - apt-get update
     - apt-get install -y azure-cli
-    - curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
-  script:
-    - sleep 30
+    - sleep 60  # Attendre que le daemon Docker démarre
     - docker info
+  script:
     - docker build --build-arg AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY" --build-arg AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT" --build-arg AZURE_SEARCH_API_KEY="$AZURE_SEARCH_API_KEY" --build-arg AZURE_SEARCH_ENDPOINT="$AZURE_SEARCH_ENDPOINT" -t $IMAGE_TAG .
     - az login --service-principal -u "$AZURE_SP_ID" -p "$AZURE_SP_SECRET" --tenant "$AZURE_TENANT"
     - az acr login --name $AZURE_ACR
