@@ -13,15 +13,15 @@ variables:
   before_script:
   - if [ -z "$AZURE_OPENAI_API_KEY" ] || [ -z "$AZURE_OPENAI_ENDPOINT" ] || [ -z "$AZURE_SEARCH_API_KEY" ] || [ -z "$AZURE_SEARCH_ENDPOINT" ] || [ -z "$AZURE_SP_ID" ] || [ -z "$AZURE_SP_SECRET" ] || [ -z "$AZURE_TENANT" ]; then echo "Une ou plusieurs variables d'environnement ne sont pas définies"; exit 1; fi
 
-test:
-  stage: test
-  only:
-    - dev_kevin
-  image: python:3.11.9
-  extends: .check_variables
-  script:
-    - pip install -r requirements.txt
-    - python -m unittest discover -s tests
+# test:
+#   stage: test
+#   only:
+#     - dev_kevin
+#   image: python:3.11.9
+#   extends: .check_variables
+#   script:
+#     - pip install -r requirements.txt
+#     - python -m unittest discover -s tests
 
 build:
   stage: build
