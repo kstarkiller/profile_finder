@@ -8,8 +8,6 @@ variables:
   AZURE_ACR: aiprofilesmatchingacr
   AZURE_WEBAPP: aiprofilesmatchingWebApp
   AZURE_RG: rg-cgi-weu-cloud-genAIshowcase-dev
-  DOCKER_HOST: tcp://docker:2376
-  DOCKER_TLS_CERTDIR: ""
 
 .check_variables:
   before_script:
@@ -29,12 +27,12 @@ build:
   stage: build
   only:
     - dev_kevin
-  image: ubuntu:20.04
+  image: docker:20.10.16
   services:
-    - name: docker:20.10.16-dind
-      alias: docker
-      command: ["--tls=false"]
-      command: ["--privileged"]
+    - docker:20.10.16-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
   needs:
     - test
   extends: .check_variables
