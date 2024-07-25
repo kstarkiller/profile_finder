@@ -45,21 +45,10 @@ deploy:
     - build
   extends: .check_variables
   script:
-    - az login --service-principal \
-        -u "$AZURE_SP_ID" \
-        -p "$AZURE_SP_SECRET" \
-        --tenant "$AZURE_TENANT"
+    - az login --service-principal -u "$AZURE_SP_ID" -p "$AZURE_SP_SECRET" --tenant "$AZURE_TENANT"
     - az acr login --name $AZURE_ACR
     - docker push $IMAGE_TAG
     - ACR_PASSWORD=$(az acr credential show --name $AZURE_ACR --query "passwords[0].value" -o tsv)
     - if [ -z "$ACR_PASSWORD" ]; then echo "Échec de la récupération du mot de passe ACR"; exit 1; fi
-    - az webapp config container set \
-        --name $AZURE_WEBAPP \
-        --resource-group $AZURE_RG \
-        --docker-custom-image-name $IMAGE_TAG \
-        --docker-registry-server-url https://$AZURE_ACR.azurecr.io \
-        --docker-registry-server-user $AZURE_ACR \
-        --docker-registry-server-password $ACR_PASSWORD
-    - az webapp restart \
-        --name $AZURE_WEBAPP \
-        --resource-group $AZURE_RG
+    - az webapp config container set --name $AZURE_WEBAPP --resource-group $AZURE_RG --docker-custom-image-name $IMAGE_TAG --docker-registry-server-url https://$AZURE_ACR.azurecr.io --docker-registry-server-user $AZURE_ACR --docker-registry-server-password $ACR_PASSWORD
+    - az webapp restart --name $AZURE_WEBAPP --resource-group $AZURE_RG
