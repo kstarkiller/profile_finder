@@ -30,7 +30,7 @@ build:
   image: docker:20.10.16
   services:
     - name: docker:20.10.16-dind
-      command: ["--privileged"]
+      command: ["--tls=false"]
   variables:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
@@ -38,6 +38,8 @@ build:
     - test
   extends: .check_variables
   script:
+    - sleep 30
+    - docker info
     - docker build --build-arg AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY" --build-arg AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT" --build-arg AZURE_SEARCH_API_KEY="$AZURE_SEARCH_API_KEY" --build-arg AZURE_SEARCH_ENDPOINT="$AZURE_SEARCH_ENDPOINT" -t $IMAGE_TAG .
     - az login --service-principal -u "$AZURE_SP_ID" -p "$AZURE_SP_SECRET" --tenant "$AZURE_TENANT"
     - az acr login --name $AZURE_ACR
