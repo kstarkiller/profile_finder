@@ -44,7 +44,8 @@ build:
     - echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list
     - apt-get update
     - apt-get install -y azure-cli
-    - sleep 60  # Attendre que le daemon Docker démarre
+    - curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
+    - sleep 60
     - docker info
   script:
     - docker build --build-arg AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY" --build-arg AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT" --build-arg AZURE_SEARCH_API_KEY="$AZURE_SEARCH_API_KEY" --build-arg AZURE_SEARCH_ENDPOINT="$AZURE_SEARCH_ENDPOINT" -t $IMAGE_TAG .
