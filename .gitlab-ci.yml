@@ -27,16 +27,20 @@ build:
   stage: build
   only:
     - dev_kevin
-  image: trion/azure-cli:latest
+  image: mcr.microsoft.com/azure-cli
+  services:
+    - docker:20.10.16-dind
   needs:
     - test
   extends: .check_variables
+  before_script:
+    - apk add --no-cache docker
   script:
     - docker build --build-arg AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY" --build-arg AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT" --build-arg AZURE_SEARCH_API_KEY="$AZURE_SEARCH_API_KEY" --build-arg AZURE_SEARCH_ENDPOINT="$AZURE_SEARCH_ENDPOINT" -t $IMAGE_TAG .
     - az login --service-principal -u "$AZURE_SP_ID" -p "$AZURE_SP_SECRET" --tenant "$AZURE_TENANT"
     - az acr login --name $AZURE_ACR
     - docker push $IMAGE_TAG
-
+    
 deploy:
   stage: deploy
   only:
