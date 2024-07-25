@@ -41,6 +41,8 @@ deploy:
   only:
     - dev_kevin
   image: mcr.microsoft.com/azure-cli
+  services:
+    - docker:20.10.16-dind
   needs:
     - build
   extends: .check_variables
