@@ -1,6 +1,5 @@
 import re
 
-
 # s is input text
 def normalize_text(s):
     """
