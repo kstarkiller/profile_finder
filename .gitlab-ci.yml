@@ -34,6 +34,7 @@ build:
     - name: docker:20.10.16-dind
       alias: docker
       command: ["--tls=false"]
+      command: ["--privileged"]
   needs:
     - test
   extends: .check_variables
