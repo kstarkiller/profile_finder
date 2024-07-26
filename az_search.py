@@ -11,12 +11,12 @@ from processing_data.normalizing import normalize_text
 model = "aiprofilesmatching-text-embedding-3-large"
 
 # Paths according to the OS
-if os.name == 'posix':
-    file_path = "/home/kevin/simplon/briefs/avv-matcher/processing_data/datas/embedded_datas.csv"
-else:
-    file_path = r"C:\Users\thibaut.boguszewski\Desktop\avv-matcher\processing_data\datas\Coaff_V1_cleaned.csv"
+# if os.name == 'posix':
+#     file_path = "/home/kevin/simplon/briefs/avv-matcher/processing_data/datas/embedded_datas.csv"
+# else:
+#     file_path = r"C:\Users\thibaut.boguszewski\Desktop\avv-matcher\processing_data\datas\Coaff_V1_cleaned.csv"
 
-df = pd.read_csv(file_path)
+# df = pd.read_csv(file_path)
 
 search_service_endpoint = os.environ.get("AZURE_SEARCH_ENDPOINT")
 search_service_api_key =  os.environ.get("AZURE_SEARCH_API_KEY")

@@ -48,7 +48,7 @@ class TestEmbeddingText(unittest.TestCase):
     # - MockAzureOpenAI.return_value fournit une instance mockée de la classe AzureOpenAI.
     # - patch.dict est utilisé pour définir temporairement des variables d'environnement dans le test.
     # - MagicMock est utilisé pour créer une valeur de retour mockée pour les données d'embedding.
-    # - self.assertEqual et self.assert_called_once_with sont utilisés pour vérifier les résultats attendus du test.
+    # - self.assertEqual et self.assert_called_once_with sont utilisés pour vérifier les résultats attendus du test..
 
     @patch('embedding_data.embeddings.AzureOpenAI')
     def test_special_characters(self, MockAzureOpenAI):
