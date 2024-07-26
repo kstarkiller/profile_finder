@@ -63,6 +63,7 @@ def tokenizing(df, tokenizer="cl100k_base"):
     return df, total_tokens
 
 
+
 def data_processing_coaff(file_path, tokenizer):
     """
     Load the data from a csv file and normalize it.
@@ -121,6 +122,3 @@ def data_processing_coaff(file_path, tokenizer):
 
     return df, total_token
 
-
-
-data_processing_coaff("processing_data/datas/fixtures_coaff.csv", "cl100k_base")

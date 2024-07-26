@@ -1,5 +1,4 @@
 # python -m unittest tests.test_az_search_find_profile_azure
-
 import unittest
 from unittest.mock import MagicMock, patch
 from az_search import find_profiles_azure

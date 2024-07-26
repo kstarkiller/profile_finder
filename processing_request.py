@@ -1,6 +1,5 @@
 import os
-from pprint import pprint
-from openai import AzureOpenAI 
+from openai import AzureOpenAI
 from az_search import find_profiles_azure
 
 LLM = "aiprofilesmatching-gpt4"

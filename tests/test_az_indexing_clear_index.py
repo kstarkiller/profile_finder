@@ -1,5 +1,5 @@
 # python -m unittest tests.test_az_indexing_clear_index
-from embedding_data.az_indexing import clear_index  # Remplacez 'my_module' par le nom de votre module
+from indexing_data.az_indexing import clear_index
 
 import unittest
 from unittest.mock import MagicMock, patch

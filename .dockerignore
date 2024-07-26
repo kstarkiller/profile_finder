@@ -1,0 +1,18 @@
+# Ignore les fichiers de configuration d'éditeurs de texte
+*.vscode/
+
+# Ignore les fichiers compilés et les artefacts de construction
+*.o
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Ignore les dossiers de contrôle de version
+.git/
+.gitignore
+
+# Ignore les dossiers de dépendances
+node_modules/
+venv/
+.env/
