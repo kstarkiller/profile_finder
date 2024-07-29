@@ -4,8 +4,12 @@ stages:
   - deploy
 
 variables:
+  KEV_IMAGE_TAG: aiprofilesmatchingacr.azurecr.io/aiprofilesmatching_kevin:latest
+  TIBO_IMAGE_TAG: aiprofilesmatchingacr.azurecr.io/aiprofilesmatching_tibo:latest
   IMAGE_TAG: aiprofilesmatchingacr.azurecr.io/aiprofilesmatching:latest
   AZURE_ACR: aiprofilesmatchingacr
+  KEV_AZ_WEBAPP: KevWebApp
+  TIBO_AZ_WEBAPP: TiboWebApp
   AZURE_WEBAPP: aiprofilesmatchingWebApp
   AZURE_RG: rg-cgi-weu-cloud-genAIshowcase-dev
 
@@ -15,18 +19,74 @@ variables:
 
 test:
   stage: test
-  only:
-    - dev_kevin
   image: python:3.11.9
   extends: .check_variables
   script:
     - pip install -r requirements.txt
     - python -m unittest discover -s tests
 
-build:
+build_devKevin:
   stage: build
   only:
     - dev_kevin
+  image: ubuntu:20.04
+  needs:
+    - test
+  services:
+    - docker:20.10.16-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  extends: .check_variables
+  before_script:
+    - apt-get update && apt-get install -y ca-certificates curl apt-transport-https lsb-release gnupg
+    - curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+    - AZ_REPO=$(lsb_release -cs)
+    - echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list
+    - apt-get update
+    - apt-get install -y azure-cli
+    - curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
+    - sleep 10
+    - docker ps
+  script:
+    - docker build --build-arg AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY" --build-arg AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT" --build-arg AZURE_SEARCH_API_KEY="$AZURE_SEARCH_API_KEY" --build-arg AZURE_SEARCH_ENDPOINT="$AZURE_SEARCH_ENDPOINT" -t $KEV_IMAGE_TAG .
+    - az login --service-principal -u "$AZURE_SP_ID" -p "$AZURE_SP_SECRET" --tenant "$AZURE_TENANT"
+    - az acr login --name $AZURE_ACR
+    - docker push $KEV_IMAGE_TAG
+
+build_devTibo:
+  stage: build
+  only:
+    - dev_tibo
+  image: ubuntu:20.04
+  needs:
+    - test
+  services:
+    - docker:20.10.16-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  extends: .check_variables
+  before_script:
+    - apt-get update && apt-get install -y ca-certificates curl apt-transport-https lsb-release gnupg
+    - curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+    - AZ_REPO=$(lsb_release -cs)
+    - echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list
+    - apt-get update
+    - apt-get install -y azure-cli
+    - curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
+    - sleep 10
+    - docker ps
+  script:
+    - docker build --build-arg AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY" --build-arg AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT" --build-arg AZURE_SEARCH_API_KEY="$AZURE_SEARCH_API_KEY" --build-arg AZURE_SEARCH_ENDPOINT="$AZURE_SEARCH_ENDPOINT" -t $TIBO_IMAGE_TAG .
+    - az login --service-principal -u "$AZURE_SP_ID" -p "$AZURE_SP_SECRET" --tenant "$AZURE_TENANT"
+    - az acr login --name $AZURE_ACR
+    - docker push $TIBO_IMAGE_TAG
+
+build:
+  stage: build
+  only:
+    - deploy
   image: ubuntu:20.04
   needs:
     - test
@@ -52,10 +112,40 @@ build:
     - az acr login --name $AZURE_ACR
     - docker push $IMAGE_TAG
 
-deploy:
+deploy_devKevin:
   stage: deploy
   only:
     - dev_kevin
+  image: mcr.microsoft.com/azure-cli
+  needs:
+    - build_devKevin
+  extends: .check_variables
+  script:
+    - az login --service-principal -u "$AZURE_SP_ID" -p "$AZURE_SP_SECRET" --tenant "$AZURE_TENANT"
+    - ACR_PASSWORD=$(az acr credential show --name $AZURE_ACR --query "passwords[0].value" -o tsv)
+    - if [ -z "$ACR_PASSWORD" ]; then echo "Échec de la récupération du mot de passe ACR"; exit 1; fi
+    - az webapp config container set --name $KEV_AZ_WEBAPP --resource-group $AZURE_RG --docker-custom-image-name $KEV_IMAGE_TAG --docker-registry-server-url https://$AZURE_ACR.azurecr.io --docker-registry-server-user $AZURE_ACR --docker-registry-server-password $ACR_PASSWORD
+    - az webapp restart --name $KEV_AZ_WEBAPP --resource-group $AZURE_RG
+
+deploy_devTibo:
+  stage: deploy
+  only:
+    - dev_tibo
+  image: mcr.microsoft.com/azure-cli
+  needs:
+    - build_devTibo
+  extends: .check_variables
+  script:
+    - az login --service-principal -u "$AZURE_SP_ID" -p "$AZURE_SP_SECRET" --tenant "$AZURE_TENANT"
+    - ACR_PASSWORD=$(az acr credential show --name $AZURE_ACR --query "passwords[0].value" -o tsv)
+    - if [ -z "$ACR_PASSWORD" ]; then echo "Échec de la récupération du mot de passe ACR"; exit 1; fi
+    - az webapp config container set --name $TIBO_AZ_WEBAPP --resource-group $AZURE_RG --docker-custom-image-name $TIBO_IMAGE_TAG --docker-registry-server-url https://$AZURE_ACR.azurecr.io --docker-registry-server-user $AZURE_ACR --docker-registry-server-password $ACR_PASSWORD
+    - az webapp restart --name $TIBO_AZ_WEBAPP --resource-group $AZURE_RG
+
+deploy:
+  stage: deploy
+  only:
+    - deploy
   image: mcr.microsoft.com/azure-cli
   needs:
     - build
