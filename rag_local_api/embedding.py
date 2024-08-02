@@ -2,9 +2,9 @@ import ollama
 import chromadb
 
 # Embedding the documents
-def embed_documents(documents):
+def embed_documents(documents, model="llama3.1:8b"):
     '''
-    Embeds the documents using the mxbai-embed-large model.
+    Embeds the documents using the llama3.1 8B model.
 
     Args:
         documents (list): A list of documents to embed.
@@ -17,7 +17,7 @@ def embed_documents(documents):
 
     # store each document in a vector embedding database
     for i, d in enumerate(documents):
-        response = ollama.embeddings(model="mxbai-embed-large", prompt=d)
+        response = ollama.embeddings(model=model, prompt=d)
         embedding = response["embedding"]
         collection.add(
             ids=[str(i)],
@@ -28,7 +28,7 @@ def embed_documents(documents):
     return collection
 
 # Embedding the question
-def retrieve_documents(question, collection):
+def retrieve_documents(question:str, collection, model="llama3.1:8b"):
     '''
     Embeds the question using the mxbai-embed-large model and queries the collection for the most similar document.
 
@@ -41,7 +41,7 @@ def retrieve_documents(question, collection):
     '''
     embedded_question = ollama.embeddings(
         prompt=question,
-        model="mxbai-embed-large"
+        model=model
         )
     results = collection.query(
         query_embeddings=[embedded_question["embedding"]],

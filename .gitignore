@@ -5,6 +5,11 @@ config.py
 venv/
 .env
 
+# Fichiers
+*.csv
+*.xlsx
+*.log
+
 # Fichiers temporaires Python
 *.pyc
 __pycache__/

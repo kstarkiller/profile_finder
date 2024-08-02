@@ -2,24 +2,19 @@ import time
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+
 from load_documents import load_documents
 from generate_response import generate_response
 from embedding import embed_documents, retrieve_documents
-from pydantic import BaseModel
 
-DOC_PATH = "C:\\Users\\thibaut.boguszewski\\Desktop\\Tibo\\test API"
+DOC_PATH = r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\test"
+model = "llama3.1:8b"
 app = FastAPI()
-
-origins = [
-    "http://localhost",
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    "http://localhost:8503",
-]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -39,7 +34,7 @@ def test(input: TestInput):
     return {"message": input.message + " Success"}
 
 @app.post("/question", summary="Process question", description="This endpoint processes a question and returns a response.")
-def process_question(question: TestInput):
+def process_question(question: str):
     """
     Process a question and return a response.
 
@@ -54,26 +49,35 @@ def process_question(question: TestInput):
     try:
         documents = load_documents(DOC_PATH)
     except ValueError as e:
+        print(f"Error loading documents: {str(e)}")
         raise HTTPException(status_code=400, detail=str(e))
     end_time = time.time()
     print(f"Documents loaded in {end_time - start_time} seconds.")
 
     # Embedding the documents
     start_time = time.time()
-    collection = embed_documents(documents)
+    try:
+        collection = embed_documents(documents, model)
+    except Exception as e:
+        print(f"Error embedding documents: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
     end_time = time.time()
     print(f"Documents embedded in {end_time - start_time} seconds.\n")
 
     # Embedding the question and retrieving the documents
     start_time = time.time()
-    data = retrieve_documents(question.message, collection)  # Pass the message string directly
+    try:
+        data = retrieve_documents(question, collection, model)
+    except Exception as e:
+        print(f"Error retrieving documents: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
     end_time = time.time()
     print(f"\nRAG performed in {end_time - start_time} seconds.\n")
 
     # Add question and retrieved data and generating response
     start_time = time.time()
     try:
-        response = generate_response(data, question.message)  # Pass the message string directly
+        response = generate_response(data, question)
     except Exception as e:
         print(f"Error generating response: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -83,5 +87,26 @@ def process_question(question: TestInput):
     
     return {"response": response}
 
+from fastapi.openapi.docs import get_swagger_ui_html
+from fastapi.openapi.utils import get_openapi
+
+@app.get("/docs", include_in_schema=False)
+async def custom_swagger_ui_html():
+    return get_swagger_ui_html(
+        openapi_url="/openapi.json",
+        title="Custom API",
+        swagger_js_url="/static/swagger-ui-bundle.js",
+        swagger_css_url="/static/swagger-ui.css",
+    )
+
+@app.get("/openapi.json", include_in_schema=False)
+async def custom_openapi():
+    return get_openapi(
+        title="Custom API",
+        version="1.0.0",
+        description="This is a custom API",
+        routes=app.routes,
+    )
+
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8080)
