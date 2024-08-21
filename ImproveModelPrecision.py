@@ -1,7 +1,7 @@
 import spacy
 import re
-from spacy.lang.fr.stop_words import STOP_WORDS as fr_stop
 from fuzzywuzzy import fuzz
+from acronyms import acronyms_dict  # Importer le dictionnaire des acronymes
 
 # Charger le modèle pré-entraîné pour le français
 nlp = spacy.load("fr_core_news_lg")
@@ -25,45 +25,86 @@ date_patterns = [
     r"\b(\d{1,2} \d{1,2} \d{4})\b",
 ]
 
+# Expression régulière pour détecter les mois
+month_pattern = r"\b(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\b"
+
 # Compile all patterns into a single regex
 date_pattern = re.compile("|".join(date_patterns))
 
-# Fonction pour détecter les compétences et leurs niveaux
 def detect_skills_and_levels(text):
     doc = nlp(text)
     skills_detected = {}
 
+    # Parcours de chaque token dans le document 'doc'
     for i, token in enumerate(doc):
+        
+        # Parcours de chaque compétence dans la liste 'skills_list'
         for skill in skills_list:
+            
+            # Vérifie si le 'skill' et le 'token' ont une similarité supérieure à 70%
             if fuzz.ratio(skill.lower(), token.text.lower()) > 70:
+                
+                # Ajoute la compétence détectée dans le dictionnaire 'skills_detected' avec un niveau "Non spécifié"
                 skills_detected[skill] = "Non spécifié"
-                context_window = doc[max(0, i-7):i+8]  # Augmenter la fenêtre de contexte de 7 avant à 8 après
+                
+                # Définit une fenêtre de contexte autour du token courant (7 tokens avant et 8 après)
+                context_window = doc[max(0, i-7):i+8]
+                
+                # Parcours des niveaux de compétence et des mots-clés associés dans 'skill_levels'
                 for level, keywords in skill_levels.items():
+                    
+                    # Parcours de chaque mot-clé associé à un niveau de compétence
                     for keyword in keywords:
+                        
+                        # Vérifie si un mot-clé dans la fenêtre de contexte a une similarité supérieure à 70%
                         if any(fuzz.ratio(keyword, t.text.lower()) > 70 for t in context_window):
+                            
+                            # Trouve les index des tokens dans la fenêtre de contexte correspondant au mot-clé
                             keyword_index = [t.i for t in context_window if fuzz.ratio(keyword, t.text.lower()) > 70]
+                            
+                            # Si un mot-clé est trouvé dans la fenêtre de contexte et qu'il est à moins de 7 positions du token courant
                             if keyword_index and abs(keyword_index[0] - token.i) <= 7:
+                                
+                                # Met à jour le niveau de compétence détecté pour cette compétence
                                 skills_detected[skill] = level
-                                break
+                                break  # Sort de la boucle des mots-clés une fois le niveau de compétence détecté
+
+
+    print(f"Compétences détectées : {skills_detected}")  # Debug print
     return skills_detected
 
+# Fonction pour détecter les acronymes
+def detect_acronyms(text):
+    doc = nlp(text)
+    acronyms_detected = {}
+    
+    for token in doc:
+        acronym = token.text.upper()
+        if acronym in acronyms_dict:
+            acronyms_detected[acronym] = acronyms_dict[acronym]
+
+    print(f"Acronymes détectés : {acronyms_detected}")  # Debug print
+    return acronyms_detected
+
 def process_query(query):
-    # Analyser la requête utilisateur
+    print(f"Requête utilisateur : {query}")  # Debug print
     doc = nlp(query)
     
     # Extraction des entités
     person_names = []
     location = None
     dates = []
+    months = []
     skills_with_levels = detect_skills_and_levels(query)
+    acronyms_with_definitions = detect_acronyms(query)
 
     for ent in doc.ents:
         if ent.label_ == "PER":
-            # Filtrer les noms de compétences incorrectement classés comme personnes
             if ent.text not in skills_list:
                 person_names.append(ent.text)
         elif ent.label_ in ("GPE", "LOC"):
-            location = ent.text
+            if ent.text not in skills_list and ent.text not in acronyms_with_definitions:
+                location = ent.text
         elif ent.label_ == "DATE":
             dates.append(ent.text)
 
@@ -74,39 +115,38 @@ def process_query(query):
         if date_str and date_str not in dates:
             dates.append(date_str)
 
+    # Extraire les mois du texte
+    month_matches = re.findall(month_pattern, query.lower())
+    months.extend(month_matches)
+
     # Trier les dates et identifier date de début et date de fin
     dates = sorted(dates)
-    date_debut = dates[0] if dates else "Non spécifiée"
-    date_fin = dates[1] if len(dates) > 1 else "Non spécifiée"
+    # date_debut = dates[0] if dates else "Non spécifiée"
+    # date_fin = dates[1] if len(dates) > 1 else "Non spécifiée"
     
+    print(f"Noms détectés : {person_names}")  # Debug print
+    print(f"Localisation détectée : {location}")  # Debug print
+    print(f"Dates détectées : {dates}")  # Debug print
+    print(f"Mois détectés : {months}")  # Debug print
+
     # Format de la réponse
     response = (
         f"Noms : {', '.join(person_names) if person_names else 'Non spécifiés'}\n"
         f"Compétences : {', '.join(f'{skill} ({level})' for skill, level in skills_with_levels.items()) if skills_with_levels else 'Non spécifiées'}\n"
         f"Localisation : {location or 'Non spécifiée'}\n"
-        f"Date début : {date_debut}\n"
-        f"Date de fin : {date_fin}"
+        # f"Date début : {date_debut}\n"
+        # f"Date de fin : {date_fin}\n"
+        f"Mois mentionnés : {', '.join(months) if months else 'Non spécifiés'}\n"
+        f"Acronymes détectés : {', '.join(f'{acr} ({defn})' for acr, defn in acronyms_with_definitions.items()) if acronyms_with_definitions else 'Aucun'}"
     )
+    
+    print(f"Réponse générée : \n{response}")  # Debug print
 
     return response
 
-# Exemple d'utilisation
-query = """La société XYZ recherche une entreprise de services numériques (ESN) pour un projet de développement logiciel avancé. Le projet concerne le développement d'une application de gestion de données destinée à une utilisation interne. Le candidat idéal devra posséder une expertise approfondie dans les domaines suivants : développement en Python, data science, gestion de projet et intelligence artificielle.
+# Requête de test
+query = "Jean Dupont est un expert en SQL, Python et SAS. Il a travaillé à Paris de mars 2019 à juin 2022. Son niveau sur Salesforce est intermédiaire. Il a aussi une connaissance de base en Linux."
 
-Nom du projet : Application de Gestion Intelligente de Données (AGID)
-
-Compétences requises :
-
-Un professionnel expert en Python nommé Kevin Durant, Thibaut Dupont
-Maîtrise des langages de programmation Python et Java Soutien à l‘innovation
-Expérience en développement de solutions basées sur l'intelligence artificielle et l'apprentissage automatique
-Compétences en gestion de projet et méthodologies agiles
-Expérience en conception de bases de données et gestion des données
-
-Date de début : 15 septembre 2024
-Date de fin : 28 05 2025
-
-Il doit vivre à Lyon et qui serait expert en SAS...
-"""
-
-print(process_query(query))
+# Appel de la fonction avec la requête de test
+response = process_query(query)
+print(response)
