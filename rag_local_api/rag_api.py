@@ -9,7 +9,7 @@ from generate_response import generate_response
 from embedding import embed_documents, retrieve_documents
 
 DOC_PATH = r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\test"
-model = "llama3.1:8b"
+MODEL = "llama3.1:8b"
 app = FastAPI()
 
 app.add_middleware(
@@ -30,7 +30,9 @@ class TestInput(BaseModel):
 
 @app.post("/test", summary="Test endpoint", description="This is a test endpoint.")
 def test(input: TestInput):
-    """Returns the user input as a response."""
+    """Returns the user input as a response.
+    This is a test endpoint to check if the API is working properly.    
+    """
     return {"message": input.message + " Success"}
 
 @app.post("/question", summary="Process question", description="This endpoint processes a question and returns a response.")
@@ -57,7 +59,7 @@ def process_question(question: str):
     # Embedding the documents
     start_time = time.time()
     try:
-        collection = embed_documents(documents, model)
+        collection = embed_documents(documents, MODEL)
     except Exception as e:
         print(f"Error embedding documents: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -67,7 +69,7 @@ def process_question(question: str):
     # Embedding the question and retrieving the documents
     start_time = time.time()
     try:
-        data = retrieve_documents(question, collection, model)
+        data = retrieve_documents(question, collection, MODEL)
     except Exception as e:
         print(f"Error retrieving documents: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -87,26 +89,5 @@ def process_question(question: str):
     
     return {"response": response}
 
-from fastapi.openapi.docs import get_swagger_ui_html
-from fastapi.openapi.utils import get_openapi
-
-@app.get("/docs", include_in_schema=False)
-async def custom_swagger_ui_html():
-    return get_swagger_ui_html(
-        openapi_url="/openapi.json",
-        title="Custom API",
-        swagger_js_url="/static/swagger-ui-bundle.js",
-        swagger_css_url="/static/swagger-ui.css",
-    )
-
-@app.get("/openapi.json", include_in_schema=False)
-async def custom_openapi():
-    return get_openapi(
-        title="Custom API",
-        version="1.0.0",
-        description="This is a custom API",
-        routes=app.routes,
-    )
-
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8080)
+    uvicorn.run(app, host="0.0.0.0", port=8080)

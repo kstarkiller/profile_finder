@@ -1,7 +1,11 @@
 import os
 from openai import AzureOpenAI
-from config import AZURE_OPENAI_API_KEY, AZURE_OPENAI_ENDPOINT, DEPLOYMENT
 from embedding import find_profiles
+
+# Définir les variables d'environnement pour l'API Azure OpenAI
+AZURE_OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
+AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
+DEPLOYMENT = os.getenv("DEPLOYMENT")
 
 # Initialiser le client AzureOpenAI
 client = AzureOpenAI(

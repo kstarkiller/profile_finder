@@ -30,7 +30,7 @@ def embed_documents(documents, model="llama3.1:8b"):
 # Embedding the question
 def retrieve_documents(question:str, collection, model="llama3.1:8b"):
     '''
-    Embeds the question using the mxbai-embed-large model and queries the collection for the most similar document.
+    Embeds the question using the llama3.1 model and queries the collection for the most similar document.
 
     Args:
         question (str): The question to embed.
