@@ -1,7 +1,7 @@
 # Description: Dockerfile for the AI based Profile Matching Streamlit app
 # Authors: Kevin SIMON, Thibaut BOGUSZEWSKI
-# Version: 1.0
-# Date: 2024-07-18
+# Version: 1.3
+# Date: 2024-08-27
 
 # Use an official Python runtime as a parent image
 FROM python:3.11.9-slim
@@ -9,12 +9,18 @@ FROM python:3.11.9-slim
 # Set the working directory
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Copy only the requirements file to leverage Docker cache
+COPY requirements.txt /app/
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Download the spaCy model
+RUN python -m spacy download fr_core_news_lg
+
+# Copy the rest of the application code
+COPY . /app
 
 # Create a non-root user and switch to it
 RUN useradd -m appuser

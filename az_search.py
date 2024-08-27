@@ -12,18 +12,6 @@ from azure.search.documents.models import VectorizedQuery
 
 model = "aiprofilesmatching-text-embedding-3-large"
 
-# # Paths according to the used OS
-# if os.name == 'posix':
-#     file_path = "processing_data/datas/embedded_datas.csv"
-# else:
-#     file_path = r"processing_data\datas\embedded_datas.csv"
-
-# df = pd.read_csv(file_path)
-
-search_service_endpoint = os.environ.get("AZURE_SEARCH_ENDPOINT")
-search_service_api_key =  os.environ.get("AZURE_SEARCH_API_KEY")
-index_name = "aiprofilesmatching-index"
-
 # Classe personnalisée pour désactiver la vérification SSL
 class SSLAdapter(HTTPAdapter):
     def init_poolmanager(self, *args, **kwargs):
@@ -38,15 +26,7 @@ session = requests.Session()
 adapter = SSLAdapter()
 session.mount("https://", adapter)
 
-# Check if the credentials are correctly loaded
-if not search_service_endpoint or not search_service_api_key:
-    raise ValueError("Both AZURE_SEARCH_ENDPOINT and AZURE_SEARCH_API_KEY environment variables must be set.")
-
-# Créez un client de recherche
-credential = AzureKeyCredential(search_service_api_key)
-search_client = SearchClient(endpoint=search_service_endpoint, index_name=index_name, credential=credential)
-
-
+# Classe personnalisée du client avec désactivation de la vérification SSL
 class CustomSearchClient(SearchClient):
     def __init__(self, endpoint, index_name, credential, **kwargs):
         super().__init__(endpoint, index_name, credential, **kwargs)
