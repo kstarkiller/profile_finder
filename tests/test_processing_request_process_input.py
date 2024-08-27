@@ -124,17 +124,24 @@ class TestProcessInput(unittest.TestCase):
         self.assertEqual(updated_chat_history[-1]["content"], "Mock response")
 
     def test_process_input_special_characters(self):
+        # Texte contenant des caractères spéciaux et des emojis
         special_text = "Hello, world! 😃🚀✨"
-        user_input = [{"query": special_text}]
-        chat_history = [{"role": "system", "content": "Initial context"}]
+        user_input = [{"query": special_text}]  # Entrée utilisateur simulée avec le texte spécial
+        chat_history = [{"role": "system", "content": "Initial context"}]  # Historique du chat simulé
 
+        # Appel de la fonction à tester avec l'entrée utilisateur et l'historique du chat
         response, updated_chat_history = process_input(user_input, chat_history)
 
+        # Vérification que la fonction 'find_profiles_azure' a été appelée une fois avec le texte spécial et l'embedder simulé
         self.mock_find_profiles_azure.assert_called_once_with(special_text, self.mock_EMBEDDER)
+        # Vérification que la méthode 'chat.completions.create' a été appelée une fois pour générer une réponse
         self.mock_client.chat.completions.create.assert_called_once()
 
+        # Vérification que la réponse est égale à "Mock response"
         self.assertEqual(response, "Mock response")
+        # Vérification que l'historique du chat mis à jour contient maintenant 3 entrées
         self.assertEqual(len(updated_chat_history), 3)
+        # Vérification que le dernier élément de l'historique du chat contient la réponse "Mock response"
         self.assertEqual(updated_chat_history[-1]["content"], "Mock response")
 
     def test_process_input_client_side_error(self):
