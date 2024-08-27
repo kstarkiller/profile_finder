@@ -1,6 +1,6 @@
 import pandas as pd
 
-from embed_text import embedding_text
+from modules.embed_text import embedding_text
 
 # Description: Generate in a column the embeddings of a specified text column of the dataframe using the Azure OpenAI API.
 def generate_embeddings(df, embedding_column, embedded_column, model):
