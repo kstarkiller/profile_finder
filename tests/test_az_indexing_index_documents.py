@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, patch
 from azure.core.exceptions import HttpResponseError
-from indexing_data.az_indexing import index_documents
+from data_indexing.modules.index_documents import index_documents
 
 class TestIndexDocuments(unittest.TestCase):
 

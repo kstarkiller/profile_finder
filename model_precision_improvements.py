@@ -6,13 +6,13 @@ from fuzzywuzzy import fuzz
 from acronyms import acronyms_dict
 
 if os.name == 'posix':
-    descriptions_file = '/home/kevin/simplon/briefs/avv-matcher/processing_data/datas/descriptions_uniques.txt'
-    acronyms_file = '/home/kevin/simplon/briefs/avv-matcher/processing_data/datas/acronyms.txt'
-    profiles_file = '/home/kevin/simplon/briefs/avv-matcher/processing_data/datas/profils_uniques.txt'
+    descriptions_file = '/home/kevin/simplon/briefs/avv-matcher/data_processing/datas/sources/descriptions_uniques.txt'
+    acronyms_file = '/home/kevin/simplon/briefs/avv-matcher/data_processing/datas/sources/acronyms.txt'
+    profiles_file = '/home/kevin/simplon/briefs/avv-matcher/data_processing/datas/sources/profils_uniques.txt'
 else:
-    descriptions_file = r'C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\descriptions_uniques.txt'
-    acronyms_file = r'C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\acronyms.txt'
-    profiles_file = r'C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\profils_uniques.txt'
+    descriptions_file = r'C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\sources\descriptions_uniques.txt'
+    acronyms_file = r'C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\sources\acronyms.txt'
+    profiles_file = r'C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\sources\profils_uniques.txt'
 
 # Charger le modèle pré-entraîné pour le français
 nlp = spacy.load("fr_core_news_lg")
@@ -49,6 +49,13 @@ month_pattern = r"\b(janvier|février|mars|avril|mai|juin|juillet|août|septembr
 date_pattern = re.compile("|".join(date_patterns))
 
 def detect_skills_and_levels(text):
+    """
+    Detect skills and their levels in a given text.
+    
+    :param text: str (text to analyze)
+    :return: dict (skills detected with their levels)
+    """
+
     doc = nlp(text)
     skills_detected = {}
 
@@ -92,6 +99,13 @@ def detect_skills_and_levels(text):
 
 # Fonction pour détecter les acronymes
 def detect_acronyms(text):
+    """
+    Detect acronyms and their definitions in a given text.
+
+    :param text: str (text to analyze)
+    :return: dict (acronyms detected with their definitions)
+    """
+
     doc = nlp(text)
     acronyms_detected = {}
     
@@ -103,7 +117,14 @@ def detect_acronyms(text):
     print(f"Acronymes détectés : {acronyms_detected}")  # Debug print
     return acronyms_detected
 
-def process_query(query):
+def structure_query(query):
+    """
+    Process a user query to extract entities and structure it.
+    
+    :param query: str (user query)
+    :return: str (query structured with extracted entities)
+    """
+    
     print(f"Requête utilisateur : {query}")  # Debug print
     doc = nlp(query)
     

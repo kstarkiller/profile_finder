@@ -108,6 +108,13 @@ company_names = [
 
 # Générer de nouvelles données de faux COAFF
 def generate_fake_coaff(names):
+    """
+    Generate fake but consistent COAFF data for the given names.
+    
+    :param names: list (list of names)
+    :return: DataFrame, int (new COAFF data, number of rows)
+    """
+    
     fake_data = []
     coaff_rows = 0
     for name in names:
@@ -177,6 +184,13 @@ def generate_fake_coaff(names):
     return pd.DataFrame(fake_data), coaff_rows
 
 def generate_fake_psarm(names):
+    """
+    Generate fake but consistent PSA RM data for the given names.
+    
+    :param names: list (list of names)
+    :return: DataFrame, int (new PSA RM data, number of rows)
+    """
+    
     fake_data = []
     psarm_rows = 0
 
@@ -267,6 +281,13 @@ def generate_fake_psarm(names):
     return pd.DataFrame(fake_data), psarm_rows
 
 def generate_fake_certs(names):
+    """
+    Generate fake but consistent certifications data for the given names.
+
+    :param names: list (list of names)
+    :return: DataFrame, int (new certifications data, number of rows)
+    """
+    
     fake_data = []
     certs_rows = 0
 

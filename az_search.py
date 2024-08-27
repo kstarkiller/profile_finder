@@ -1,7 +1,4 @@
 
-# import pandas as pd
-from indexing_data.embeddings import embedding_text
-from processing_data.normalizing import normalize_text
 import os
 import requests
 from requests.adapters import HTTPAdapter
@@ -9,6 +6,9 @@ import ssl
 from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from azure.search.documents.models import VectorizedQuery
+
+from data_embedding.modules.embed_text import embedding_text
+from data_processing.normalizing import normalize_text
 
 model = "aiprofilesmatching-text-embedding-3-large"
 
@@ -45,6 +45,14 @@ credential = AzureKeyCredential(search_service_api_key)
 search_client = CustomSearchClient(endpoint=search_service_endpoint, index_name=index_name, credential=credential)
 
 def find_profiles_azure(user_input, model):
+    """
+    Find profiles using Azure Cognitive Search.
+
+    :param user_input: str (e. g. "Who's Karen ?")
+    :param model: str (e. g. "aiprofilesmatching-text-embedding-3-large")
+    :return: list of str (e. g. ["Karen is a Software engineer with 5 years of experience.", ...])
+    """
+    
     try:
         # Normaliser l'entrée utilisateur
         user_input = normalize_text(user_input)

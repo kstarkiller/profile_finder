@@ -1,5 +1,13 @@
 # Description: Module to clear all documents from an Azure Cognitive Search index
 def clear_index(search_client, batch_size=100):
+    """
+    Clear all documents from an Azure Cognitive Search index.
+    
+    :param search_client: azure.search.documents.SearchClient instance (e. g. search_client)
+    :param batch_size: int, optional (e. g. 100)
+    :return: None
+    """
+    
     try:
         while True:
             # Récupérer tous les IDs des documents dans l'index

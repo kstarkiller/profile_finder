@@ -3,6 +3,16 @@ from azure.core.exceptions import HttpResponseError
 
 # Description: This function indexes a list of documents in batches to an Azure Cognitive Search index.
 def index_documents(search_client, documents, batch_size=100, max_retries=3):
+    """
+    Index a list of documents in batches to an Azure Cognitive Search index.
+    
+    :param search_client: azure.search.documents.SearchClient instance (e. g. search_client)
+    :param documents: list of dict (e. g. [{"id": "1", "text": "Hello world"}, ...])
+    :param batch_size: int, optional (e. g. 100)
+    :param max_retries: int, optional (e. g. 3)
+    :return: None
+    """
+
     original_batch_size = batch_size
     i = 0
     while i < len(documents):

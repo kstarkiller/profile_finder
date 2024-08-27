@@ -2,7 +2,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
 import pandas as pd
-from indexing_data.embeddings import generate_embeddings
+from data_embedding.modules.generate_embedded_column import generate_embeddings
 
 class TestGenerateEmbeddings(unittest.TestCase):
 
