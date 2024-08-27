@@ -6,8 +6,8 @@ from data_embedding.modules.embed_text import embedding_text
 
 class TestEmbeddingText(unittest.TestCase):
 
-    # Définir une fonction de test qui mocke la classe AzureOpenAI du module indexing_data.embeddings
-    @patch('indexing_data.embeddings.AzureOpenAI')
+    # Définir une fonction de test qui mocke la classe AzureOpenAI du module embed_text
+    @patch('data_embedding.modules.embed_text.AzureOpenAI')
     def test_embedding_text_success(self, MockAzureOpenAI):
         # Créer une instance de la classe AzureOpenAI mockée
         mock_client = MockAzureOpenAI.return_value
@@ -49,7 +49,7 @@ class TestEmbeddingText(unittest.TestCase):
     # - MagicMock est utilisé pour créer une valeur de retour mockée pour les données d'embedding.
     # - self.assertEqual et self.assert_called_once_with sont utilisés pour vérifier les résultats attendus du test.
 
-    @patch('indexing_data.embeddings.AzureOpenAI')
+    @patch('data_embedding.modules.embed_text.AzureOpenAI')
     def test_special_characters(self, MockAzureOpenAI):
         mock_client = MockAzureOpenAI.return_value
         mock_client.embeddings.create.return_value.data = [
@@ -67,7 +67,7 @@ class TestEmbeddingText(unittest.TestCase):
             )
             mock_client.embeddings.create.assert_called_once_with(input=[special_text], model=model)
 
-    @patch('indexing_data.embeddings.AzureOpenAI')
+    @patch('data_embedding.modules.embed_text.AzureOpenAI')
     def test_long_text(self, MockAzureOpenAI):
         mock_client = MockAzureOpenAI.return_value
         mock_client.embeddings.create.return_value.data = [
@@ -86,7 +86,7 @@ class TestEmbeddingText(unittest.TestCase):
             mock_client.embeddings.create.assert_called_once_with(input=[long_text], model=model)
 
     # Cas de test d'erreurs
-    @patch('indexing_data.embeddings.AzureOpenAI')
+    @patch('data_embedding.modules.embed_text.AzureOpenAI')
     def test_missing_api_key(self, MockAzureOpenAI):
         with patch.dict(os.environ, {
             'AZURE_OPENAI_API_KEY': '',
@@ -97,7 +97,7 @@ class TestEmbeddingText(unittest.TestCase):
             with self.assertRaises(ValueError):
                 embedding_text(text, model)
 
-    @patch('indexing_data.embeddings.AzureOpenAI')
+    @patch('data_embedding.modules.embed_text.AzureOpenAI')
     def test_invalid_model(self, MockAzureOpenAI):
         mock_client = MockAzureOpenAI.return_value
         mock_client.embeddings.create.side_effect = Exception('Model not found')
@@ -110,7 +110,7 @@ class TestEmbeddingText(unittest.TestCase):
             with self.assertRaises(Exception):
                 embedding_text(text, model)
 
-    @patch('indexing_data.embeddings.AzureOpenAI')
+    @patch('data_embedding.modules.embed_text.AzureOpenAI')
     def test_missing_endpoint(self, MockAzureOpenAI):
         with patch.dict(os.environ, {
             'AZURE_OPENAI_API_KEY': 'fake_api_key',
@@ -121,7 +121,7 @@ class TestEmbeddingText(unittest.TestCase):
             with self.assertRaises(ValueError):
                 embedding_text(text, model)
                 
-    @patch('indexing_data.embeddings.AzureOpenAI')
+    @patch('data_embedding.modules.embed_text.AzureOpenAI')
     def test_missing_text(self, MockAzureOpenAI):
         with patch.dict(os.environ, {'AZURE_OPENAI_API_KEY': 'fake_api_key', 'AZURE_OPENAI_ENDPOINT': 'https://fake.endpoint'}):
             text = ""  
@@ -129,7 +129,7 @@ class TestEmbeddingText(unittest.TestCase):
             with self.assertRaises(ValueError):
                 embedding_text(text, model)
 
-    @patch('indexing_data.embeddings.AzureOpenAI')
+    @patch('data_embedding.modules.embed_text.AzureOpenAI')
     def test_network_error(self, MockAzureOpenAI):
         mock_client = MockAzureOpenAI.return_value
         mock_client.embeddings.create.side_effect = Exception('Network error')
@@ -139,7 +139,7 @@ class TestEmbeddingText(unittest.TestCase):
             with self.assertRaises(Exception):
                 embedding_text(text, model)
 
-    @patch('indexing_data.embeddings.AzureOpenAI')
+    @patch('data_embedding.modules.embed_text.AzureOpenAI')
     def test_invalid_text_type(self, MockAzureOpenAI):
         with patch.dict(os.environ, {'AZURE_OPENAI_API_KEY': 'fake_api_key', 'AZURE_OPENAI_ENDPOINT': 'https://fake.endpoint'}):
             invalid_text = 12345
