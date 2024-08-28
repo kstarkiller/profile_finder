@@ -9,11 +9,8 @@ FROM python:3.11.9-slim
 # Set the working directory
 WORKDIR /app
 
-# # Copy only the requirements file to leverage Docker cache
-# COPY requirements.txt /app/
-
-# Copy the rest of the application code
-COPY . /app
+# Copy only the requirements file to leverage Docker cache
+COPY requirements.txt /app/
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --upgrade pip
@@ -21,6 +18,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Download the spaCy model
 RUN python -m spacy download fr_core_news_lg
+
+# Copy the rest of the application code
+COPY . /app
 
 # Create a non-root user and switch to it
 RUN useradd -m appuser
