@@ -8,8 +8,8 @@ model = 'aiprofilesmatching-text-embedding-3-large'
 
 # Paths according to the OS
 if os.name == 'posix':
-    combined_result_path = "app/data_processing/datas/combined/combined_result.csv"
-    embedded_data_path = "app/data_processing/datas/embedded/embedded_datas.csv"
+    combined_result_path = "data_processing/datas/combined/combined_result.csv"
+    embedded_data_path = "data_processing/datas/embedded/embedded_datas.csv"
 else:
     combined_result_path = r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\combined\combined_result.csv"
     embedded_data_path = r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\embedded\embedded_datas.csv"

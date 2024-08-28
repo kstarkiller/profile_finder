@@ -5,9 +5,9 @@ import os
 from fuzzywuzzy import fuzz
 
 if os.name == 'posix':
-    descriptions_file = 'app/data_processing/datas/sources/descriptions_uniques.txt'
-    acronyms_file = 'app/data_processing/datas/sources/acronyms.txt'
-    profiles_file = 'app/data_processing/datas/sources/profils_uniques.txt'
+    descriptions_file = 'data_processing/datas/sources/descriptions_uniques.txt'
+    acronyms_file = 'data_processing/datas/sources/acronyms.txt'
+    profiles_file = 'data_processing/datas/sources/profils_uniques.txt'
 else:
     descriptions_file = r'C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\sources\descriptions_uniques.txt'
     acronyms_file = r'C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\sources\acronyms.txt'
