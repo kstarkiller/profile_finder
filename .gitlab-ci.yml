@@ -47,6 +47,7 @@ build_devKevin:
     - sleep 10
     - docker ps
   script:
+    - docker rmi $KEV_IMAGE_TAG
     - docker build --build-arg AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY" --build-arg AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT" --build-arg AZURE_SEARCH_API_KEY="$AZURE_SEARCH_API_KEY" --build-arg AZURE_SEARCH_ENDPOINT="$AZURE_SEARCH_ENDPOINT" -t $KEV_IMAGE_TAG .
     - az login --service-principal -u "$AZURE_SP_ID" -p "$AZURE_SP_SECRET" --tenant "$AZURE_TENANT"
     - az acr login --name $AZURE_ACR
