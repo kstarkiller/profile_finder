@@ -4,10 +4,10 @@ import os
 
 # Paths according to the OS
 if os.name == 'posix':
-    fixture_coaff_path = 'app/data_processing/datas/fixtures/fixtures_coaff.csv'
-    fixture_psarm_path = 'app/data_processing/datas/fixtures/fixtures_psarm.csv'
-    fixtures_certs_path = 'app/data_processing/datas/fixtures/fixtures_certs.csv'
-    combined_result_path = 'app/data_processing/datas/combined/combined_result.csv'
+    fixture_coaff_path = 'data_processing/datas/fixtures/fixtures_coaff.csv'
+    fixture_psarm_path = 'data_processing/datas/fixtures/fixtures_psarm.csv'
+    fixtures_certs_path = 'data_processing/datas/fixtures/fixtures_certs.csv'
+    combined_result_path = 'data_processing/datas/combined/combined_result.csv'
 else:
     fixture_coaff_path = r'C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\fixtures\fixtures_coaff.csv'
     fixture_psarm_path = r'C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\fixtures\fixtures_psarm.csv'
