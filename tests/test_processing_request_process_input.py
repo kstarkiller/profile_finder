@@ -9,17 +9,18 @@ class TestProcessInput(unittest.TestCase):
         patcher_find_profiles_azure = patch('processing_request.find_profiles_azure')
         patcher_client = patch('processing_request.client')
         patcher_EMBEDDER = patch('processing_request.EMBEDDER')
-        patcher_LLM = patch('processing_request.LLM')
+        patcher_LLM_gpt4 = patch('processing_request.LLM_gpt4')
+        patcher_LLM_gpt4_turbo = patch('processing_request.LLM_gpt4_turbo')
 
         self.mock_find_profiles_azure = patcher_find_profiles_azure.start()
         self.mock_client = patcher_client.start()
         self.mock_EMBEDDER = patcher_EMBEDDER.start()
-        self.mock_LLM = patcher_LLM.start()
+        self.mock_LLM = patcher_LLM_gpt4_turbo.start()
         
         self.addCleanup(patcher_find_profiles_azure.stop)
         self.addCleanup(patcher_client.stop)
         self.addCleanup(patcher_EMBEDDER.stop)
-        self.addCleanup(patcher_LLM.stop)
+        self.addCleanup(patcher_LLM_gpt4_turbo.stop)
 
         # Mock data
         self.mock_find_profiles_azure.return_value = ["Profile 1", "Profile 2"]
