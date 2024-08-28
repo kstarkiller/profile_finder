@@ -9,7 +9,7 @@ from modules.index_documents import index_documents
 
 # Paths according to the OS
 if os.name == 'posix':
-    embedded_data_path = "data_processing/datas/embedded/embedded_datas.csv"
+    embedded_data_path = "app/data_processing/datas/embedded/embedded_datas.csv"
 else:
     embedded_data_path = r"C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\embedded\embedded_datas.csv"
 
