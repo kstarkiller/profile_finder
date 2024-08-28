@@ -1,13 +1,26 @@
 import spacy
 import re
+import json
+import os
 from fuzzywuzzy import fuzz
-from acronyms import acronyms_dict  # Importer le dictionnaire des acronymes
+from acronyms import acronyms_dict
+
+if os.name == 'posix':
+    descriptions_file = '/home/kevin/simplon/briefs/avv-matcher/data_processing/datas/sources/descriptions_uniques.txt'
+    acronyms_file = '/home/kevin/simplon/briefs/avv-matcher/data_processing/datas/sources/acronyms.txt'
+    profiles_file = '/home/kevin/simplon/briefs/avv-matcher/data_processing/datas/sources/profils_uniques.txt'
+else:
+    descriptions_file = r'C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\sources\descriptions_uniques.txt'
+    acronyms_file = r'C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\sources\acronyms.txt'
+    profiles_file = r'C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\sources\profils_uniques.txt'
 
 # Charger le modèle pré-entraîné pour le français
 nlp = spacy.load("fr_core_news_lg")
 
-# Liste simplifiée de compétences pour l'exemple
-skills_list = ["SQL", "Analyse des données", "SAS", "Linux", "Salesforce", "Python"]
+# Liste des compétences
+with open(descriptions_file, 'r', encoding='utf-8') as file:
+    # Lire toutes les lignes du fichier et les mettre dans une liste
+    skills_list = [line.strip() for line in file]
 
 # Dictionnaire pour les niveaux de compétence et leurs mots-clés associés
 skill_levels = {
@@ -16,6 +29,10 @@ skill_levels = {
     "Intermédiaire": ["intermédiaire", "confirmé"],
     "Senior": ["senior"]
 }
+
+# Dictionnaire pour les acronymes et leurs définitions
+with open(acronyms_file, 'r', encoding='utf-8') as f:
+    acronyms_dict = json.load(f)
 
 # Expressions régulières pour détecter différents formats de dates
 date_patterns = [
@@ -32,6 +49,13 @@ month_pattern = r"\b(janvier|février|mars|avril|mai|juin|juillet|août|septembr
 date_pattern = re.compile("|".join(date_patterns))
 
 def detect_skills_and_levels(text):
+    """
+    Detect skills and their levels in a given text.
+    
+    :param text: str (text to analyze)
+    :return: dict (skills detected with their levels)
+    """
+
     doc = nlp(text)
     skills_detected = {}
 
@@ -75,6 +99,13 @@ def detect_skills_and_levels(text):
 
 # Fonction pour détecter les acronymes
 def detect_acronyms(text):
+    """
+    Detect acronyms and their definitions in a given text.
+
+    :param text: str (text to analyze)
+    :return: dict (acronyms detected with their definitions)
+    """
+
     doc = nlp(text)
     acronyms_detected = {}
     
@@ -86,7 +117,14 @@ def detect_acronyms(text):
     print(f"Acronymes détectés : {acronyms_detected}")  # Debug print
     return acronyms_detected
 
-def process_query(query):
+def structure_query(query):
+    """
+    Process a user query to extract entities and structure it.
+    
+    :param query: str (user query)
+    :return: str (query structured with extracted entities)
+    """
+    
     print(f"Requête utilisateur : {query}")  # Debug print
     doc = nlp(query)
     
@@ -143,10 +181,3 @@ def process_query(query):
     print(f"Réponse générée : \n{response}")  # Debug print
 
     return response
-
-# Requête de test
-query = "Jean Dupont est un expert en SQL, Python et SAS. Il a travaillé à Paris de mars 2019 à juin 2022. Son niveau sur Salesforce est intermédiaire. Il a aussi une connaissance de base en Linux."
-
-# Appel de la fonction avec la requête de test
-response = process_query(query)
-print(response)

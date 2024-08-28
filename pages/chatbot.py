@@ -2,7 +2,7 @@ from datetime import date
 import streamlit as st
 
 from processing_request import process_input
-from ImproveModelPrecision import process_query  # Import de la fonction process_query
+from model_precision_improvements import structure_query  # Import de la fonction structure_query
 
 # Contexte du chatbot
 starting_context = f"""
@@ -12,6 +12,11 @@ If you don't know the answer, just say you don't know, don't try to make up an a
 """
 
 def display_accueil():
+    """
+    Display the chatbot interface.
+    
+    :return: None
+    """
     try:
         if "chat_history" not in st.session_state:
             st.session_state["chat_history"] = [
@@ -24,7 +29,7 @@ def display_accueil():
             user_input = st.session_state["temp_input"]
 
             if user_input:
-                query_context = process_query(user_input)  # Appel de process_query
+                query_context = structure_query(user_input)  # Appel de structure_query
                 st.session_state["query_context"].append({"query": user_input, "context": query_context})
                 chatbot_response, updated_chat_history = process_input(
                     st.session_state["query_context"], st.session_state["chat_history"]

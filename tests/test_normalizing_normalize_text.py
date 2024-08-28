@@ -1,6 +1,6 @@
 #python -m unittest tests.test_normalizing_normalize_text
 import unittest
-from processing_data.normalizing import normalize_text  # Remplacez 'your_module' par le nom de votre module
+from data_processing.normalizing import normalize_text 
 
 class TestNormalizeText(unittest.TestCase):
 

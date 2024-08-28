@@ -13,6 +13,14 @@ client = AzureOpenAI(
 )
 
 def process_input(user_input, chat_history):
+    """
+    Process the user input and return the chatbot response.
+
+    :param user_input: list of dict containing the user input and context (if any) as a string
+    :param chat_history: list of dict containing the chat history (user and assistant messages) as strings
+    :return: str, list of dict
+    """
+
     # Validation de l'entrée utilisateur
     if not user_input[-1]["query"].strip():
         return "Please enter a valid input.", chat_history[1:]

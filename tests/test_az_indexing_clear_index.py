@@ -1,5 +1,5 @@
 # python -m unittest tests.test_az_indexing_clear_index
-from indexing_data.az_indexing import clear_index
+from data_indexing.modules.clear_index import clear_index
 
 import unittest
 from unittest.mock import MagicMock, patch

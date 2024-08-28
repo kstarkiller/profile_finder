@@ -10,6 +10,7 @@ venv/
 *.xlsx
 *.xls
 *.svg
+*.txt
 
 # # Docker
 # Dockerfile
