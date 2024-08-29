@@ -2,7 +2,8 @@ import os
 from openai import AzureOpenAI
 from az_search import find_profiles_azure
 
-LLM = "aiprofilesmatching-gpt4"
+LLM_gpt4 = "aiprofilesmatching-gpt4"
+LLM_gpt4_turbo = "gpt-4-turbo-1106-preview"
 EMBEDDER = "aiprofilesmatching-text-embedding-3-large"
 
 # Initialiser le client AzureOpenAI
@@ -50,7 +51,7 @@ def process_input(user_input, chat_history):
     # Créer une requête de complétion de chat en utilisant le client Azure OpenAI
     try:
         completion = client.chat.completions.create(
-            model=LLM, messages=chat_history
+            model=LLM_gpt4_turbo, messages=chat_history
         )
 
         # Récupérer la réponse du modèle

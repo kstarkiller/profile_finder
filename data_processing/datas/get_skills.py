@@ -3,10 +3,10 @@ import os
 
 # Paths according to the OS
 if os.name == 'posix':
-    psarm_path = '/home/kevin/simplon/briefs/avv-matcher/data_processing/datas/sources/UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx'
-    coaff_path = '/home/kevin/simplon/briefs/avv-matcher/data_processing/datas/sources/Coaff_V1.xlsx'
-    output_descriptions = '/home/kevin/simplon/briefs/avv-matcher/data_processing/datas/sources/descriptions_uniques.txt'
-    output_profiles = '/home/kevin/simplon/briefs/avv-matcher/data_processing/datas/sources/profils_uniques.txt'
+    psarm_path = 'data_processing/datas/sources/UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx'
+    coaff_path = 'data_processing/datas/sources/Coaff_V1.xlsx'
+    output_descriptions = 'data_processing/datas/sources/descriptions_uniques.txt'
+    output_profiles = 'data_processing/datas/sources/profils_uniques.txt'
 else:
     psarm_path = r'C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\sources\UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx'
     coaff_path = r'C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\sources\Coaff_V1_cleaned.csv'
