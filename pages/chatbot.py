@@ -47,17 +47,17 @@ def display_accueil():
             if user_input:
                 # Rechercher le terme 'développeur' dans la question de l'utilisateur est le remplacer par 'profil'
                 if 'développeur' in user_input:
-                    user_input = user_input.replace('développeur', 'profil')
+                    modified_user_input = user_input.replace('développeur', 'profil')
                 elif 'développeurs' in user_input:
-                    user_input = user_input.replace('développeurs', 'profils')
+                    modified_user_input = user_input.replace('développeurs', 'profils')
+                else:
+                    modified_user_input = user_input
                 
-                query_context = structure_query(user_input)
-                st.session_state["query_context"].append({"query": user_input, "context": query_context})
+                query_context = structure_query(modified_user_input)
+                st.session_state["query_context"].append({"query": modified_user_input, "context": query_context})
                 chatbot_response, updated_chat_history = process_input(
                     st.session_state["query_context"], st.session_state["chat_history"]
                 )
-
-                print(f"Chatbot history: {updated_chat_history}")
 
                 st.session_state["chat_history"] = updated_chat_history
                 st.session_state["chat"].append(
