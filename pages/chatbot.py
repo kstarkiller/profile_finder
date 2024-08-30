@@ -57,6 +57,8 @@ def display_accueil():
                     st.session_state["query_context"], st.session_state["chat_history"]
                 )
 
+                print(f"Chatbot history: {updated_chat_history}")
+
                 st.session_state["chat_history"] = updated_chat_history
                 st.session_state["chat"].append(
                     {"user": user_input, "assistant": chatbot_response}

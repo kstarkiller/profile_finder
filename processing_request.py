@@ -17,26 +17,19 @@ def process_input(user_input, chat_history):
     """
     Process the user input and return the chatbot response.
 
-    :param user_input: list of dict containing the user input and context (if any) as a string
+    :param user_input: list of dict containing the user input and context (if any) as a string (e.g. [{"query": "Hello, how are you?", "context": ""}])
     :param chat_history: list of dict containing the chat history (user and assistant messages) as strings
     :return: str, list of dict
     """
-
-    print(f"User input: {user_input}")
-
     # Validation de l'entrée utilisateur
     if not user_input[-1]["query"].strip():
-        return "Please enter a valid input.", chat_history[1:]
+        return "Please enter a valid input.", chat_history
 
     # Vérifier que chat_history ne contient que le contexte de départ (system)
     # Il s'agit donc de la première requête de l'utilisateur
     if len(chat_history) <= 1:
         # Vérifier que le context n'est pas vide ou null
         if user_input[-1]['context'] != "":
-        
-            # Récupérer la valeur de la dernière entrée utilisateur
-            prompt = user_input[-1]["query"]
-
             # Prétraitement de l'entrée utilisateur
             profiles = find_profiles_azure(user_input, EMBEDDER)
             # Convertir les profils en string
@@ -44,10 +37,7 @@ def process_input(user_input, chat_history):
 
             chat_history.append({"role": "system", "content": "Use the following profiles in this conversation: " + ", ".join(profiles)})
 
-    else:
-        prompt = user_input[-1]["query"]
-
-    print(f"Prompt: {prompt}")
+    prompt = user_input[-1]["query"]
 
     # Ajouter la nouvelle entrée utilisateur à l'historique
     chat_history.append({"role": "user", "content": prompt})
@@ -67,10 +57,6 @@ def process_input(user_input, chat_history):
                 response = first_choice.message.content
                 # Ajouter la réponse du chatbot à l'historique
                 chat_history.append({"role": "assistant", "content": response})
-
-                # # Conserver uniquement les 10 dernières paires (utilisateur-chatbot) ainsi que le contexte de départ (system)
-                # if len(chat_history) > 10:
-                #     chat_history = chat_history[0] + chat_history[-10:]
 
                 return response, chat_history
             else:
