@@ -32,10 +32,13 @@ def process_input(user_input, chat_history):
         if user_input[-1]['context'] != "":
             # Prétraitement de l'entrée utilisateur
             profiles = find_profiles_azure(user_input, EMBEDDER)
-            # Convertir les profils en string
-            profiles = [str(profile) for profile in profiles]
+            
+            # Verifier si la liste des profils n'est pas vide
+            if len(profiles) != 0 or profiles[0] != "Input too long. Please enter a shorter input.":
+                # Convertir les profils en string
+                profiles = [str(profile) for profile in profiles]
 
-            chat_history.append({"role": "system", "content": "Use the following profiles in this conversation: " + ", ".join(profiles)})
+                chat_history.append({"role": "system", "content": "Use the following profiles in this conversation: " + ", ".join(profiles)})
 
     prompt = user_input[-1]["query"]
 

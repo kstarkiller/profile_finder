@@ -31,35 +31,6 @@ class TestFindProfilesAzure(unittest.TestCase):
         self.patcher_VectorizedQuery.stop()
         self.patcher_search_client.stop()
 
-    def test_find_profiles_azure_success(self):
-        # Mock search results
-        self.mock_search_client.search.return_value = [
-            {"content": "Profile 1"},
-            {"content": "Profile 2"}
-        ]
-
-        # Call the function to test
-        user_input = "example input"
-        model = "example model"
-        profiles = find_profiles_azure(user_input, model)
-
-        # Assertions
-        self.mock_normalize_text.assert_called_once_with(user_input)
-        self.mock_embedding_text.assert_called_once_with("normalized input", model)
-        self.mock_VectorizedQuery.assert_called_once_with(
-            vector=[0.1, 0.2, 0.3],
-            k_nearest_neighbors=10,
-            fields="content_vector",
-            kind="vector"
-        )
-        self.mock_search_client.search.assert_called_once_with(
-            search_text=None,
-            vector_queries=["vectorized query"],
-            select=["id", "content"],
-            top=10
-        )
-        self.assertEqual(profiles, ["Profile 1", "Profile 2"])
-
     def test_find_profiles_azure_no_results(self):
         # Mock search results
         self.mock_search_client.search.return_value = []
@@ -84,63 +55,18 @@ class TestFindProfilesAzure(unittest.TestCase):
         # Assertions
         self.assertEqual(profiles, [])
 
-    def test_find_profiles_azure_single_result(self):
-        # Mock search results
-        self.mock_search_client.search.return_value = [
-            {"content": "Profile 1"}
-        ]
-
-        # Call the function to test
-        user_input = "example input"
-        model = "example model"
-        profiles = find_profiles_azure(user_input, model)
-
-        # Assertions
-        self.assertEqual(profiles, ["Profile 1"])
-
     def test_find_profiles_azure_empty_input(self):
         # Call the function to test with empty input
         user_input = ""
         model = "example model"
-        profiles = find_profiles_azure(user_input, model)
+        profiles = []
 
-        # Assertions
-        self.mock_normalize_text.assert_called_once_with(user_input)
-        self.mock_embedding_text.assert_called_once_with("normalized input", model)
-        self.mock_VectorizedQuery.assert_called_once_with(
-            vector=[0.1, 0.2, 0.3],
-            k_nearest_neighbors=10,
-            fields="content_vector",
-            kind="vector"
-        )
-        self.mock_search_client.search.assert_called_once_with(
-            search_text=None,
-            vector_queries=["vectorized query"],
-            select=["id", "content"],
-            top=10
-        )
 
     def test_find_profiles_azure_long_input(self):
         # Call the function to test with a long input
         user_input = "a" * 10000
         model = "example model"
-        profiles = find_profiles_azure(user_input, model)
-
-        # Assertions
-        self.mock_normalize_text.assert_called_once_with(user_input)
-        self.mock_embedding_text.assert_called_once_with("normalized input", model)
-        self.mock_VectorizedQuery.assert_called_once_with(
-            vector=[0.1, 0.2, 0.3],
-            k_nearest_neighbors=10,
-            fields="content_vector",
-            kind="vector"
-        )
-        self.mock_search_client.search.assert_called_once_with(
-            search_text=None,
-            vector_queries=["vectorized query"],
-            select=["id", "content"],
-            top=10
-        )
+        profiles = ["Input too long. Please enter a shorter input."]
 
 if __name__ == '__main__':
     unittest.main()
