@@ -55,7 +55,7 @@ def find_profiles_azure(user_input, model):
     
     try:
         # Normaliser l'entrée utilisateur
-        user_input = normalize_text(user_input)
+        user_input = normalize_text(user_input[-1]['context'])
 
         # Générer l'embedding de la requête
         query_embedded = embedding_text(user_input, model)
@@ -63,17 +63,16 @@ def find_profiles_azure(user_input, model):
         # Créez une requête vectorielle
         vector_query = VectorizedQuery(
             vector=query_embedded,
-            k_nearest_neighbors=10,
+            k_nearest_neighbors=50,
             fields="content_vector",
             kind="vector"
         )
 
         # Effectuez la recherche
         results = search_client.search(
-            search_text=None,
+            search_text=user_input,
             vector_queries=[vector_query],
             select=["id", "content"],
-            top=10
         )
 
         profiles = []
@@ -81,6 +80,8 @@ def find_profiles_azure(user_input, model):
             profile_text = result["content"]
             profiles.append(profile_text)
 
+        print(f"Number of profiles found: {len(profiles)}")
+        
         return profiles
 
     except Exception as e:

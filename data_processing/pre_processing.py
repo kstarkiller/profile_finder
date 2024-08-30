@@ -22,20 +22,24 @@ certs_df = pd.read_csv(fixtures_certs_path)
 combined_df = pd.merge(coaff_df, psarm_df, on='Nom')
 combined_df = pd.merge(combined_df, certs_df, on='Nom')
 
+# Ajouter une colonne "Métier" pour chaque membre et indiqué "Développeur, Programmeur" à chaque fois que les mots "développements" ou "programmation" apparaissent dans la colonne 'Description'
+combined_df['Métier'] = combined_df['Description'].apply(lambda x: 'Développeur, Programmeur' if 'développements' in x or 'programmation' in x else 'Autre')
+
 # Créer un dictionnaire pour stocker les résultats
 resultat_dict = {}
 
 # Grouper le dataframe combiné par les colonnes 'Nom', 'COEFF_F212', 'PROFIL', 'Localisation', 'Stream_BT', 'Code' et 'Supervisor Name'
-grouped_df = combined_df.groupby(['Nom', 'COEFF_F212', 'PROFIL', 'Localisation', 'Stream_BT', 'Code', 'Supervisor Name'])
+grouped_df = combined_df.groupby(['Nom', 'COEFF_F212', 'PROFIL', 'Localisation', 'Stream_BT', 'Code', 'Supervisor Name', 'Métier'])
 
 # Parcourir chaque groupe et extraire les informations nécessaires pour chaque membre
-for (nom, coeff, profil, localisation, stream_bt, code, manager), group in grouped_df:
+for (nom, coeff, profil, localisation, stream_bt, code, manager, métier), group in grouped_df:
     availabilities = group.groupby(['Missions_en_cours', 'Competences', 'Date_Demarrage', 'Date_de_fin', 'Tx_occup'])
     competencies = group.groupby(['Description', 'Proficiency Description'])
     certifications = group.groupby(['Code_cert', 'Certification', 'Obtention', 'Expiration'])
 
     # Créer une clé principale pour chaque membre et vérifier si elle existe déjà dans le dictionnaire
-    cle_principale = f"Nom: {nom}, Code: {code}, Coefficient: {coeff}, Profil: {profil}, Localisation: {localisation}, Equipe: {stream_bt}, Manager: {manager}"
+    cle_principale = f"Nom: {nom}, Code: {code}, Coefficient: {coeff}, Profil: {profil}, Localisation: {localisation}, Equipe: {stream_bt}, Manager: {manager}, "
+    cle_principale += f"Métier: {métier}, " if métier == 'Développeur, Programmeur' else ""
     if cle_principale not in resultat_dict:
         resultat_dict[cle_principale] = {"Missions": [], "Compétences": [], "Certifications": []} 
 
@@ -83,5 +87,3 @@ resultat_df['Combined'] = resultat_df['Combined'].str.replace("\"", "")
 
 # Exporter le résultat final en csv
 resultat_df.to_csv(combined_result_path)
-pprint(resultat_df['Combined'][0])
-
