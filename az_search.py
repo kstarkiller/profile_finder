@@ -57,7 +57,7 @@ def find_profiles_azure(user_input, model):
         # Vérifier que l'entrée utilisateur est vide ou si il est trop long
         if user_input == "" :
             return []
-        elif len(user_input) >= 10000:
+        elif len(user_input) >= 1000:
             return ['Input too long. Please enter a shorter input.']
         
         # Normaliser l'entrée utilisateur

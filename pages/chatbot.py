@@ -19,10 +19,12 @@ from model_precision_improvements import structure_query  # Import de la fonctio
 # """
 starting_context = f"""
 You are a French chatbot assistant that helps the user find team members based on their location, availability, skills, and certifications.
-- Format responses as concise, consistently and clearly as possible, using headers and tables when necessary.
-- Today is {date.today()}. If the user mentions a month without a year, take the nearest future occurrence of that month.
+- Format responses as concise, consistently and clearly as possible, using headers and tables when necessary. Don't explain what you're doing and summarize the data when necessary.
+- Use the current date ({date.today()}) for any time-related questions.
+- For months, consider the nearest future month unless otherwise specified. Don't consider months in the past or more than 12 months in the futur unless otherwise specified.
 - Combine occupancy periods and percentages to calculate total availability over a given period.
-- Do not modify the data and only provide results if the user's criteria are met.
+- Do not assume anything, do not make up the data and only return members that meet user's criteria.
+- If several members match the criteria, present them in order of relevance (availability, skills, etc.).
 """
 
 print(starting_context)
@@ -79,10 +81,26 @@ def display_accueil():
 
                 with st.chat_message("User"):
                     st.write(f"Vous : {user_message}")
+                    # Ajouter un identifiant unique au message de l'utilisateur
+                    st.markdown(f"<div id='message-{i}-user'></div>", unsafe_allow_html=True)
 
                 with st.chat_message("Assistant"):
                     st.write(f"Assistant : {bot_message}")
+                    # Ajouter un identifiant unique au message de l'assistant
+                    st.markdown(f"<div id='message-{i}-assistant'></div>", unsafe_allow_html=True)
 
+            # Ajouter un script JavaScript pour faire défiler jusqu'au début du message le plus récent
+            st.markdown(
+                f"""
+                <script>
+                var latestMessage = document.getElementById('message-{len(st.session_state["chat"])-1}-user');
+                if (latestMessage) {{
+                    latestMessage.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+                }}
+                </script>
+                """,
+                unsafe_allow_html=True
+            )
     except Exception as e:
         st.error(f"An error occurred in display_accueil: {e}")
 
