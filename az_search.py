@@ -69,7 +69,7 @@ def find_profiles_azure(user_input, model):
         # Créez une requête vectorielle
         vector_query = VectorizedQuery(
             vector=query_embedded,
-            k_nearest_neighbors=50,
+            k_nearest_neighbors=30,
             fields="content_vector",
             kind="vector"
         )
