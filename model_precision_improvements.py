@@ -242,9 +242,9 @@ def structure_query(query):
     if dates:
         values.extend(dates)
 
-    # Ajouter les valeurs de months s'il y en a
-    if months:
-        values.extend(months)
+    # # Ajouter les valeurs de months s'il y en a
+    # if months:
+    #     values.extend(months)
 
     # Ajouter la valeur de skill_with_levels s'il y en a
     if skills_with_levels:
