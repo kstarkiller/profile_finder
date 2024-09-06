@@ -324,9 +324,9 @@ new_certs, certs_rows = generate_fake_certs(names)
 
 # Enregistrer le résultat dans un nouveau fichier CSV
 new_coaff.to_csv(fixtures_coaff, index=False)
-new_psarm.to_csv(fixtures_psarm, index=False)
-new_certs.to_csv(fixtures_certs, index=False)
-
-print(f"Création d'un fichier PSA RM avec {psarm_rows} nouvelles lignes de données.")
 print(f"Création d'un fichier COAFF avec {coaff_rows} nouvelles lignes de données.")
+new_psarm.to_csv(fixtures_psarm, index=False)
+print(f"Création d'un fichier PSA RM avec {psarm_rows} nouvelles lignes de données.")
+new_certs.to_csv(fixtures_certs, index=False)
 print(f"Création d'un fichier de certifications avec {certs_rows} nouvelles lignes de données.")
+
