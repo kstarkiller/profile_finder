@@ -1,10 +1,17 @@
 import logging
 from datetime import datetime
+import os
+
+# Logs path according to the os
+if os.name == 'posix':
+    logs_path = r"/home/kevin/simplon/briefs/avv-matcher/rag_local_api/logs/local_api_access.log"
+else:
+    logs_path = r"C:\Users\k.simon\Projet\avv-matcher\rag_local_api\logs\local_api_access.log"
 
 # Logging module configuration
 logging.basicConfig(
-    filename=r"C:\Users\k.simon\Projet\avv-matcher\rag_local_api\logs\local_api_access.log",  # Log file name
-    level=logging.INFO,          # Logging level
+    filename=logs_path,                                 # Log file name
+    level=logging.INFO,                                 # Logging level
     format='%(asctime)s - %(levelname)s - %(message)s'  # Message format
 )
 

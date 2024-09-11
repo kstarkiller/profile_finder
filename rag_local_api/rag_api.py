@@ -3,14 +3,19 @@ import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import os
 
-from load_documents import load_documents
 from generate_response import generate_response
 from embedding import embed_documents, retrieve_documents
 
-DOC_PATH = r"C:\Users\k.simon\Projet\avv-matcher\rag_local_api\sources"
+if os.name == 'posix':
+    DOC_PATH = r"/home/kevin/simplon/briefs/avv-matcher/rag_local_api/sources"
+else:
+    DOC_PATH = r"C:\Users\k.simon\Projet\avv-matcher\rag_local_api\sources"
+
 MODEL_LLM = "llama3.1:8b"
 MODEL_EMBEDDING = "all-minilm:33m"
+
 app = FastAPI()
 
 app.add_middleware(
@@ -73,7 +78,7 @@ def process_question(question: str):
     # Embedding the question and retrieving the documents
     start_time = time.time()
     try:
-        data = retrieve_documents(question, collection, MODEL_EMBEDDING)
+        data = retrieve_documents(question, MODEL_EMBEDDING)
     except Exception as e:
         print(f"Error retrieving documents: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -83,7 +88,7 @@ def process_question(question: str):
     # Add question and retrieved data and generating response
     start_time = time.time()
     try:
-        response = generate_response(data, question, MODEL)
+        response = generate_response(data, question, MODEL_LLM)
     except Exception as e:
         print(f"Error generating response: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

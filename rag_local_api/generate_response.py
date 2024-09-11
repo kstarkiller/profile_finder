@@ -36,16 +36,25 @@ def authenticate():
         return success
 
 def validate_input(data, question, model):
+    # Authenticate the user
     if not authenticate():
         raise ValueError(ERROR_MESSAGES["access_denied"])
+    # Check if data is provided
     if not data:
         raise ValueError(ERROR_MESSAGES["no_data"])
+    # Check if the question is empty
     if not question or question.isspace():
         raise ValueError(ERROR_MESSAGES["no_question"])
+    # Check if the question is too long
     if len(question) > 512:
         raise ValueError(ERROR_MESSAGES["question_too_long"])
-    if model not in ollama.list_models():
-        raise ValueError(ERROR_MESSAGES["invalid_model"].format(model, ollama.list_models()))
+    # Check if model is in the list of available models
+    available_models = ollama.list().get('models', [])
+    model_names = [m['name'] for m in available_models]
+
+    if model not in model_names:
+        raise ValueError(ERROR_MESSAGES["invalid_model"].format(model, ollama.list()))
+        
 
 def generate_response(data, question, model="llama3.1:8b"):
     '''
