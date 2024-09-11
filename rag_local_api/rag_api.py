@@ -2,24 +2,20 @@ import time
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+
 from load_documents import load_documents
 from generate_response import generate_response
 from embedding import embed_documents, retrieve_documents
-from pydantic import BaseModel
 
-DOC_PATH = "C:\\Users\\thibaut.boguszewski\\Desktop\\Tibo\\test API"
+DOC_PATH = r"C:\Users\k.simon\Projet\avv-matcher\rag_local_api\sources"
+MODEL_LLM = "llama3.1:8b"
+MODEL_EMBEDDING = "all-minilm:33m"
 app = FastAPI()
-
-origins = [
-    "http://localhost",
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    "http://localhost:8503",
-]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -35,11 +31,36 @@ class TestInput(BaseModel):
 
 @app.post("/test", summary="Test endpoint", description="This is a test endpoint.")
 def test(input: TestInput):
-    """Returns the user input as a response."""
+    """Returns the user input as a response.
+    This is a test endpoint to check if the API is working properly.    
+    """
     return {"message": input.message + " Success"}
 
+@app.post("/embedding", summary="Embedding endpoint", description="This is the question endpoint.")
+def embedding():
+    """Embeds the documents and returns the collection.
+    This endpoint embeds the documents using the all-minilm:33m model and returns the collection.
+
+    Args:
+        documents (list): A list of documents to embed.
+
+    Returns:
+        dict: A dictionary containing the collection of embedded documents.
+    """
+    # Embedding the documents
+    start_time = time.time()
+    try:
+        collection = embed_documents(DOC_PATH, MODEL_EMBEDDING)
+    except Exception as e:
+        print(f"Error embedding documents: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+    end_time = time.time()
+    print(f"Documents embedded in {end_time - start_time} seconds.\n")
+
+    return {"collection": collection}
+
 @app.post("/question", summary="Process question", description="This endpoint processes a question and returns a response.")
-def process_question(question: TestInput):
+def process_question(question: str):
     """
     Process a question and return a response.
 
@@ -49,31 +70,20 @@ def process_question(question: TestInput):
     Returns:
         dict: A dictionary containing the response generated.
     """
-    # Loading the documents
-    start_time = time.time()
-    try:
-        documents = load_documents(DOC_PATH)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    end_time = time.time()
-    print(f"Documents loaded in {end_time - start_time} seconds.")
-
-    # Embedding the documents
-    start_time = time.time()
-    collection = embed_documents(documents)
-    end_time = time.time()
-    print(f"Documents embedded in {end_time - start_time} seconds.\n")
-
     # Embedding the question and retrieving the documents
     start_time = time.time()
-    data = retrieve_documents(question.message, collection)  # Pass the message string directly
+    try:
+        data = retrieve_documents(question, collection, MODEL_EMBEDDING)
+    except Exception as e:
+        print(f"Error retrieving documents: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
     end_time = time.time()
     print(f"\nRAG performed in {end_time - start_time} seconds.\n")
 
     # Add question and retrieved data and generating response
     start_time = time.time()
     try:
-        response = generate_response(data, question.message)  # Pass the message string directly
+        response = generate_response(data, question, MODEL)
     except Exception as e:
         print(f"Error generating response: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -84,4 +94,4 @@ def process_question(question: TestInput):
     return {"response": response}
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8080)
