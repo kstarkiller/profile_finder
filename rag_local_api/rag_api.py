@@ -9,7 +9,8 @@ from generate_response import generate_response
 from embedding import embed_documents, retrieve_documents
 
 DOC_PATH = r"C:\Users\k.simon\Projet\avv-matcher\rag_local_api\sources"
-MODEL = "llama3.1:8b"
+MODEL_LLM = "llama3.1:8b"
+MODEL_EMBEDDING = "all-minilm:33m"
 app = FastAPI()
 
 app.add_middleware(
@@ -49,7 +50,7 @@ def embedding():
     # Embedding the documents
     start_time = time.time()
     try:
-        collection = embed_documents(DOC_PATH, "all-minilm:33m")
+        collection = embed_documents(DOC_PATH, MODEL_EMBEDDING)
     except Exception as e:
         print(f"Error embedding documents: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -72,7 +73,7 @@ def process_question(question: str):
     # Embedding the question and retrieving the documents
     start_time = time.time()
     try:
-        data = retrieve_documents(question, collection, "all-minilm:33m")
+        data = retrieve_documents(question, collection, MODEL_EMBEDDING)
     except Exception as e:
         print(f"Error retrieving documents: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
