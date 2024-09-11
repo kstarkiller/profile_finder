@@ -8,7 +8,7 @@ from load_documents import load_documents
 from generate_response import generate_response
 from embedding import embed_documents, retrieve_documents
 
-DOC_PATH = r"C:\Users\k.simon\Projet\avv-matcher\processing_data\datas\test"
+DOC_PATH = r"C:\Users\k.simon\Projet\avv-matcher\rag_local_api\sources"
 MODEL = "llama3.1:8b"
 app = FastAPI()
 
@@ -35,6 +35,29 @@ def test(input: TestInput):
     """
     return {"message": input.message + " Success"}
 
+@app.post("/embedding", summary="Embedding endpoint", description="This is the question endpoint.")
+def embedding():
+    """Embeds the documents and returns the collection.
+    This endpoint embeds the documents using the all-minilm:33m model and returns the collection.
+
+    Args:
+        documents (list): A list of documents to embed.
+
+    Returns:
+        dict: A dictionary containing the collection of embedded documents.
+    """
+    # Embedding the documents
+    start_time = time.time()
+    try:
+        collection = embed_documents(DOC_PATH, "all-minilm:33m")
+    except Exception as e:
+        print(f"Error embedding documents: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+    end_time = time.time()
+    print(f"Documents embedded in {end_time - start_time} seconds.\n")
+
+    return {"collection": collection}
+
 @app.post("/question", summary="Process question", description="This endpoint processes a question and returns a response.")
 def process_question(question: str):
     """
@@ -46,30 +69,10 @@ def process_question(question: str):
     Returns:
         dict: A dictionary containing the response generated.
     """
-    # Loading the documents
-    start_time = time.time()
-    try:
-        documents = load_documents(DOC_PATH)
-    except ValueError as e:
-        print(f"Error loading documents: {str(e)}")
-        raise HTTPException(status_code=400, detail=str(e))
-    end_time = time.time()
-    print(f"Documents loaded in {end_time - start_time} seconds.")
-
-    # Embedding the documents
-    start_time = time.time()
-    try:
-        collection = embed_documents(documents, MODEL)
-    except Exception as e:
-        print(f"Error embedding documents: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-    end_time = time.time()
-    print(f"Documents embedded in {end_time - start_time} seconds.\n")
-
     # Embedding the question and retrieving the documents
     start_time = time.time()
     try:
-        data = retrieve_documents(question, collection, MODEL)
+        data = retrieve_documents(question, collection, "all-minilm:33m")
     except Exception as e:
         print(f"Error retrieving documents: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -79,7 +82,7 @@ def process_question(question: str):
     # Add question and retrieved data and generating response
     start_time = time.time()
     try:
-        response = generate_response(data, question)
+        response = generate_response(data, question, MODEL)
     except Exception as e:
         print(f"Error generating response: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
