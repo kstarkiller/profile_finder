@@ -9,6 +9,11 @@ venv/
 *.csv
 *.xlsx
 *.log
+*.sqlite3
+*.json
+*.sqlite3-journal
+*.db
+*.bin
 
 # Fichiers temporaires Python
 *.pyc

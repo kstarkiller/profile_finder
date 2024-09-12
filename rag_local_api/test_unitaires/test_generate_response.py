@@ -1,5 +1,4 @@
 # Command : python -m unittest test_unitaires.test_generate_response
-# The goal of this test is to verify that the generate_response function works as expected.
 import unittest
 from unittest.mock import patch, MagicMock
 import logging
@@ -8,6 +7,7 @@ from generate_response import generate_response as generate_response
 from generate_response import authenticate as authenticate
 import config as config
 
+# The goal of this test is to verify that the generate_response function works as expected.
 class TestGenerateResponse(unittest.TestCase):
     def setUp(self):
         self.mock_ollama = MagicMock()
@@ -55,7 +55,7 @@ class TestGenerateResponse(unittest.TestCase):
             response = generate_response('test_data', 'test_question')
             self.assertEqual(response, "Access denied. Invalid credentials.")
 
-
+# The goal of this test is to verify that the authenticate function works as expected.
 class TestAuthenticate(unittest.TestCase):
     def setUp(self):
         # Patch the input and getpass functions

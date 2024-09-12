@@ -14,7 +14,7 @@ else:
     DOC_PATH = r"C:\Users\k.simon\Projet\avv-matcher\rag_local_api\sources"
 
 MODEL_LLM = "llama3.1:8b"
-MODEL_EMBEDDING = "all-minilm:33m"
+MODEL_EMBEDDING = "nomic-embed-text:latest"
 
 app = FastAPI()
 
