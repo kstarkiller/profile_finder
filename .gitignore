@@ -10,6 +10,11 @@ venv/
 *.xlsx
 *.xls
 *.svg
+*.sqlite3
+*.db
+*.sqlite3-journal
+*.bin
+*.log
 
 # # Docker
 # Dockerfile
