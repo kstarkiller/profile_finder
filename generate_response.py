@@ -4,6 +4,7 @@ import ollama
 import requests
 from typing import Optional
 from datetime import date
+from pprint import pprint
 
 from custom_logging import log_access, log_response
 
@@ -22,17 +23,17 @@ ERROR_MESSAGES = {
 }
 
 # Authenticate the user
-def authenticate():
+def authenticate(username: str, password: str) -> bool:
     '''
     Authenticate the user using the credentials in the config file.
+
+    Args:
+        username (str): The username of the user.
+        password (str): The password of the user.
 
     Returns:
         bool: True if the user is authenticated, False otherwise.
     '''
-
-    # Retrieve user credentials from the config.py file
-    username = input("Enter your username: ")
-    password = getpass.getpass("Enter your password: ")
 
     # Check the credentials
     success = (username == USERNAME) and (password == PASSWORD)
@@ -44,11 +45,13 @@ def authenticate():
         return success
 
 
-def validate_input(data: str, question: str, model: Optional[str] = None):
+def validate_input(data: str, question: str, username: Optional[str] = None, password: Optional[str] = None, model: Optional[str] = None) -> None:
     '''
     Valide les données d'entrée, la question et le modèle.
 
     Args:
+        username (str): Le nom d'utilisateur de l'utilisateur.
+        password (str): Le mot de passe de l'utilisateur.
         data (str): Les données à utiliser pour la réponse.
         question (str): La question à laquelle répondre.
         model (str): Le modèle à utiliser pour la réponse. Optionnel.
@@ -58,8 +61,9 @@ def validate_input(data: str, question: str, model: Optional[str] = None):
     '''
 
     # Authentifier l'utilisateur
-    if not authenticate():
-        raise ValueError(ERROR_MESSAGES["access_denied"])
+    if username and password:
+        if not authenticate(username, password):
+            raise ValueError(ERROR_MESSAGES["access_denied"])
     
     # Vérifier si les données sont fournies
     if not data:
@@ -82,7 +86,7 @@ def validate_input(data: str, question: str, model: Optional[str] = None):
             raise ValueError(ERROR_MESSAGES["invalid_model"].format(model, model_names))
         
 
-def generate_ollama_response(data, question, model="llama3.1:8b"):
+def generate_ollama_response(data: str, question: str, model: str = "llama-3.1-8B") -> str:
     '''
     Generates a response using the model of your choice (llama3.1 8B here).
 
@@ -94,10 +98,14 @@ def generate_ollama_response(data, question, model="llama3.1:8b"):
     Returns:
         str: The generated response.
     '''
+
+    # Let user enter their credentials
+    username = input("Enter your username: ")
+    password = getpass.getpass("Enter your password: ")
     
     try:
         # Validate inputs
-        validate_input(data, question, model)
+        validate_input(data, question, username, password, model)
 
         prompt= f"""
             You are a French chatbot assistant that helps the user find team members based on their location, availability and skills.
@@ -120,18 +128,18 @@ def generate_ollama_response(data, question, model="llama3.1:8b"):
         log_response(question, response)  # Log the asked question and the generated response
         return response
 
-    except Exception as e:  # Capturer toutes les exceptions
+    except Exception as e:
         log_response(question, str(e))  # Log the error message
         return str(e)
     
 # Generate a response
-def generate_perplexity_response(data, question, model="llama-3.1-70b-instruct"):
+def generate_perplexity_response(data: str, history: list, model: str) -> str:
     '''
     Generates a response using the Perplexity API.
 
     Args:
         data (str): The data to use for the response.
-        question (str): The question to respond to.
+        history (list): The chat history.
         model (str): The model to use for the response.
 
     Returns:
@@ -140,7 +148,7 @@ def generate_perplexity_response(data, question, model="llama-3.1-70b-instruct")
     
     try:
         # Validate inputs
-        validate_input(data, question)
+        validate_input(data, history[-1]['content'])
         
         # Set up the API request
         url = "https://api.perplexity.ai/chat/completions"
@@ -148,27 +156,26 @@ def generate_perplexity_response(data, question, model="llama-3.1-70b-instruct")
             "Authorization": f"Bearer {API_KEY}",
             "Content-Type": "application/json"
         }
-        context= f"""
-            You are a French chatbot assistant that helps the user find team members based on their location, availability and skills.
-            - Format responses as concise and consistently as possible, using headers and tables when necessary. Don't explain what you're doing and summarize the data.
-            - Use the current date ({date.today()}) for any time-related questions.
-            - For months, consider the nearest future month unless otherwise specified. Don't consider months in the past or months more than 12 months in the futur, unless otherwise specified.
-            - Combine occupancy periods and percentages to calculate total availability over a given period.
-            - Don't assume anything, don't mess with the data, and only return members that meet the user's criteria.
-            - If several members match the criteria, present them in order of relevance (availability, skills, etc.).
-            """
         
-        prompt = f"Using this data: {data}, respond to the user question: {question}."
 
+        # Prepare the payload
         payload = {
             "model": model,
             "messages": [
-                {"role": "system", "content": context},
-                {"role": "user", "content": prompt}
-            ],
-            # "max_tokens": 150
+                {
+                    "role": history[0]['role'],
+                    "content": history[0]['content'] + "\n" + f"Use this data: {data} to respond to the user in this conversation."
+                }
+            ]
         }
-        
+
+        # Add the user and assistant messages to the payload
+        for i, message in enumerate(history[1:], start=1):
+            payload["messages"].append({
+                "role": "user" if i % 2 == 1 else "assistant",
+                "content": message['content']
+            })
+            
         # Send the request to the Perplexity API
         response = requests.post(url, headers=headers, json=payload)
         response.raise_for_status()  # Raise an error for bad responses
@@ -178,12 +185,12 @@ def generate_perplexity_response(data, question, model="llama-3.1-70b-instruct")
         generated_response = output['choices'][0]['message']['content']
         
         # Log and return the response
-        log_response(question, generated_response)
+        log_response(history[-1]['content'], generated_response)
         return generated_response
 
     except ValueError as e:
         return str(e)
     
-    except Exception as e:  # Capturer toutes les exceptions
-        log_response(question, str(e))  # Log the error message
+    except Exception as e:
+        log_response(history[-1]['content'], str(e))  # Log the error message
         return "An unexpected error occurred: " + str(e)

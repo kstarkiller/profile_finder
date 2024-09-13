@@ -8,11 +8,11 @@ from load_documents import load_documents
 
 # Path to the collection
 if os.name == 'posix':
-    collection_path = r"/home/kevin/simplon/briefs/avv-matcher/rag_local_api/chroma/"
-    sources_path = r"/home/kevin/simplon/briefs/avv-matcher/rag_local_api/sources"
+    collection_path = r"/home/kevin/simplon/briefs/avv-matcher/chroma/"
+    sources_path = r"/home/kevin/simplon/briefs/avv-matcher/sources"
 else:
-    collection_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\rag_local_api\\chroma\\"
-    sources_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\rag_local_api\\sources"
+    collection_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\chroma\\"
+    sources_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\sources"
 
 def embed_documents(file_path, model="llama3.1:8b", batch_size=10):
     '''
@@ -108,11 +108,15 @@ def retrieve_documents(question:str, model="llama3.1:8b"):
 
     return data
 
-# Reset the client
+# # Reset the client
 # client = chromadb.PersistentClient(
 #         path=collection_path,
 #         settings=Settings(allow_reset=True),
 #         )
+
+# # Afficher le nom de la collection
+# print(client.list_collections())
+
 # client.reset()
 # print("Client reset.")
 
