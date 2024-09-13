@@ -7,7 +7,6 @@ import requests
 from generate_response import generate_ollama_response as generate_ollama_response
 from generate_response import generate_perplexity_response as generate_perplexity_response
 from generate_response import authenticate as authenticate
-import config as config
 
 # The goal of this test is to verify that the generate_ollama_response function works as expected.
 class TestGenerateOllamaResponse(unittest.TestCase):

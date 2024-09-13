@@ -5,7 +5,6 @@ from unittest.mock import patch
 import pandas as pd
 
 from load_documents import load_documents as load_documents
-import config as config
 
 # The goal of this test is to verify that the load_documents function works as expected.
 class TestLoadDocuments(unittest.TestCase):
