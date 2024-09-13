@@ -1,3 +1,4 @@
+import os
 import getpass
 import ollama
 import requests
@@ -5,7 +6,11 @@ from typing import Optional
 from datetime import date
 
 from custom_logging import log_access, log_response
-import config
+
+# Import environment variables
+USERNAME = os.getenv('RAG_LOCAL_USERNAME')
+PASSWORD = os.getenv('RAG_LOCAL_PASSWORD')
+API_KEY = os.getenv('RAG_LOCAL_API_KEY')
 
 # Constants for error messages
 ERROR_MESSAGES = {
@@ -30,7 +35,7 @@ def authenticate():
     password = getpass.getpass("Enter your password: ")
 
     # Check the credentials
-    success = (username == config.USERNAME) and (password == config.PASSWORD)
+    success = (username == USERNAME) and (password == PASSWORD)
     if success:
         log_access(username, success)  # Log the login attempt
         return success
@@ -138,10 +143,9 @@ def generate_perplexity_response(data, question, model="llama-3.1-70b-instruct")
         validate_input(data, question)
         
         # Set up the API request
-        api_key = "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"
         url = "https://api.perplexity.ai/chat/completions"
         headers = {
-            "Authorization": f"Bearer {api_key}",
+            "Authorization": f"Bearer {API_KEY}",
             "Content-Type": "application/json"
         }
         context= f"""
