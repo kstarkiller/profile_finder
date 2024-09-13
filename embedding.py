@@ -1,64 +1,123 @@
-import pandas as pd
-from sentence_transformers import SentenceTransformer
-import numpy as np
-import faiss
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import FAISS
-from langchain.docstore import InMemoryDocstore
+import chromadb
+import ollama
+import os
+from chromadb.config import Settings
+from pprint import pprint
 
-# Charger les données depuis le fichier Coaff_V1_cleaned.csv à la racine du projet
-df = pd.read_csv('Coaff_V1_cleaned.csv')
+from load_documents import load_documents
 
-# Colonnes textuelles à embedder
-text_columns = ['PROFIL', 'Membres', 'Missions_en_cours', 'Competences', 'Stream_BT']
+# Path to the collection
+if os.name == 'posix':
+    collection_path = r"/home/kevin/simplon/briefs/avv-matcher/rag_local_api/chroma/"
+    sources_path = r"/home/kevin/simplon/briefs/avv-matcher/rag_local_api/sources"
+else:
+    collection_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\rag_local_api\\chroma\\"
+    sources_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\rag_local_api\\sources"
 
-# Convertir toutes les valeurs des colonnes spécifiées en chaînes de caractères et combiner les colonnes
-df['combined_text'] = df[text_columns].astype(str).apply(lambda x: ' '.join(x), axis=1)
+def embed_documents(file_path, model="llama3.1:8b", batch_size=10):
+    '''
+    Embeds the documents using an embedding model in batches.
 
-# Initialisation du modèle d'embedding SentenceTransformer (à changer avec le modèle OpenAI si nécessaire)
-model = SentenceTransformer('all-MiniLM-L6-v2')
+    Args:
+        file_path (str): The path to the file containing documents to embed.
+        model (str): The model to use for embedding.
+        batch_size (int): The number of documents to process in each batch.
 
-# Générer les embeddings pour les textes combinés
-embeddings = model.encode(df['combined_text'].tolist()).astype(np.float32)
-print(f"Embeddings shape: {embeddings.shape}")
+    Returns:
+        chromadb.Collection: A collection of the embedded documents.
+    '''
+    
+    # Connect to the client
+    client = chromadb.PersistentClient(
+        path=collection_path,
+        settings=Settings(allow_reset=True),
+    )
+    
+    # Create a new collection or get existing one
+    collection = client.get_or_create_collection(name="docs")
+    
+    # Load documents
+    documents = load_documents(file_path)
+    
+    # Verify the type of documents
+    if not isinstance(documents, list):
+        raise ValueError("La fonction load_documents doit retourner une liste de chaînes de caractères.")
+    
+    print(f"Found {len(documents)} documents.")
+    
+    # Store documents in batches
+    for i in range(0, len(documents), batch_size):
+        batch_docs = documents[i:i + batch_size]
+        batch_embeddings = []
+        batch_ids = []
+        batch_texts = []
+        for j, d in enumerate(batch_docs):
+            try:
+                response = ollama.embeddings(model=model, prompt=d)
+                embedding = response['embedding']
+                batch_embeddings.append(embedding)
+                batch_ids.append(str(i + j))  # Unique ID for each document
+                batch_texts.append(d)
+                print(f"Document {i + j} embedded.")
+            except Exception as e:
+                print(f"Error embedding document {i + j}: {e}")
+                raise  # Re-raise the exception to propagate it up
+        
+        # Add the batch to the collection
+        collection.add(
+            ids=batch_ids,
+            embeddings=batch_embeddings,
+            documents=batch_texts
+        )
+    
+    return collection
 
-# Créer l'index FAISS
-dimension = embeddings.shape[1]  # Dimension des embeddings
-index = faiss.IndexFlatL2(dimension)  # Utiliser l'index L2 (euclidean distance)
-index.add(embeddings)
-print("Index FAISS créé et ajouté avec les embeddings.")
+# Embedding the question
+def retrieve_documents(question:str, model="llama3.1:8b"):
+    '''
+    Embeds the question using an embedding model and queries the collection for the most similar document.
 
-# Utiliser LangChain pour gérer les embeddings et la recherche
-embedding_function = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2')
+    Args:
+        question (str): The question to embed.
+        model (str): The model to use for embedding.
 
-# Créer un docstore en mémoire
-docstore = InMemoryDocstore({str(i): doc for i, doc in enumerate(df['combined_text'].tolist())})
+    Returns:
+        str: The most similar document to the question.
+    '''
+    # Create embedding client
+    embedded_question = ollama.embeddings(
+        prompt=question,
+        model=model
+        )
+    
+    # Connect to the ChromaDB client
+    client = chromadb.PersistentClient(
+        path=collection_path,
+        settings=Settings(allow_reset=True),
+        )
+    
+    # Get the collection
+    collection = client.get_collection(name="docs")
 
-# Créer un mapping de l'index vers le docstore
-index_to_docstore_id = {i: str(i) for i in range(len(df))}
+    # Query the collection with the embedded question for the most similar documents
+    results = collection.query(
+        query_embeddings=[embedded_question["embedding"]],
+        n_results=30
+        )
+    data = results['documents']
 
-# Initialiser FAISS dans LangChain
-faiss_index = FAISS(embedding_function=embedding_function, index=index, docstore=docstore, index_to_docstore_id=index_to_docstore_id)
-print("FAISS index initialisé avec LangChain.")
+    return data
 
-def find_profiles(user_input):
-    # Générer l'embedding de la requête
-    query_embedding = model.encode([user_input]).astype(np.float32)
-    print(f"Query embedding shape: {query_embedding.shape}")
+# Reset the client
+# client = chromadb.PersistentClient(
+#         path=collection_path,
+#         settings=Settings(allow_reset=True),
+#         )
+# client.reset()
+# print("Client reset.")
 
-    # Reshape pour s'assurer que c'est un tableau 2D
-    query_embedding = query_embedding.reshape(1, -1)
+# data = embed_documents(sources_path, "nomic-embed-text:latest", 10)
+# print(data)
 
-    # Recherche des vecteurs les plus similaires
-    distances, indices = index.search(query_embedding, k=5)
-    print(f"Distances: {distances}")
-    print(f"Indices: {indices}")
-
-    # Préparer la liste des profils trouvés
-    profiles = []
-    for idx in indices[0]:
-        profile_text = df.iloc[int(idx)]['combined_text']
-        profiles.append(profile_text)
-        print(f"Profile found: {profile_text}")
-
-    return profiles
+# data = retrieve_documents("Que est disponible en Novembre 2024 ?", "nomic-embed-text:latest")
+# pprint(len(data[0]))
