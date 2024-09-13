@@ -4,8 +4,9 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
+from pprint import pprint
 
-from generate_response import generate_response
+from generate_response import generate_ollama_response, generate_perplexity_response
 from embedding import embed_documents, retrieve_documents
 
 if os.name == 'posix':
@@ -64,8 +65,8 @@ def embedding():
 
     return {"collection": collection}
 
-@app.post("/question", summary="Process question", description="This endpoint processes a question and returns a response.")
-def process_question(question: str):
+@app.post("/ollama_chat", summary="Process question", description="This endpoint processes a question and returns a response with ollama.")
+def process_question_ollama(question: str):
     """
     Process a question and return a response.
 
@@ -88,7 +89,41 @@ def process_question(question: str):
     # Add question and retrieved data and generating response
     start_time = time.time()
     try:
-        response = generate_response(data, question, MODEL_LLM)
+        response = generate_ollama_response(data, question, MODEL_LLM)
+    except Exception as e:
+        print(f"Error generating response: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+    print(f"Response: {response}" + "success")
+    end_time = time.time()
+    print(f"\nResponse generated in {end_time - start_time} seconds.\n\n")
+    
+    return {"response": response}
+
+@app.post("/perplexity_chat", summary="Process question", description="This endpoint processes a question and returns a response with perplexity.")
+def process_question_perplexity(question: str):
+    """
+    Process a question and return a response.
+
+    Args:
+        question (str): The question to process.
+
+    Returns:
+        dict: A dictionary containing the response generated.
+    """
+    # Embedding the question and retrieving the documents
+    start_time = time.time()
+    try:
+        data = retrieve_documents(question, MODEL_EMBEDDING)
+    except Exception as e:
+        print(f"Error retrieving documents: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+    end_time = time.time()
+    print(f"\nRAG performed in {end_time - start_time} seconds.\n")
+
+    # Add question and retrieved data and generating response
+    start_time = time.time()
+    try:
+        response = generate_perplexity_response(data, question)
     except Exception as e:
         print(f"Error generating response: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

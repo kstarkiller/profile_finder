@@ -9,8 +9,10 @@ from load_documents import load_documents
 # Path to the collection
 if os.name == 'posix':
     collection_path = r"/home/kevin/simplon/briefs/avv-matcher/rag_local_api/chroma/"
+    sources_path = r"/home/kevin/simplon/briefs/avv-matcher/rag_local_api/sources"
 else:
     collection_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\rag_local_api\\chroma\\"
+    sources_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\rag_local_api\\sources"
 
 def embed_documents(file_path, model="llama3.1:8b", batch_size=10):
     '''
@@ -59,6 +61,7 @@ def embed_documents(file_path, model="llama3.1:8b", batch_size=10):
                 print(f"Document {i + j} embedded.")
             except Exception as e:
                 print(f"Error embedding document {i + j}: {e}")
+                raise  # Re-raise the exception to propagate it up
         
         # Add the batch to the collection
         collection.add(
@@ -113,8 +116,8 @@ def retrieve_documents(question:str, model="llama3.1:8b"):
 # client.reset()
 # print("Client reset.")
 
-# data = embed_documents(r"C:\Users\k.simon\Projet\avv-matcher\rag_local_api\sources", "nomic-embed-text:latest", 10)
+# data = embed_documents(sources_path, "nomic-embed-text:latest", 10)
 # print(data)
 
-# data = retrieve_documents("Que est disponible en Juin 2025 ?", "nomic-embed-text:latest")
-# pprint(data)
+# data = retrieve_documents("Que est disponible en Novembre 2024 ?", "nomic-embed-text:latest")
+# pprint(len(data[0]))
