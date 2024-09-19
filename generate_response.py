@@ -4,7 +4,7 @@ import ollama
 import requests
 from typing import Optional
 from datetime import date
-from pprint import pprint
+import logging
 
 from custom_logging import log_access, log_response
 
@@ -21,6 +21,19 @@ ERROR_MESSAGES = {
     "question_too_long": "The question is too long. Please provide a question with less than 512 characters.",
     "invalid_model": "The model {} is not available. Please choose a valid model from this list: {}",
 }
+
+# Logs path according to the os
+if os.name == "posix":
+    logs_path = r"/home/kevin/simplon/briefs/avv-matcher/logs/local_api_access.log"
+else:
+    logs_path = r"C:\Users\k.simon\Projet\avv-matcher\logs\local_api_access.log"
+
+# Logging module configuration
+logging.basicConfig(
+    filename=logs_path,  # Log file name
+    level=logging.INFO,  # Log level
+    format="%(asctime)s - %(levelname)s - %(message)s",  # Log format
+)
 
 
 # Authenticate the user
@@ -67,21 +80,31 @@ def validate_input(
         ValueError: Si les données d'entrée, la question ou le modèle sont invalides.
     """
 
-    # Authentifier l'utilisateur
+    # Authentifier l'utilisateur si les informations de connexion sont fournies
     if username and password:
-        if not authenticate(username, password):
+        authenticated = authenticate(username, password)
+        if not authenticated:
+            logging.warning(ERROR_MESSAGES["access_denied"])
             raise ValueError(ERROR_MESSAGES["access_denied"])
 
     # Vérifier si les données sont fournies
     if not data:
+        logging.warning(ERROR_MESSAGES["no_data"])
+        raise ValueError(ERROR_MESSAGES["no_data"])
+    
+    # Vérifier si la liste de données est vide
+    if not any(data):
+        logging.warning(ERROR_MESSAGES["no_data"])
         raise ValueError(ERROR_MESSAGES["no_data"])
 
     # Vérifier si la question est vide
     if not question or question.isspace():
+        logging.warning(ERROR_MESSAGES["no_question"])
         raise ValueError(ERROR_MESSAGES["no_question"])
 
     # Vérifier si la question est trop longue
     if len(question) > 512:
+        logging.warning(ERROR_MESSAGES["question_too_long"])
         raise ValueError(ERROR_MESSAGES["question_too_long"])
 
     # Vérifier si l'argument optionnel model est fourni
@@ -90,11 +113,12 @@ def validate_input(
         available_models = ollama.list().get("models", [])
         model_names = [m["name"] for m in available_models]
         if model not in model_names:
+            logging.warning(ERROR_MESSAGES["invalid_model"].format(model, model_names))
             raise ValueError(ERROR_MESSAGES["invalid_model"].format(model, model_names))
 
 
 def generate_ollama_response(
-    data: list, question: str, model: str = "llama-3.1-8B"
+    data: list, question: str, model: str = "llama3.1:8b"
 ) -> str:
     """
     Generates a response using the model of your choice (llama3.1 8B here).
@@ -194,6 +218,12 @@ def generate_perplexity_response(data: list, history: list, model: str) -> str:
         # Send the request to the Perplexity API
         response = requests.post(url, headers=headers, json=payload)
         response.raise_for_status()  # Raise an error for bad responses
+        # log HTTP response status if raised
+        if response.status_code != 200:
+            logging.error(f"Perplexity API HTTP response status: {response.status_code}")
+            print(response.status_code)
+            logging.error(f"Perplexity API HTTP response content: {response.content}")
+            print(response.content)
 
         # Parse the response
         output = response.json()
@@ -204,8 +234,11 @@ def generate_perplexity_response(data: list, history: list, model: str) -> str:
         return generated_response
 
     except ValueError as e:
+        # Log the error message
+        log_response(history[-1]["content"], str(e))
         return str(e)
 
     except Exception as e:
-        log_response(history[-1]["content"], str(e))  # Log the error message
+        # Log the error message
+        log_response(history[-1]["content"], str(e))
         return "An unexpected error occurred: " + str(e)

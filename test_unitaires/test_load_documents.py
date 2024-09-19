@@ -1,5 +1,4 @@
 # Command : python -m unittest test_unitaires.test_load_documents
-# Command : python -m unittest test_unitaires.test_load_documents
 import unittest
 from unittest.mock import patch
 import pandas as pd

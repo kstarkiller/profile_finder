@@ -1,3 +1,4 @@
+# Command : python -m unittest test_unitaires.test_embedding
 import unittest
 from unittest.mock import patch, MagicMock
 from chromadb.config import Settings

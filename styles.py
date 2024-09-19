@@ -10,11 +10,16 @@ def apply_custom_styles():
             body {
                 background-color: #FAFAFA;
             }
-                
-            /* remove default sidebar  */
+                        
+            /* remove default sidebar  
             section[data-testid="stSidebar"]{
             display: none;
                 
+            }*/
+
+            */ Remove pages links from sidebar */
+            .sidebar-content {
+                display: none;
             }
 
             /* Changer la police et la couleur dans les titres */

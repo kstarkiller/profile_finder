@@ -1,7 +1,6 @@
 import streamlit as st
 import streamlit_authenticator as stauth
 from datetime import date
-from pprint import pprint
 
 from processing_request import process_input
 
@@ -35,6 +34,8 @@ def display_accueil():
     Returns:
         None
     """
+    st.title("Profile Finder Chatbot")
+
     # Initialiser l'état de session pour l'historique des conversations s'il n'existe pas déjà
     if "chat_history" not in st.session_state:
         st.session_state["chat_history"] = []
@@ -53,8 +54,6 @@ def display_accueil():
             None
         """
         user_input = st.session_state["temp_input"]
-        # Supprimez cette ligne
-        # st.session_state['temp_input'] = ""
 
         # Ajouter la question et la réponse à l'historique
         if user_input:
@@ -65,8 +64,6 @@ def display_accueil():
             st.session_state["chat"].append(
                 {"user": user_input, "assistant": chatbot_response}
             )
-
-            # pprint(f"Updated chat history: {st.session_state['chat_history']}")
 
     # Champ de saisie pour l'utilisateur
     st.chat_input(

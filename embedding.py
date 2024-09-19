@@ -1,19 +1,29 @@
 import chromadb
 import ollama
 import os
+import logging
 from chromadb.config import Settings
-from pprint import pprint
+from torch import le
 
 from load_documents import load_documents
+
 
 # Path to the collection
 if os.name == "posix":
     collection_path = r"/home/kevin/simplon/briefs/avv-matcher/chroma/"
     sources_path = r"/home/kevin/simplon/briefs/avv-matcher/sources"
+    logs_path = r"/home/kevin/simplon/briefs/avv-matcher/logs/local_api_access.log"
 else:
     collection_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\chroma\\"
     sources_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\sources"
+    logs_path = r"C:\Users\k.simon\Projet\avv-matcher\logs\local_api_access.log"
 
+# Logging module configuration
+logging.basicConfig(
+    filename=logs_path,  # Log file name
+    level=logging.INFO,  # Log level
+    format="%(asctime)s - %(levelname)s - %(message)s",  # Log format
+)
 
 def embed_documents(file_path, model="llama3.1:8b", batch_size=10):
     """
@@ -42,11 +52,12 @@ def embed_documents(file_path, model="llama3.1:8b", batch_size=10):
 
     # Verify the type of documents
     if not isinstance(documents, list):
+        logging.error("Documents must be a list of strings.")
         raise ValueError(
             "La fonction load_documents doit retourner une liste de chaînes de caractères."
         )
 
-    print(f"Found {len(documents)} documents.")
+    logging.info(f"Found {len(documents)} documents.")
 
     # Store documents in batches
     for i in range(0, len(documents), batch_size):
@@ -61,9 +72,9 @@ def embed_documents(file_path, model="llama3.1:8b", batch_size=10):
                 batch_embeddings.append(embedding)
                 batch_ids.append(str(i + j))  # Unique ID for each document
                 batch_texts.append(d)
-                print(f"Document {i + j} embedded.")
+                logging.info(f"Document {i + j} embedded.")
             except Exception as e:
-                print(f"Error embedding document {i + j}: {e}")
+                logging.error(f"Error embedding document {i + j}: {e}")
                 raise  # Re-raise the exception to propagate it up
 
         # Add the batch to the collection
@@ -105,22 +116,3 @@ def retrieve_documents(question: str, model="llama3.1:8b"):
     data = results["documents"]
 
     return data
-
-
-# # Reset the client
-# client = chromadb.PersistentClient(
-#         path=collection_path,
-#         settings=Settings(allow_reset=True),
-#         )
-
-# # Afficher le nom de la collection
-# print(client.list_collections())
-
-# client.reset()
-# print("Client reset.")
-
-# data = embed_documents(sources_path, "nomic-embed-text:latest", 10)
-# print(data)
-
-# data = retrieve_documents("Que est disponible en Novembre 2024 ?", "nomic-embed-text:latest")
-# pprint(len(data[0]))

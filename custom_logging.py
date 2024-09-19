@@ -11,7 +11,7 @@ else:
 # Logging module configuration
 logging.basicConfig(
     filename=logs_path,  # Log file name
-    level=logging.INFO,  # Logging level
+    level=logging.INFO,  # Log level
     format="%(asctime)s - %(levelname)s - %(message)s",  # Log format
 )
 
