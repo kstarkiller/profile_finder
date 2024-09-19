@@ -2,12 +2,39 @@ import streamlit as st
 from processing import process_input
 
 def display_accueil():
+    """
+    Affiche l'interface d'accueil du chatbot.
+
+    Cette fonction initialise l'état de session pour l'historique des conversations si nécessaire,
+    définit une fonction pour mettre à jour l'entrée de l'utilisateur et l'ajouter à l'historique,
+    et affiche l'historique des conversations dans l'ordre inverse.
+
+    - Initialise l'état de session 'chat_history' s'il n'existe pas déjà.
+    - Définit la fonction `update_input` pour traiter l'entrée de l'utilisateur et mettre à jour l'historique.
+    - Affiche un champ de saisie pour l'utilisateur.
+    - Affiche l'historique des conversations en ordre inverse, en alternant les messages de l'utilisateur et du chatbot.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     # Initialiser l'état de session pour l'historique des conversations s'il n'existe pas déjà
     if 'chat_history' not in st.session_state:
         st.session_state['chat_history'] = []
 
     # Fonction pour mettre à jour l'entrée de l'utilisateur et ajouter à l'historique
     def update_input():
+        """
+        Traite l'entrée de l'utilisateur et met à jour l'historique des conversations.
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
         user_input = st.session_state['temp_input']
         st.session_state['temp_input'] = ""
 
