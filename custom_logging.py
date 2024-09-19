@@ -3,17 +3,18 @@ from datetime import datetime
 import os
 
 # Logs path according to the os
-if os.name == 'posix':
+if os.name == "posix":
     logs_path = r"/home/kevin/simplon/briefs/avv-matcher/logs/local_api_access.log"
 else:
     logs_path = r"C:\Users\k.simon\Projet\avv-matcher\logs\local_api_access.log"
 
 # Logging module configuration
 logging.basicConfig(
-    filename=logs_path,                                 # Log file name
-    level=logging.INFO,                                 # Logging level
-    format='%(asctime)s - %(levelname)s - %(message)s'  # Message format
+    filename=logs_path,  # Log file name
+    level=logging.INFO,  # Logging level
+    format="%(asctime)s - %(levelname)s - %(message)s",  # Log format
 )
+
 
 # Log access
 def log_access(username, success):
@@ -28,6 +29,7 @@ def log_access(username, success):
         logging.info(f"Successful login for user: {username}")
     else:
         logging.warning(f"Login failed for user: {username}")
+
 
 # Log the asked question and the generated response
 def log_response(question, response):
@@ -44,19 +46,20 @@ def log_response(question, response):
     logging.info(f"Generated response: {response}")
     logging.info("")
 
+
 # Monitoring logs for failed login attempts
-def monitor_logs(log_file='logs/local_api_access.log'):
+def monitor_logs(log_file="logs/local_api_access.log"):
     """
     Monitors the log file for login failures.
 
     Args:
         log_file (str): The path to the log file.
     """
-    with open(log_file, 'r') as file:
+    with open(log_file, "r") as file:
         logs = file.readlines()
-    
-    failed_attempts = [log for log in logs if 'Login failed' in log]
-    
+
+    failed_attempts = [log for log in logs if "Login failed" in log]
+
     if failed_attempts:
         print(f"{len(failed_attempts)} login failures detected:")
         for attempt in failed_attempts:

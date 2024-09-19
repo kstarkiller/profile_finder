@@ -9,7 +9,7 @@ from pprint import pprint
 from generate_response import generate_ollama_response, generate_perplexity_response
 from embedding import embed_documents, retrieve_documents
 
-if os.name == 'posix':
+if os.name == "posix":
     DOC_PATH = r"/home/kevin/simplon/briefs/avv-matcher/rag_local_api/sources"
 else:
     DOC_PATH = r"C:\Users\k.simon\Projet\avv-matcher\rag_local_api\sources"
@@ -21,31 +21,41 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.get("/", summary="Root endpoint", description="This is the root endpoint of the API.")
+
+@app.get(
+    "/", summary="Root endpoint", description="This is the root endpoint of the API."
+)
 def root():
     """Returns a message to confirm that the API is running."""
     return {"message": "API is running"}
 
+
 class TestInput(BaseModel):
     message: str
+
 
 @app.post("/test", summary="Test endpoint", description="This is a test endpoint.")
 def test(input: TestInput):
     """Returns the user input as a response.
-    This is a test endpoint to check if the API is working properly.    
+    This is a test endpoint to check if the API is working properly.
     """
     return {"message": input.message + " Success"}
 
-@app.post("/embedding", summary="Embedding endpoint", description="This is the question endpoint.")
+
+@app.post(
+    "/embedding",
+    summary="Embedding endpoint",
+    description="This is the question endpoint.",
+)
 def embedding():
     """Embeds the documents and returns the collection.
-    This endpoint embeds the documents using the all-minilm:33m model and returns the collection.
+    This endpoint embeds the documents and returns the collection.
 
     Args:
         documents (list): A list of documents to embed.
@@ -65,7 +75,12 @@ def embedding():
 
     return {"collection": collection}
 
-@app.post("/ollama_chat", summary="Process question", description="This endpoint processes a question and returns a response with ollama.")
+
+@app.post(
+    "/ollama_chat",
+    summary="Process question",
+    description="This endpoint processes a question and returns a response with ollama.",
+)
 def process_question_ollama(question: str):
     """
     Process a question and return a response.
@@ -89,6 +104,8 @@ def process_question_ollama(question: str):
     # Add question and retrieved data and generating response
     start_time = time.time()
     try:
+        if data is None:
+            raise HTTPException(status_code=500, detail="Aucun document trouvé")
         response = generate_ollama_response(data, question, MODEL_LLM)
     except Exception as e:
         print(f"Error generating response: {str(e)}")
@@ -96,10 +113,15 @@ def process_question_ollama(question: str):
     print(f"Response: {response}" + "success")
     end_time = time.time()
     print(f"\nResponse generated in {end_time - start_time} seconds.\n\n")
-    
+
     return {"response": response}
 
-@app.post("/perplexity_chat", summary="Process question", description="This endpoint processes a question and returns a response with perplexity.")
+
+@app.post(
+    "/perplexity_chat",
+    summary="Process question",
+    description="This endpoint processes a question and returns a response with perplexity.",
+)
 def process_question_perplexity(question: str):
     """
     Process a question and return a response.
@@ -110,6 +132,14 @@ def process_question_perplexity(question: str):
     Returns:
         dict: A dictionary containing the response generated.
     """
+    # Prepare the chat history
+    history = [
+        {
+            "role": "system",
+            "content": "You are a French chatbot assistant that helps the user find team members based on their location, availability and skills.",
+        }
+    ]
+
     # Embedding the question and retrieving the documents
     start_time = time.time()
     try:
@@ -123,15 +153,18 @@ def process_question_perplexity(question: str):
     # Add question and retrieved data and generating response
     start_time = time.time()
     try:
-        response = generate_perplexity_response(data, question)
+        if data is None:
+            raise HTTPException(status_code=500, detail="Aucun document trouvé")
+        response = generate_perplexity_response(data, history, question)
     except Exception as e:
         print(f"Error generating response: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
     print(f"Response: {response}" + "success")
     end_time = time.time()
     print(f"\nResponse generated in {end_time - start_time} seconds.\n\n")
-    
+
     return {"response": response}
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8080)

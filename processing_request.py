@@ -9,6 +9,7 @@ ERROR_MESSAGES = {
 MODEL_LLM = "llama-3.1-70b-instruct"
 MODEL_EMBEDDING = "nomic-embed-text:latest"
 
+
 # This functions are used to process the user input and return the chatbot response via the generate_perplexity_response function.
 def process_input(user_input, chat_history):
     """
@@ -25,7 +26,7 @@ def process_input(user_input, chat_history):
     # Validation de l'entrée utilisateur
     if not user_input:
         return ERROR_MESSAGES["no_question"], chat_history
-    
+
     # Ajouter l'entrée utilisateur à l'historique du chat
     chat_history.append({"role": "user", "content": user_input})
 

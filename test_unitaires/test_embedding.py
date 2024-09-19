@@ -5,13 +5,14 @@ from chromadb.config import Settings
 from embedding import embed_documents
 from embedding import collection_path
 
+
 class TestEmbedDocuments(unittest.TestCase):
 
     def setUp(self):
         # Patch les méthodes et commence les patchs
-        self.patcher_load_documents = patch('embedding.load_documents')
-        self.patcher_PersistentClient = patch('chromadb.PersistentClient')
-        self.patcher_ollama_embeddings = patch('ollama.embeddings')
+        self.patcher_load_documents = patch("embedding.load_documents")
+        self.patcher_PersistentClient = patch("chromadb.PersistentClient")
+        self.patcher_ollama_embeddings = patch("ollama.embeddings")
 
         # Démarre les patchs
         self.mock_load_documents = self.patcher_load_documents.start()
@@ -38,8 +39,7 @@ class TestEmbedDocuments(unittest.TestCase):
 
         # Assertions
         self.mock_PersistentClient.assert_called_once_with(
-            path=collection_path,
-            settings=Settings(allow_reset=True)
+            path=collection_path, settings=Settings(allow_reset=True)
         )
         self.mock_client.get_or_create_collection.assert_called_once_with(name="docs")
         self.mock_load_documents.assert_called_once_with("dummy_path")
@@ -47,7 +47,9 @@ class TestEmbedDocuments(unittest.TestCase):
 
     def test_embed_documents_load_documents_error(self):
         # Setup spécifique au test
-        self.mock_load_documents.side_effect = ValueError("Erreur de chargement des documents")
+        self.mock_load_documents.side_effect = ValueError(
+            "Erreur de chargement des documents"
+        )
 
         # Appelle la fonction et vérifie l'exception
         with self.assertRaises(ValueError):
@@ -70,5 +72,6 @@ class TestEmbedDocuments(unittest.TestCase):
         with self.assertRaises(ValueError):
             embed_documents("dummy_path")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
