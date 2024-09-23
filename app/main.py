@@ -2,7 +2,7 @@ import os
 from tkinter.font import names
 import streamlit as st
 import streamlit_authenticator as stauth
-from styles import apply_custom_styles
+from app.styles import apply_custom_styles
 from pages import chatbot
 
 
