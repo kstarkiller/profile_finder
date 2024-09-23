@@ -2,9 +2,9 @@ import os
 import pandas as pd
 
 if os.name == "posix":
-    DOC_PATH = r"/home/kevin/simplon/briefs/avv-matcher/rag_local_api/sources"
+    DOC_PATH = r"/home/kevin/simplon/briefs/avv-matcher/rag_api/sources"
 else:
-    DOC_PATH = r"C:\Users\k.simon\Projet\avv-matcher\rag_local_api\sources"
+    DOC_PATH = r"C:\Users\k.simon\Projet\avv-matcher\rag_api\sources"
 
 
 def load_documents(file_path):

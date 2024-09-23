@@ -4,9 +4,13 @@ import os
 
 # Logs path according to the os
 if os.name == "posix":
-    logs_path = r"/home/kevin/simplon/briefs/avv-matcher/log_module/logs/local_api_access.log"
+    logs_path = (
+        r"/home/kevin/simplon/briefs/avv-matcher/rag_api/log_module/logs/logs_api.log"
+    )
 else:
-    logs_path = r"C:\Users\k.simon\Projet\avv-matcher\log_module\logs\local_api_access.log"
+    logs_path = (
+        r"C:\Users\k.simon\Projet\avv-matcher\rag_api\log_module\logs\logs_api.log"
+    )
 
 # Logging module configuration
 logging.basicConfig(
@@ -14,6 +18,7 @@ logging.basicConfig(
     level=logging.INFO,  # Log level
     format="%(asctime)s - %(levelname)s - %(message)s",  # Log format
 )
+
 
 # Log access
 def log_access(username, success):

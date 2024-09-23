@@ -24,9 +24,13 @@ ERROR_MESSAGES = {
 
 # Logs path according to the os
 if os.name == "posix":
-    logs_path = r"/home/kevin/simplon/briefs/avv-matcher/log_module/logs/local_api_access.log"
+    logs_path = (
+        r"/home/kevin/simplon/briefs/avv-matcher/rag_api/log_module/logs/logs_api.log"
+    )
 else:
-    logs_path = r"C:\Users\k.simon\Projet\avv-matcher\log_module\logs\local_api_access.log"
+    logs_path = (
+        r"C:\Users\k.simon\Projet\avv-matcher\rag_api\log_module\logs\logs_api.log"
+    )
 
 # Logging module configuration
 logging.basicConfig(
@@ -91,7 +95,7 @@ def validate_input(
     if not data:
         logging.warning(ERROR_MESSAGES["no_data"])
         raise ValueError(ERROR_MESSAGES["no_data"])
-    
+
     # Vérifier si la liste de données est vide
     if not any(data):
         logging.warning(ERROR_MESSAGES["no_data"])
@@ -183,7 +187,7 @@ def generate_perplexity_response(data: list, history: list, model: str) -> str:
     """
 
     try:
-        if not history or history==[]:
+        if not history or history == []:
             logging.warning("History is empty")
             raise ValueError("History is empty")
         if not model:
@@ -199,7 +203,7 @@ def generate_perplexity_response(data: list, history: list, model: str) -> str:
             "Content-Type": "application/json",
         }
 
-        # Prepare the payload
+        # Prepare the payload with the model and the system's role and message
         payload = {
             "model": model,
             "messages": [
@@ -226,7 +230,9 @@ def generate_perplexity_response(data: list, history: list, model: str) -> str:
         response.raise_for_status()  # Raise an error for bad responses
         # log HTTP response status if raised
         if response.status_code != 200:
-            logging.error(f"Perplexity API HTTP response status: {response.status_code}")
+            logging.error(
+                f"Perplexity API HTTP response status: {response.status_code}"
+            )
             print(response.status_code)
             logging.error(f"Perplexity API HTTP response content: {response.content}")
             print(response.content)

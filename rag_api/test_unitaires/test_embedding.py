@@ -6,6 +6,7 @@ from chromadb.config import Settings
 from rag_module.embedding import embed_documents
 from rag_module.embedding import collection_path
 
+
 class TestEmbedDocuments(unittest.TestCase):
 
     def setUp(self):

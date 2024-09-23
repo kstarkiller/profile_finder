@@ -1,5 +1,4 @@
-from llm_module.generate_response import generate_perplexity_response
-from rag_module.embedding import retrieve_documents
+import requests
 
 ERROR_MESSAGES = {
     "no_data": "Please provide data to generate a response.",
@@ -31,12 +30,32 @@ def process_input(user_input, chat_history):
     chat_history.append({"role": "user", "content": user_input})
 
     # Récupérer les documents pertinents pour l'entrée utilisateur
-    documents = retrieve_documents(user_input, MODEL_EMBEDDING) or []
+    # documents = retrieve_documents(user_input, MODEL_EMBEDDING) or []
 
-    # Générer une réponse
-    response = generate_perplexity_response(documents, chat_history, MODEL_LLM)
+    # Générer une réponse via la fonction generate_perplexity_response
+    # response = generate_perplexity_response(documents, chat_history, MODEL_LLM)
+
+    # Générer une réponse via le point de terminaison de l'API RAG "/perplexity_chat"
+    url = "http://localhost:8080/perplexity_chat"
+    payload = {
+        "question": user_input,
+        "history": chat_history,
+    }
+
+    response = requests.post(url, json=payload)
+    response_data = response.json()
+
+    # Vérifier si la réponse contient des erreurs
+    if response.status_code != 200:
+        print(response_data)
+        return (
+            "Une erreur s'est produite lors de la génération de la réponse.",
+            chat_history,
+        )
 
     # Ajouter la réponse du chatbot à l'historique du chat
-    chat_history.append({"role": "assistant", "content": response})
+    chat_history.append(
+        {"role": "assistant", "content": response_data.get("response", "")}
+    )
 
-    return response, chat_history
+    return response_data.get("response", ""), chat_history

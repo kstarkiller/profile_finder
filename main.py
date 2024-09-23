@@ -5,38 +5,42 @@ import streamlit_authenticator as stauth
 from styles import apply_custom_styles
 from pages import chatbot
 
+
 def main():
-    names = ['Kevin']
-    usernames = [os.getenv('RAG_LOCAL_USERNAME')]
-    passwords = [os.getenv('RAG_LOCAL_PASSWORD')]
+    names = ["Kevin"]
+    usernames = [os.getenv("RAG_LOCAL_USERNAME")]
+    passwords = [os.getenv("RAG_LOCAL_PASSWORD")]
     hashed_passwords = stauth.Hasher(passwords).generate()
 
     # Create credentials dictionary
     credentials = {
-        'usernames': {
-            usernames[i]: {
-                'name': names[i],
-                'password': hashed_passwords[i]
-            } for i in range(len(usernames))
+        "usernames": {
+            usernames[i]: {"name": names[i], "password": hashed_passwords[i]}
+            for i in range(len(usernames))
         }
     }
 
     # Create an authenticator object
-    authenticator = stauth.Authenticate(credentials, 'some_cookie_name', 'some_signature_key', cookie_expiry_days=10)
+    authenticator = stauth.Authenticate(
+        credentials, "some_cookie_name", "some_signature_key", cookie_expiry_days=10
+    )
 
     # Render login widget
-    name, authentication_status, username = authenticator.login('sidebar', None, 3, None, False, False, 'Login')
+    name, authentication_status, username = authenticator.login(
+        "sidebar", None, 3, None, False, False, "Login"
+    )
 
     if authentication_status:
-        st.sidebar.write(f'Bienvenue *{name}*')
-        authenticator.logout('Logout', 'sidebar')
-        
+        st.sidebar.write(f"Bienvenue *{name}*")
+        authenticator.logout("Logout", "sidebar")
+
         chatbot.display_accueil()
         apply_custom_styles()
     elif authentication_status == False:
-        st.error('Username/password is incorrect')
+        st.error("Username/password is incorrect")
     elif authentication_status == None:
-        st.warning('Please enter your username and password')
+        st.warning("Please enter your username and password")
+
 
 if __name__ == "__main__":
     main()

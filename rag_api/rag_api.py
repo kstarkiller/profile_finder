@@ -3,18 +3,26 @@ import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import List
 import os
 import logging
 
-from llm_module.generate_response import generate_ollama_response, generate_perplexity_response
+from llm_module.generate_response import (
+    generate_ollama_response,
+    generate_perplexity_response,
+)
 from rag_module.embedding import embed_documents, retrieve_documents
 
 if os.name == "posix":
-    doc_path = r"/home/kevin/simplon/briefs/avv-matcher/rag_local_api/sources"
-    logs_path = r"/home/kevin/simplon/briefs/avv-matcher/logs/local_api_access.log"
+    doc_path = r"/home/kevin/simplon/briefs/avv-matcher/rag_api/sources"
+    logs_path = (
+        r"/home/kevin/simplon/briefs/avv-matcher/rag_api/log_module/logs/logs_api.log"
+    )
 else:
-    doc_path = r"C:\Users\k.simon\Projet\avv-matcher\rag_local_api\sources"
-    logs_path = r"C:\Users\k.simon\Projet\avv-matcher\logs\local_api_access.log"
+    doc_path = r"C:\Users\k.simon\Projet\avv-matcher\rag_api\sources"
+    logs_path = (
+        r"C:\Users\k.simon\Projet\avv-matcher\rag_api\log_module\logs\logs_api.log"
+    )
 
 # Logging module configuration
 logging.basicConfig(
@@ -126,12 +134,17 @@ def process_question_ollama(question: str):
     return {"response": response}
 
 
+class ChatRequest(BaseModel):
+    question: str
+    history: List[dict]
+
+
 @app.post(
     "/perplexity_chat",
     summary="Process question",
     description="This endpoint processes a question and returns a response with perplexity.",
 )
-def process_question_perplexity(question: str):
+def process_question_perplexity(input: ChatRequest):
     """
     Process a question and return a response.
 
@@ -141,22 +154,11 @@ def process_question_perplexity(question: str):
     Returns:
         dict: A dictionary containing the response generated.
     """
-    # Prepare the chat history
-    history = [
-        {
-            "role": "system",
-            "content": "You are a French chatbot assistant that helps the user find team members based on their location, availability and skills.",
-        },
-        {
-            "role": "user",
-            "content": question,
-        },
-    ]
 
     # Embed the question and retrieve the documents
     start_time = time.time()
     try:
-        data = retrieve_documents(question, MODEL_EMBEDDING)
+        data = retrieve_documents(input.question, MODEL_EMBEDDING)
     except Exception as e:
         logging.error(f"Error retrieving documents: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -169,7 +171,9 @@ def process_question_perplexity(question: str):
         if data is None:
             logging.error("Aucun document trouvé")
             raise HTTPException(status_code=500, detail="Aucun document trouvé")
-        response = generate_perplexity_response(data, history, "llama-3.1-70b-instruct")
+        response = generate_perplexity_response(
+            data, input.history, "llama-3.1-70b-instruct"
+        )
     except Exception as e:
         logging.error(f"Error generating response: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

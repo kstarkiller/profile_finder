@@ -6,6 +6,7 @@ import requests
 
 from llm_module.generate_response import generate_perplexity_response
 
+
 # The goal of this test is to verify that the generate_perplexity_response function works as expected.
 class TestGeneratePerplexityResponse(unittest.TestCase):
     def setUp(self):
@@ -16,7 +17,8 @@ class TestGeneratePerplexityResponse(unittest.TestCase):
             "choices": [{"message": {"content": "Test response"}}]
         }
         patch(
-            "llm_module.generate_response.requests.post", return_value=self.mock_response
+            "llm_module.generate_response.requests.post",
+            return_value=self.mock_response,
         ).start()
 
         # Deactivate logging
@@ -51,7 +53,7 @@ class TestGeneratePerplexityResponse(unittest.TestCase):
             "500 Server Error"
         )
 
-        #Simulaite a bad response with status code 400
+        # Simulaite a bad response with status code 400
         self.mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
             "400 Client Error"
         )
@@ -108,6 +110,7 @@ class TestGeneratePerplexityResponse(unittest.TestCase):
             response,
             "The question is too long. Please provide a question with less than 512 characters.",
         )
+
 
 if __name__ == "__main__":
     unittest.main()

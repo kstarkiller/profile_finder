@@ -5,6 +5,7 @@ import logging
 
 from llm_module.generate_response import generate_ollama_response
 
+
 # The goal of this test is to verify that the generate_ollama_response function works as expected.
 class TestGenerateOllamaResponse(unittest.TestCase):
     def setUp(self):
@@ -14,15 +15,19 @@ class TestGenerateOllamaResponse(unittest.TestCase):
             "models": [
                 {"name": "nomic-embed-text:latest"},
                 {"name": "all-minilm:33m"},
-                {"name": "llama3.1:8b"}
+                {"name": "llama3.1:8b"},
             ]
         }
         self.mock_ollama.generate.return_value = {"response": "Test response"}
         patch("llm_module.generate_response.ollama", self.mock_ollama).start()
 
         # Automatically provide the username and password to avoid user input when testing
-        self.patcher_input = patch('llm_module.generate_response.input', return_value='test_user')
-        self.patcher_getpass = patch('llm_module.generate_response.getpass.getpass', return_value='test_pass')
+        self.patcher_input = patch(
+            "llm_module.generate_response.input", return_value="test_user"
+        )
+        self.patcher_getpass = patch(
+            "llm_module.generate_response.getpass.getpass", return_value="test_pass"
+        )
         self.mock_input = self.patcher_input.start()
         self.mock_getpass = self.patcher_getpass.start()
 
@@ -41,7 +46,12 @@ class TestGenerateOllamaResponse(unittest.TestCase):
         response = generate_ollama_response([["test_data"]], "test_question")
         self.assertEqual(response, "Test response")
 
-    @patch("llm_module.generate_response.generate_ollama_response", side_effect=ValueError("Sorry, no data was provided. I need data to respond to your question. Please provide the data and try again."))
+    @patch(
+        "llm_module.generate_response.generate_ollama_response",
+        side_effect=ValueError(
+            "Sorry, no data was provided. I need data to respond to your question. Please provide the data and try again."
+        ),
+    )
     def test_generate_ollama_response_no_data(self, mock_ollama_response):
         response = generate_ollama_response([], "test_question")
         self.assertEqual(
