@@ -1,6 +1,7 @@
-#python -m unittest tests.test_normalizing_normalize_text
+# python -m unittest tests.test_normalizing_normalize_text
 import unittest
-from data_processing.normalizing import normalize_text 
+from data_processing.normalizing import normalize_text
+
 
 class TestNormalizeText(unittest.TestCase):
 
@@ -34,5 +35,6 @@ class TestNormalizeText(unittest.TestCase):
         expected_output = "Hello, world! This is a test."
         self.assertEqual(normalize_text(input_text), expected_output)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

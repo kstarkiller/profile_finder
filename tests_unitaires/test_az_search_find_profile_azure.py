@@ -3,6 +3,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 from az_search import find_profiles_azure
 
+
 class TestFindProfilesAzure(unittest.TestCase):
 
     def setUp(self):
@@ -13,10 +14,18 @@ class TestFindProfilesAzure(unittest.TestCase):
         self.mock_search_client = MagicMock()
 
         # Patch the external dependencies in the target module
-        self.patcher_normalize_text = patch('az_search.normalize_text', self.mock_normalize_text)
-        self.patcher_embedding_text = patch('az_search.embedding_text', self.mock_embedding_text)
-        self.patcher_VectorizedQuery = patch('az_search.VectorizedQuery', self.mock_VectorizedQuery)
-        self.patcher_search_client = patch('az_search.search_client', self.mock_search_client)
+        self.patcher_normalize_text = patch(
+            "az_search.normalize_text", self.mock_normalize_text
+        )
+        self.patcher_embedding_text = patch(
+            "az_search.embedding_text", self.mock_embedding_text
+        )
+        self.patcher_VectorizedQuery = patch(
+            "az_search.VectorizedQuery", self.mock_VectorizedQuery
+        )
+        self.patcher_search_client = patch(
+            "az_search.search_client", self.mock_search_client
+        )
 
         # Start patching
         self.patcher_normalize_text.start()
@@ -61,12 +70,12 @@ class TestFindProfilesAzure(unittest.TestCase):
         model = "example model"
         profiles = []
 
-
     def test_find_profiles_azure_long_input(self):
         # Call the function to test with a long input
         user_input = "a" * 10000
         model = "example model"
         profiles = ["Input too long. Please enter a shorter input."]
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

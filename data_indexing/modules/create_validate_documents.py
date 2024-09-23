@@ -1,5 +1,6 @@
 import numpy as np
 
+
 # Description: This file contains the functions to create and validate documents for indexing.
 def create_documents(df, embedded_column="Embedding"):
     """
@@ -16,17 +17,20 @@ def create_documents(df, embedded_column="Embedding"):
         if isinstance(embedding, np.ndarray):
             embedding = embedding.tolist()
         elif isinstance(embedding, str):
-            embedding = [float(x) for x in embedding.strip('[]').split(',')]
+            embedding = [float(x) for x in embedding.strip("[]").split(",")]
 
         document = {
             "id": str(index),
             "content": row["Combined"],
-            "content_vector": embedding
+            "content_vector": embedding,
         }
         documents.append(document)
     return documents
 
+
 def validate_document(doc):
     if len(doc["content_vector"]) != 3072:
-        raise ValueError(f"Document {doc['id']} has incorrect vector dimension: {len(doc['content_vector'])}")
+        raise ValueError(
+            f"Document {doc['id']} has incorrect vector dimension: {len(doc['content_vector'])}"
+        )
     return doc
