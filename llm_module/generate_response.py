@@ -6,7 +6,7 @@ from typing import Optional
 from datetime import date
 import logging
 
-from custom_logging import log_access, log_response
+from log_module.custom_logging import log_access, log_response
 
 # Import environment variables
 USERNAME = os.getenv("RAG_LOCAL_USERNAME")
@@ -24,9 +24,9 @@ ERROR_MESSAGES = {
 
 # Logs path according to the os
 if os.name == "posix":
-    logs_path = r"/home/kevin/simplon/briefs/avv-matcher/logs/local_api_access.log"
+    logs_path = r"/home/kevin/simplon/briefs/avv-matcher/log_module/logs/local_api_access.log"
 else:
-    logs_path = r"C:\Users\k.simon\Projet\avv-matcher\logs\local_api_access.log"
+    logs_path = r"C:\Users\k.simon\Projet\avv-matcher\log_module\logs\local_api_access.log"
 
 # Logging module configuration
 logging.basicConfig(
@@ -98,7 +98,7 @@ def validate_input(
         raise ValueError(ERROR_MESSAGES["no_data"])
 
     # Vérifier si la question est vide
-    if not question or question.isspace():
+    if not question or question.isspace() or not question.strip():
         logging.warning(ERROR_MESSAGES["no_question"])
         raise ValueError(ERROR_MESSAGES["no_question"])
 
@@ -183,6 +183,12 @@ def generate_perplexity_response(data: list, history: list, model: str) -> str:
     """
 
     try:
+        if not history or history==[]:
+            logging.warning("History is empty")
+            raise ValueError("History is empty")
+        if not model:
+            logging.warning("No model provided")
+            raise ValueError("No model provided")
         # Validate inputs
         validate_input(data, history[-1]["content"])
 
@@ -235,10 +241,16 @@ def generate_perplexity_response(data: list, history: list, model: str) -> str:
 
     except ValueError as e:
         # Log the error message
-        log_response(history[-1]["content"], str(e))
+        if not history or history == []:
+            log_response("No history", str(e))
+        else:
+            log_response(history[-1]["content"], str(e))
         return str(e)
 
     except Exception as e:
         # Log the error message
-        log_response(history[-1]["content"], str(e))
+        if not history or history == []:
+            log_response("No history", str(e))
+        else:
+            log_response(history[-1]["content"], str(e))
         return "An unexpected error occurred: " + str(e)

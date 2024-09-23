@@ -3,15 +3,14 @@ import unittest
 from unittest.mock import patch, MagicMock
 from chromadb.config import Settings
 
-from embedding import embed_documents
-from embedding import collection_path
-
+from rag_module.embedding import embed_documents
+from rag_module.embedding import collection_path
 
 class TestEmbedDocuments(unittest.TestCase):
 
     def setUp(self):
         # Patch les méthodes et commence les patchs
-        self.patcher_load_documents = patch("embedding.load_documents")
+        self.patcher_load_documents = patch("rag_module.embedding.load_documents")
         self.patcher_PersistentClient = patch("chromadb.PersistentClient")
         self.patcher_ollama_embeddings = patch("ollama.embeddings")
 

@@ -22,7 +22,7 @@ def main():
     }
 
     # Create an authenticator object
-    authenticator = stauth.Authenticate(credentials, 'some_cookie_name', 'some_signature_key', cookie_expiry_days=0)
+    authenticator = stauth.Authenticate(credentials, 'some_cookie_name', 'some_signature_key', cookie_expiry_days=10)
 
     # Render login widget
     name, authentication_status, username = authenticator.login('sidebar', None, 3, None, False, False, 'Login')

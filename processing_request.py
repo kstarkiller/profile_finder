@@ -1,9 +1,9 @@
-from generate_response import generate_perplexity_response
-from embedding import retrieve_documents
+from llm_module.generate_response import generate_perplexity_response
+from rag_module.embedding import retrieve_documents
 
 ERROR_MESSAGES = {
     "no_data": "Please provide data to generate a response.",
-    "no_question": "Please provide a question to generate a response.",
+    "no_question": "Please provide a question to answer.",
 }
 
 MODEL_LLM = "llama-3.1-70b-instruct"

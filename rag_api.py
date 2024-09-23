@@ -5,10 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
 import logging
-from pprint import pprint
 
-from generate_response import generate_ollama_response, generate_perplexity_response
-from embedding import embed_documents, retrieve_documents
+from llm_module.generate_response import generate_ollama_response, generate_perplexity_response
+from rag_module.embedding import embed_documents, retrieve_documents
 
 if os.name == "posix":
     doc_path = r"/home/kevin/simplon/briefs/avv-matcher/rag_local_api/sources"
@@ -154,7 +153,7 @@ def process_question_perplexity(question: str):
         },
     ]
 
-    # Embedding the question and retrieving the documents
+    # Embed the question and retrieve the documents
     start_time = time.time()
     try:
         data = retrieve_documents(question, MODEL_EMBEDDING)
@@ -164,7 +163,7 @@ def process_question_perplexity(question: str):
     end_time = time.time()
     logging.info(f"RAG performed in {end_time - start_time} seconds.\n")
 
-    # Add question and retrieved data and generating response
+    # Add question and retrieved data then generate a response
     start_time = time.time()
     try:
         if data is None:

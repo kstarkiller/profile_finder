@@ -3,20 +3,20 @@ import ollama
 import os
 import logging
 from chromadb.config import Settings
-from torch import le
+# from torch import le
 
-from load_documents import load_documents
+from rag_module.load_documents import load_documents
 
 
 # Path to the collection
 if os.name == "posix":
     collection_path = r"/home/kevin/simplon/briefs/avv-matcher/chroma/"
     sources_path = r"/home/kevin/simplon/briefs/avv-matcher/sources"
-    logs_path = r"/home/kevin/simplon/briefs/avv-matcher/logs/local_api_access.log"
+    logs_path = r"/home/kevin/simplon/briefs/avv-matcher/log_module/logs/local_api_access.log"
 else:
     collection_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\chroma\\"
     sources_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\sources"
-    logs_path = r"C:\Users\k.simon\Projet\avv-matcher\logs\local_api_access.log"
+    logs_path = r"C:\Users\k.simon\Projet\avv-matcher\log_module\logs\local_api_access.log"
 
 # Logging module configuration
 logging.basicConfig(
