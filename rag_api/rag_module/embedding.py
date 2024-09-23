@@ -88,8 +88,7 @@ def embed_documents(file_path, model="llama3.1:8b", batch_size=10):
 
     return collection
 
-
-# Embedding the question
+# Retrieve documents
 def retrieve_documents(question: str, model="llama3.1:8b"):
     """
     Embeds the question using an embedding model and queries the collection for the most similar document.

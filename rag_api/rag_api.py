@@ -45,16 +45,21 @@ app.add_middleware(
 )
 
 
+class TestInput(BaseModel):
+    message: str
+
+
+class ChatRequest(BaseModel):
+    question: str
+    history: List[dict]
+
+
 @app.get(
     "/", summary="Root endpoint", description="This is the root endpoint of the API."
 )
 def root():
     """Returns a message to confirm that the API is running."""
     return {"message": "API is running"}
-
-
-class TestInput(BaseModel):
-    message: str
 
 
 @app.post("/test", summary="Test endpoint", description="This is a test endpoint.")
@@ -98,7 +103,7 @@ def embedding():
     summary="Process question",
     description="This endpoint processes a question and returns a response with ollama.",
 )
-def process_question_ollama(question: str):
+def process_question_ollama(input: ChatRequest):
     """
     Process a question and return a response.
 
@@ -111,7 +116,7 @@ def process_question_ollama(question: str):
     # Embedding the question and retrieving the documents
     start_time = time.time()
     try:
-        data = retrieve_documents(question, MODEL_EMBEDDING)
+        data = retrieve_documents(input.question, MODEL_EMBEDDING)
     except Exception as e:
         logging.error(f"Error retrieving documents: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -124,7 +129,7 @@ def process_question_ollama(question: str):
         if data is None:
             logging.error("Aucun document trouvé")
             raise HTTPException(status_code=500, detail="Aucun document trouvé")
-        response = generate_ollama_response(data, question, MODEL_LLM)
+        response = generate_ollama_response(data, input.question, MODEL_LLM)
     except Exception as e:
         logging.error(f"Error generating response: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -132,11 +137,6 @@ def process_question_ollama(question: str):
     logging.info(f"Response generated in {end_time - start_time} seconds.\n\n")
 
     return {"response": response}
-
-
-class ChatRequest(BaseModel):
-    question: str
-    history: List[dict]
 
 
 @app.post(
