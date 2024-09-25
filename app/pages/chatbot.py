@@ -1,7 +1,8 @@
 import streamlit as st
+import time
 from datetime import date
 
-from app.processing_request import process_input
+from processing_request import process_input
 
 context = f"""
         You are a French chatbot assistant that helps the user find team members based on their location, availability and skills.
@@ -13,6 +14,12 @@ context = f"""
         - If several members match the criteria, present them in order of relevance (availability, skills, etc.).
         """
 
+# Streamed response emulator
+def response_generator(response):
+
+    for word in response.split():
+        yield word + " "
+        time.sleep(0.05)
 
 def display_accueil():
     """
@@ -85,7 +92,7 @@ def display_accueil():
                 )
 
             with st.chat_message("Assistant"):
-                st.write(f"Assistant : {bot_message}")
+                st.write(f"Assistant : {response_generator(bot_message)}")
                 # Ajouter un identifiant unique au message de l'assistant
                 st.markdown(
                     f"<div id='message-{i}-assistant'></div>", unsafe_allow_html=True
