@@ -29,12 +29,6 @@ def process_input(user_input, chat_history):
     # Ajouter l'entrée utilisateur à l'historique du chat
     chat_history.append({"role": "user", "content": user_input})
 
-    # Récupérer les documents pertinents pour l'entrée utilisateur
-    # documents = retrieve_documents(user_input, MODEL_EMBEDDING) or []
-
-    # Générer une réponse via la fonction generate_perplexity_response
-    # response = generate_perplexity_response(documents, chat_history, MODEL_LLM)
-
     # Générer une réponse via le point de terminaison de l'API RAG "/perplexity_chat"
     url = "http://localhost:8080/perplexity_chat"
     payload = {
