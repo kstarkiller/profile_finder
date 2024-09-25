@@ -24,8 +24,8 @@ fake = Faker()
 # Récupération des données à partir du fichier PSA RM
 psa_rm_df = pd.read_excel(psa_rm_path)
 
-# Lire les données existantes à partir du fichier COAFF
-coaff_df = pd.read_excel(coaff_path)
+# Lire les données existantes à partir du fichier COAFF .csv
+coaff_df = pd.read_csv(coaff_path)
 # Définir la 3e ligne comme en-tête et supprimer les deux premières lignes
 coaff_df = coaff_df.rename(columns=coaff_df.iloc[2]).drop(coaff_df.index[:3])
 
