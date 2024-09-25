@@ -4,10 +4,14 @@ import random
 import os
 
 # Paths according to the OS
-if os.name == 'posix':
-    psa_rm_path = r"data_processing/datas/sources/UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
+if os.name == "posix":
+    psa_rm_path = (
+        r"data_processing/datas/sources/UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
+    )
     coaff_path = r"data_processing/datas/sources/Coaff_V1.xlsx"
-    certs_path = r"data_processing/datas/sources/UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
+    certs_path = (
+        r"data_processing/datas/sources/UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
+    )
     fixtures_coaff = r"data_processing/datas/fixtures/fixtures_coaff.csv"
     fixtures_psarm = r"data_processing/datas/fixtures/fixtures_psarm.csv"
     fixtures_certs = r"data_processing/datas/fixtures/fixtures_certs.csv"
@@ -45,7 +49,7 @@ if "Licence/Certificat" in certs_df.columns:
 # Créer un dictionnaire avec les certifications et leurs descriptions
 certs_dict = certs_df.set_index("Certification")["Description"].to_dict()
 # Supprimer le caractère '*' des valeurs
-certs_dict = {key: value.replace('*', '') for key, value in certs_dict.items()}
+certs_dict = {key: value.replace("*", "") for key, value in certs_dict.items()}
 # Récupérer les paires uniques
 unique_certs_dict = set(certs_dict.items())
 
@@ -65,8 +69,12 @@ for column in certs_df.columns:
     unique_certs_values[column] = certs_df[column].unique().tolist()
 
 # Remplacer les valeurs de la clé 'Nom' et 'Supervisor Name' par des fausses valeurs grâce à faker
-unique_psarm_values['Nom'] = [fake.name() for _ in range(len(unique_psarm_values['Nom'])-500)]
-unique_psarm_values['Supervisor Name'] = [fake.name() for _ in range(len(unique_psarm_values['Supervisor Name']))]
+unique_psarm_values["Nom"] = [
+    fake.name() for _ in range(len(unique_psarm_values["Nom"]) - 500)
+]
+unique_psarm_values["Supervisor Name"] = [
+    fake.name() for _ in range(len(unique_psarm_values["Supervisor Name"]))
+]
 
 # Liste des compétences IT spécifiques
 fonctions = [
@@ -110,22 +118,34 @@ company_names = [
     "congés",
 ]
 
+
 # Générer de nouvelles données de faux COAFF
 def generate_fake_coaff(names):
     """
     Generate fake but consistent COAFF data for the given names.
-    
+
     :param names: list (list of names)
     :return: DataFrame, int (new COAFF data, number of rows)
     """
-    
+
     fake_data = []
     coaff_rows = 0
     for name in names:
         localisation = random.choice(["Mtp", "Tours", "Paris"])
         coeff = random.choice([100, 105, 115, 150, 170])
         profil = random.choice(["Junior", "Sénior", "Confirmé", "Expert"])
-        stream = random.choice(["DSIA", "MSBI", "TALEND", "ODI", "DataViz", "Cloud Azure", "Data Integration", "Data Management",])
+        stream = random.choice(
+            [
+                "DSIA",
+                "MSBI",
+                "TALEND",
+                "ODI",
+                "DataViz",
+                "Cloud Azure",
+                "Data Integration",
+                "Data Management",
+            ]
+        )
         competency = random.choice(fonctions)
         num_missions = random.randint(3, 8)
         start_date = fake.date_between(start_date="-1y", end_date="today")
@@ -135,7 +155,7 @@ def generate_fake_coaff(names):
 
         # Générer des données pour chaque mission
         for i in range(num_missions):
-            if available_company_names: 
+            if available_company_names:
                 missions_en_cours = random.choice(available_company_names)
                 available_company_names.remove(missions_en_cours)
             else:
@@ -143,7 +163,7 @@ def generate_fake_coaff(names):
 
             # Si la mission actuelle est "congés", sa date de début est la date de fin de la mission précédente plus 1 jour
             date_demarrage = (
-                date_fin + pd.Timedelta(days=1) 
+                date_fin + pd.Timedelta(days=1)
                 if missions_en_cours == "congés"
                 else start_date
             )
@@ -181,20 +201,23 @@ def generate_fake_coaff(names):
             )
             # Mettre à jour le taux d'occupation pour la prochaine mission
             if missions_en_cours == "congés":
-                occupancy_rate = random.choice([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+                occupancy_rate = random.choice(
+                    [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+                )
             else:
                 occupancy_rate = round((1 - row["Tx_occup"]), 1)
             coaff_rows += 1
     return pd.DataFrame(fake_data), coaff_rows
 
+
 def generate_fake_psarm(names):
     """
     Generate fake but consistent PSA RM data for the given names.
-    
+
     :param names: list (list of names)
     :return: DataFrame, int (new PSA RM data, number of rows)
     """
-    
+
     fake_data = []
     psarm_rows = 0
 
@@ -227,7 +250,9 @@ def generate_fake_psarm(names):
         fcp_code = random.choice(unique_psarm_values["Code FCP"])
         pool_descr = random.choice(unique_psarm_values["Pool Descr"])
         supervisor = random.choice(supervisors)
-        competency_interest = random.choice(unique_psarm_values["Interest Level of Competencies"])
+        competency_interest = random.choice(
+            unique_psarm_values["Interest Level of Competencies"]
+        )
         num_competency = random.randint(3, 7)
 
         # Générer des données pour chaque compétence
@@ -235,7 +260,9 @@ def generate_fake_psarm(names):
             competency = random.choice(unique_psarm_values["Competency"])
             description = random.choice(unique_psarm_values["Description"])
             capacity = random.choice(unique_psarm_values["Capacité"])
-            proficiency_descr = random.choice(unique_psarm_values["Proficiency Description"])
+            proficiency_descr = random.choice(
+                unique_psarm_values["Proficiency Description"]
+            )
             obtention_year = random.choice(unique_psarm_values["Année obtention"])
             last_year_util = random.choice(unique_psarm_values["Dernière année util."])
             xp_years = random.choice(unique_psarm_values["Années expérience"])
@@ -276,13 +303,14 @@ def generate_fake_psarm(names):
                 "Dernière année util.": last_year_util,
                 "Années expérience": xp_years,
                 "Supervisor Name": supervisor,
-                "Interest Level of Competencies": competency_interest
+                "Interest Level of Competencies": competency_interest,
             }
             fake_data.append(row)
 
             psarm_rows += 1
 
     return pd.DataFrame(fake_data), psarm_rows
+
 
 def generate_fake_certs(names):
     """
@@ -291,7 +319,7 @@ def generate_fake_certs(names):
     :param names: list (list of names)
     :return: DataFrame, int (new certifications data, number of rows)
     """
-    
+
     fake_data = []
     certs_rows = 0
 
@@ -304,19 +332,22 @@ def generate_fake_certs(names):
         for i in range(num_certs):
             certification = random.choice(unique_certs_list)
             date_obtention = fake.date_between(start_date="-5y", end_date="today")
-            date_expiration = date_obtention + pd.Timedelta(days=random.randint(365, 1096))
+            date_expiration = date_obtention + pd.Timedelta(
+                days=random.randint(365, 1096)
+            )
             row = {
                 "Nom": name,
                 "Code_cert": certification[0],
                 "Certification": certification[1],
                 "Obtention": date_obtention,
-                "Expiration": date_expiration
+                "Expiration": date_expiration,
             }
             fake_data.append(row)
 
             certs_rows += 1
 
     return pd.DataFrame(fake_data), certs_rows
+
 
 new_coaff, coaff_rows = generate_fake_coaff(names)
 new_psarm, psarm_rows = generate_fake_psarm(names)
@@ -328,5 +359,6 @@ print(f"Création d'un fichier COAFF avec {coaff_rows} nouvelles lignes de donn�
 new_psarm.to_csv(fixtures_psarm, index=False)
 print(f"Création d'un fichier PSA RM avec {psarm_rows} nouvelles lignes de données.")
 new_certs.to_csv(fixtures_certs, index=False)
-print(f"Création d'un fichier de certifications avec {certs_rows} nouvelles lignes de données.")
-
+print(
+    f"Création d'un fichier de certifications avec {certs_rows} nouvelles lignes de données."
+)

@@ -3,6 +3,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 from processing_request import process_input
 
+
 class TestProcessInput(unittest.TestCase):
     @patch("processing_request.find_profiles_azure")
     @patch("processing_request.client.chat.completions.create")
@@ -25,17 +26,21 @@ class TestProcessInput(unittest.TestCase):
 
         response, updated_chat_history = process_input(user_input, chat_history)
 
-        self.assertEqual(
-            response, "I am fine, thank you. How can I help you today?"
-        )
+        self.assertEqual(response, "I am fine, thank you. How can I help you today?")
 
         self.assertEqual(
             updated_chat_history,
             [
                 {"role": "system", "content": "Welcome to the chatbot!"},
-                {"role": "system", "content": "Use the following profiles in this conversation: profile1, profile2"},
+                {
+                    "role": "system",
+                    "content": "Use the following profiles in this conversation: profile1, profile2",
+                },
                 {"role": "user", "content": "Hello, how are you?"},
-                {"role": "assistant", "content": "I am fine, thank you. How can I help you today?"},
+                {
+                    "role": "assistant",
+                    "content": "I am fine, thank you. How can I help you today?",
+                },
             ],
         )
 
@@ -71,16 +76,17 @@ class TestProcessInput(unittest.TestCase):
 
         response, updated_chat_history = process_input(user_input, chat_history)
 
-        self.assertEqual(
-            response, "I am fine, thank you. How can I help you today?"
-        )
+        self.assertEqual(response, "I am fine, thank you. How can I help you today?")
 
         self.assertEqual(
             updated_chat_history,
             [
                 {"role": "system", "content": "Welcome to the chatbot!"},
                 {"role": "user", "content": "Hello, how are you?"},
-                {"role": "assistant", "content": "I am fine, thank you. How can I help you today?"},
+                {
+                    "role": "assistant",
+                    "content": "I am fine, thank you. How can I help you today?",
+                },
             ],
         )
 
@@ -104,7 +110,9 @@ class TestProcessInput(unittest.TestCase):
 
     @patch("processing_request.find_profiles_azure")
     @patch("processing_request.client.chat.completions.create")
-    def test_process_input_no_content_attribute(self, mock_completion, mock_find_profiles):
+    def test_process_input_no_content_attribute(
+        self, mock_completion, mock_find_profiles
+    ):
         user_input = [
             {"query": "Hello, how are you?", "context": "python"},
         ]

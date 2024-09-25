@@ -8,20 +8,26 @@ from modules.create_validate_documents import create_documents, validate_documen
 from modules.index_documents import index_documents
 
 # Paths according to the OS
-if os.name == 'posix':
+if os.name == "posix":
     embedded_data_path = "data_processing/datas/embedded/embedded_datas.csv"
 else:
     embedded_data_path = r"C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\embedded\embedded_datas.csv"
 
 search_service_endpoint = os.environ.get("AZURE_SEARCH_ENDPOINT")
-search_service_api_key =  os.environ.get("AZURE_SEARCH_API_KEY")  
+search_service_api_key = os.environ.get("AZURE_SEARCH_API_KEY")
 
 # Check if the credentials are correctly loaded
 if not search_service_endpoint or not search_service_api_key:
-    raise ValueError("Both AZURE_SEARCH_ENDPOINT and AZURE_SEARCH_API_KEY environment variables must be set.")
+    raise ValueError(
+        "Both AZURE_SEARCH_ENDPOINT and AZURE_SEARCH_API_KEY environment variables must be set."
+    )
 
 credential = AzureKeyCredential(search_service_api_key)
-search_client = SearchClient(endpoint=search_service_endpoint, index_name="aiprofilesmatching-index", credential=credential)
+search_client = SearchClient(
+    endpoint=search_service_endpoint,
+    index_name="aiprofilesmatching-index",
+    credential=credential,
+)
 
 df = pd.read_csv(embedded_data_path)
 

@@ -1,9 +1,13 @@
 import pandas as pd
 import sys
-sys.path.append('data_embedding/modules')
+
+sys.path.append("data_embedding/modules")
 from embed_text import embedding_text
 
-def generate_embeddings(df: pd.DataFrame, embedding_column: str, embedded_column: str, model: str) -> pd.DataFrame:
+
+def generate_embeddings(
+    df: pd.DataFrame, embedding_column: str, embedded_column: str, model: str
+) -> pd.DataFrame:
     """
     Generate in a column the embeddings of a specified column of the dataframe using the Azure OpenAI API.
 
@@ -28,7 +32,9 @@ def generate_embeddings(df: pd.DataFrame, embedding_column: str, embedded_column
     # Check if DataFrame is empty
     if df.empty:
         if embedded_column not in df.columns or embedding_column not in df.columns:
-            raise KeyError(f"DataFrame does not contain the columns '{embedded_column}' and/or '{embedding_column}'.")
+            raise KeyError(
+                f"DataFrame does not contain the columns '{embedded_column}' and/or '{embedding_column}'."
+            )
         return df[[embedded_column, embedding_column]]
 
     # Define a helper function for embedding text
@@ -38,7 +44,9 @@ def generate_embeddings(df: pd.DataFrame, embedding_column: str, embedded_column
         return embedding_text(str(x), model)
 
     # Apply the embedding function to the specified column
-    df[embedding_column] = df[embedded_column].apply(lambda x: safe_embedding_text(x, model))
+    df[embedding_column] = df[embedded_column].apply(
+        lambda x: safe_embedding_text(x, model)
+    )
 
     # Return the DataFrame with the specified columns
     return df[[embedded_column, embedding_column]]

@@ -10,8 +10,9 @@ EMBEDDER = "aiprofilesmatching-text-embedding-3-large"
 client = AzureOpenAI(
     api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
     api_version="2024-02-01",
-    azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT"), # type: ignore
+    azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT"),  # type: ignore
 )
+
 
 def process_input(user_input, chat_history):
     """
@@ -29,16 +30,25 @@ def process_input(user_input, chat_history):
     # Il s'agit donc de la première requête de l'utilisateur
     if len(chat_history) <= 1:
         # Vérifier que le context n'est pas vide ou null
-        if user_input[-1]['context'] != "":
+        if user_input[-1]["context"] != "":
             # Prétraitement de l'entrée utilisateur
             profiles = find_profiles_azure(user_input, EMBEDDER)
-            
+
             # Verifier si la liste des profils n'est pas vide
-            if len(profiles) != 0 or profiles[0] != "Input too long. Please enter a shorter input.":
+            if (
+                len(profiles) != 0
+                or profiles[0] != "Input too long. Please enter a shorter input."
+            ):
                 # Convertir les profils en string
                 profiles = [str(profile) for profile in profiles]
 
-                chat_history.append({"role": "system", "content": "Use the following profiles in this conversation: " + ", ".join(profiles)})
+                chat_history.append(
+                    {
+                        "role": "system",
+                        "content": "Use the following profiles in this conversation: "
+                        + ", ".join(profiles),
+                    }
+                )
 
     prompt = user_input[-1]["query"]
 

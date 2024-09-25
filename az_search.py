@@ -1,4 +1,3 @@
-
 import os
 import requests
 from requests.adapters import HTTPAdapter
@@ -12,19 +11,22 @@ from data_processing.normalizing import normalize_text
 
 model = "aiprofilesmatching-text-embedding-3-large"
 
+
 # Classe personnalisée pour désactiver la vérification SSL
 class SSLAdapter(HTTPAdapter):
     def init_poolmanager(self, *args, **kwargs):
         context = ssl.create_default_context()
         context.check_hostname = False
         context.verify_mode = ssl.CERT_NONE
-        kwargs['ssl_context'] = context
+        kwargs["ssl_context"] = context
         return super(SSLAdapter, self).init_poolmanager(*args, **kwargs)
+
 
 # Application globale de l'adaptateur SSL personnalisé à la session requests
 session = requests.Session()
 adapter = SSLAdapter()
 session.mount("https://", adapter)
+
 
 # Classe personnalisée du client avec désactivation de la vérification SSL
 class CustomSearchClient(SearchClient):
@@ -32,17 +34,23 @@ class CustomSearchClient(SearchClient):
         super().__init__(endpoint, index_name, credential, **kwargs)
         self._client._client._pipeline._transport.session = session
 
+
 # Assurez-vous que les variables d'environnement sont définies
 search_service_endpoint = os.environ.get("AZURE_SEARCH_ENDPOINT")
 search_service_api_key = os.environ.get("AZURE_SEARCH_API_KEY")
 index_name = "aiprofilesmatching-index"
 
 if not search_service_endpoint or not search_service_api_key:
-    raise ValueError("Both AZURE_SEARCH_ENDPOINT and AZURE_SEARCH_API_KEY environment variables must be set.")
+    raise ValueError(
+        "Both AZURE_SEARCH_ENDPOINT and AZURE_SEARCH_API_KEY environment variables must be set."
+    )
 
 # Créez un client de recherche avec désactivation SSL
 credential = AzureKeyCredential(search_service_api_key)
-search_client = CustomSearchClient(endpoint=search_service_endpoint, index_name=index_name, credential=credential)
+search_client = CustomSearchClient(
+    endpoint=search_service_endpoint, index_name=index_name, credential=credential
+)
+
 
 def find_profiles_azure(user_input, model):
     """
@@ -52,16 +60,16 @@ def find_profiles_azure(user_input, model):
     :param model: str (e. g. "aiprofilesmatching-text-embedding-3-large")
     :return: list of str (e. g. ["Karen is a Software engineer with 5 years of experience.", ...])
     """
-    
+
     try:
         # Vérifier que l'entrée utilisateur est vide ou si il est trop long
-        if user_input == "" :
+        if user_input == "":
             return []
-        elif len(user_input[-1]['query']) >= 1000:
-            return ['Input too long. Please enter a shorter input.']
-        
+        elif len(user_input[-1]["query"]) >= 1000:
+            return ["Input too long. Please enter a shorter input."]
+
         # Normaliser l'entrée utilisateur
-        user_input = normalize_text(user_input[-1]['context'])
+        user_input = normalize_text(user_input[-1]["context"])
 
         # Générer l'embedding de la requête
         query_embedded = embedding_text(user_input, model)
@@ -71,7 +79,7 @@ def find_profiles_azure(user_input, model):
             vector=query_embedded,
             k_nearest_neighbors=30,
             fields="content_vector",
-            kind="vector"
+            kind="vector",
         )
 
         # Effectuez la recherche
@@ -87,7 +95,7 @@ def find_profiles_azure(user_input, model):
             profiles.append(profile_text)
 
         print(f"Number of profiles found: {len(profiles)}")
-        
+
         return profiles
 
     except Exception as e:
