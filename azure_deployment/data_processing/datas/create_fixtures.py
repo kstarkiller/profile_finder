@@ -16,12 +16,12 @@ if os.name == "posix":
     fixtures_psarm = r"data_processing/datas/fixtures/fixtures_psarm.csv"
     fixtures_certs = r"data_processing/datas/fixtures/fixtures_certs.csv"
 else:
-    psa_rm_path = r"C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\sources\UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
-    coaff_path = r"C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\sources\Coaff_V1_cleaned.csv"
-    certs_path = r"C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\sources\UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
-    fixtures_coaff = r"C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\fixtures\fixtures_coaff.csv"
-    fixtures_psarm = r"C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\fixtures\fixtures_psarm.csv"
-    fixtures_certs = r"C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\fixtures\fixtures_certs.csv"
+    psa_rm_path = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\sources\UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
+    coaff_path = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\sources\Coaff_V1_cleaned.csv"
+    certs_path = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\sources\UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
+    fixtures_coaff = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\fixtures\fixtures_coaff.csv"
+    fixtures_psarm = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\fixtures\fixtures_psarm.csv"
+    fixtures_certs = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\fixtures\fixtures_certs.csv"
 
 fake = Faker()
 
@@ -31,12 +31,12 @@ psa_rm_df = pd.read_excel(psa_rm_path)
 # Lire les données existantes à partir du fichier COAFF .csv
 coaff_df = pd.read_csv(coaff_path)
 # Définir la 3e ligne comme en-tête et supprimer les deux premières lignes
-coaff_df = coaff_df.rename(columns=coaff_df.iloc[2]).drop(coaff_df.index[:3])
+coaff_df = coaff_df.rename(columns=coaff_df.iloc[2].to_dict()).drop(coaff_df.index[:3])
 
 # Lire les données existantes à partir du fichier des certifications
 certs_df = pd.read_excel(certs_path)
 # Définir la première ligne comme en-tête pour supprimer les informations inutiles
-certs_df = certs_df.rename(columns=certs_df.iloc[0]).drop(certs_df.index[0])
+certs_df = certs_df.rename(columns=certs_df.iloc[0].to_dict()).drop(certs_df.index[0])
 
 # Renommer la colonne 'Membres' en 'Nom'
 if "Membres" in coaff_df.columns:

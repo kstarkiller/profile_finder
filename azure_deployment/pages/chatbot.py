@@ -1,8 +1,8 @@
 from datetime import date
 import streamlit as st
 
-from azure_deployment.llm_module.az_processing_request import process_input
-from azure_deployment.llm_module.model_precision_improvements import (
+from llm_module.az_processing_request import process_input
+from llm_module.model_precision_improvements import (
     structure_query,
 )  # Import de la fonction structure_query
 
@@ -15,8 +15,6 @@ You are a French chatbot assistant that helps the user find team members based o
 - Don't assume anything, don't mess with the data, and only return members that meet the user's criteria.
 - If several members match the criteria, present them in order of relevance (availability, skills, etc.).
 """
-
-print(starting_context)
 
 
 def display_accueil():

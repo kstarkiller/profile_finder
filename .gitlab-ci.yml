@@ -4,10 +4,8 @@ stages:
   - deploy
 
 variables:
-  KEV_IMAGE_TAG: aiprofilesmatchingacr.azurecr.io/aiprofilesmatching_kevin:latest
   IMAGE_TAG: aiprofilesmatchingacr.azurecr.io/aiprofilesmatching:latest
   AZURE_ACR: aiprofilesmatchingacr
-  KEV_AZ_WEBAPP: KevWebApp
   AZURE_WEBAPP: aiprofilesmatchingWebApp
   AZURE_RG: rg-cgi-weu-cloud-genAIshowcase-dev
 

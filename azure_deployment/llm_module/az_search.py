@@ -28,11 +28,13 @@ session = requests.Session()
 adapter = SSLAdapter()
 session.mount("https://", adapter)
 
+
 # Custom transport class to set the session
 class CustomTransport(RequestsTransport):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.session = session
+
 
 # Classe personnalisée du client avec désactivation de la vérification SSL
 class CustomSearchClient(SearchClient):

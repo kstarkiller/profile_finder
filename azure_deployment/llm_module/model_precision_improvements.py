@@ -10,10 +10,10 @@ if os.name == "posix":
     profiles_file = "data_processing/datas/sources/profils_uniques.txt"
     professions_file = "data_processing/datas/sources/professions_uniques.txt"
 else:
-    descriptions_file = r"C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\sources\descriptions_uniques.txt"
-    acronyms_file = r"C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\sources\acronyms.txt"
-    profiles_file = r"C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\sources\profils_uniques.txt"
-    professions_file = r"C:\Users\k.simon\Projet\avv-matcher\data_processing\datas\sources\professions_uniques.txt"
+    descriptions_file = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\sources\descriptions_uniques.txt"
+    acronyms_file = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\sources\acronyms.txt"
+    profiles_file = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\sources\profils_uniques.txt"
+    professions_file = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\sources\professions_uniques.txt"
 
 # Charger le modèle pré-entraîné pour le français
 nlp = spacy.load("fr_core_news_lg")
@@ -79,7 +79,7 @@ date_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in date_patterns
 def detect_dates(text):
     dates = []
     for pattern in date_patterns:
-        matches = pattern.findall(text)
+        matches = re.findall(pattern, text)
         for match in matches:
             date_str = match if isinstance(match, str) else match[0]
             if date_str not in dates:
