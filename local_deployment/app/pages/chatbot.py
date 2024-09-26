@@ -14,6 +14,7 @@ context = f"""
         - If several members match the criteria, present them in order of relevance (availability, skills, etc.).
         """
 
+
 # Fonction pour mettre à jour l'entrée de l'utilisateur et ajouter à l'historique
 def update_input():
     """
@@ -36,6 +37,7 @@ def update_input():
         st.session_state["chat"].append(
             {"user": user_input, "assistant": chatbot_response}
         )
+
 
 def display_accueil():
     """

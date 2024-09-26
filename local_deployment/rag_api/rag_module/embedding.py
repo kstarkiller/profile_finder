@@ -15,7 +15,9 @@ if os.name == "posix":
         r"/home/kevin/simplon/briefs/avv-matcher/rag_api/log_module/logs/logs_api.log"
     )
 else:
-    collection_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\rag_api\\data\\chroma\\"
+    collection_path = (
+        r"C:\\Users\\k.simon\\Projet\\avv-matcher\\rag_api\\data\\chroma\\"
+    )
     sources_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\rag_api\\data\\sources"
     logs_path = (
         r"C:\Users\k.simon\Projet\avv-matcher\rag_api\log_module\logs\logs_api.log"
@@ -88,6 +90,7 @@ def embed_documents(file_path, model="llama3.1:8b", batch_size=10):
         logging.info(f"Batch {i // batch_size} added to the collection.")
 
     return collection
+
 
 # Retrieve documents
 def retrieve_documents(question: str, model="llama3.1:8b"):

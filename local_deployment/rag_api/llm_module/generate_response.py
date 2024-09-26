@@ -41,6 +41,7 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",  # Log format
 )
 
+
 # Classe personnalisée pour désactiver la vérification SSL
 class SSLAdapter(HTTPAdapter):
     def init_poolmanager(self, *args, **kwargs):

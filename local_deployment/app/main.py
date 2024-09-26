@@ -9,6 +9,7 @@ from pages.chatbot import display_accueil
 st.set_page_config(layout="wide")
 apply_custom_styles()
 
+
 def main():
     names = ["Kevin"]
     usernames = [os.getenv("RAG_LOCAL_USERNAME")]
