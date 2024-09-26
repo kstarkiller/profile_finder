@@ -18,8 +18,8 @@ test:
   image: python:3.11.9
   extends: .check_variables
   script:
-    - pip install -r requirements.txt
     - cd azure_deployment
+    - pip install -r requirements.txt
     - python -m unittest discover -s tests
 
 build:
