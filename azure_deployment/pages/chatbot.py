@@ -1,8 +1,8 @@
 from datetime import date
 import streamlit as st
 
-from az_processing_request import process_input
-from model_precision_improvements import (
+from azure_deployment.llm_module.az_processing_request import process_input
+from azure_deployment.llm_module.model_precision_improvements import (
     structure_query,
 )  # Import de la fonction structure_query
 

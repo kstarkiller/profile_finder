@@ -1,7 +1,7 @@
 # Description: Dockerfile for the AI based Profile Matching Streamlit app
 # Authors: Kevin SIMON, Thibaut BOGUSZEWSKI
-# Version: 1.3
-# Date: 2024-08-27
+# Version: 1.4
+# Date: 2024-09-26
 
 # Use an official Python runtime as a parent image
 FROM python:3.11.9-slim

@@ -5,6 +5,7 @@ import ssl
 from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from azure.search.documents.models import VectorizedQuery
+from azure.core.pipeline.transport import RequestsTransport
 
 from data_embedding.modules.embed_text import embedding_text
 from data_processing.normalizing import normalize_text
@@ -27,12 +28,17 @@ session = requests.Session()
 adapter = SSLAdapter()
 session.mount("https://", adapter)
 
+# Custom transport class to set the session
+class CustomTransport(RequestsTransport):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.session = session
 
 # Classe personnalisée du client avec désactivation de la vérification SSL
 class CustomSearchClient(SearchClient):
     def __init__(self, endpoint, index_name, credential, **kwargs):
         super().__init__(endpoint, index_name, credential, **kwargs)
-        self._client._client._pipeline._transport.session = session
+        self._client._client._pipeline._transport = CustomTransport()
 
 
 # Assurez-vous que les variables d'environnement sont définies

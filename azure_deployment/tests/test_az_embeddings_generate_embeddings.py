@@ -79,7 +79,7 @@ class TestGenerateEmbeddings(unittest.TestCase):
         embedded_column = "embedded"
         model = "test-model"
         with self.assertRaises(ValueError):
-            generate_embeddings(None, embedding_column, embedded_column, model)
+            generate_embeddings(None, embedding_column, embedded_column, model) # type: ignore
 
     @patch("data_embedding.modules.generate_embedded_column.embedding_text")
     def test_generate_embeddings_with_no_embedding_column(self, mock_embedding_text):

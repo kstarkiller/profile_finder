@@ -1,6 +1,6 @@
 import os
 from openai import AzureOpenAI
-from az_search import find_profiles_azure
+from llm_module.az_search import find_profiles_azure
 
 LLM_gpt4 = "aiprofilesmatching-gpt4"
 LLM_gpt4_turbo = "gpt-4-turbo-1106-preview"

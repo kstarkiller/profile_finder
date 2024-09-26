@@ -1,7 +1,7 @@
 # python -m unittest tests.test_az_search_find_profile_azure
 import unittest
 from unittest.mock import MagicMock, patch
-from az_search import find_profiles_azure
+from llm_module.az_search import find_profiles_azure
 
 
 class TestFindProfilesAzure(unittest.TestCase):
@@ -15,16 +15,16 @@ class TestFindProfilesAzure(unittest.TestCase):
 
         # Patch the external dependencies in the target module
         self.patcher_normalize_text = patch(
-            "az_search.normalize_text", self.mock_normalize_text
+            "llm_module.az_search.normalize_text", self.mock_normalize_text
         )
         self.patcher_embedding_text = patch(
-            "az_search.embedding_text", self.mock_embedding_text
+            "llm_module.az_search.embedding_text", self.mock_embedding_text
         )
         self.patcher_VectorizedQuery = patch(
-            "az_search.VectorizedQuery", self.mock_VectorizedQuery
+            "llm_module.az_search.VectorizedQuery", self.mock_VectorizedQuery
         )
         self.patcher_search_client = patch(
-            "az_search.search_client", self.mock_search_client
+            "llm_module.az_search.search_client", self.mock_search_client
         )
 
         # Start patching

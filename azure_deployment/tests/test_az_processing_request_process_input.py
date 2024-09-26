@@ -1,12 +1,12 @@
 # python -m unittest tests.test_az_processing_request_process_input
 import unittest
 from unittest.mock import MagicMock, patch
-from az_processing_request import process_input
+from llm_module.az_processing_request import process_input
 
 
 class TestProcessInput(unittest.TestCase):
-    @patch("processing_request.find_profiles_azure")
-    @patch("processing_request.client.chat.completions.create")
+    @patch("llm_module.az_processing_request.find_profiles_azure")
+    @patch("llm_module.az_processing_request.client.chat.completions.create")
     def test_process_input(self, mock_completion, mock_find_profiles):
         user_input = [
             {"query": "Hello, how are you?", "context": "python"},
@@ -57,7 +57,7 @@ class TestProcessInput(unittest.TestCase):
         self.assertEqual(response, "Please enter a valid input.")
         self.assertEqual(updated_chat_history, chat_history)
 
-    @patch("processing_request.client.chat.completions.create")
+    @patch("llm_module.az_processing_request.client.chat.completions.create")
     def test_process_input_empty_context(self, mock_completion):
         user_input = [
             {"query": "Hello, how are you?", "context": ""},
@@ -90,8 +90,8 @@ class TestProcessInput(unittest.TestCase):
             ],
         )
 
-    @patch("processing_request.find_profiles_azure")
-    @patch("processing_request.client.chat.completions.create")
+    @patch("llm_module.az_processing_request.find_profiles_azure")
+    @patch("llm_module.az_processing_request.client.chat.completions.create")
     def test_process_input_no_choices(self, mock_completion, mock_find_profiles):
         user_input = [
             {"query": "Hello, how are you?", "context": "python"},
@@ -108,8 +108,8 @@ class TestProcessInput(unittest.TestCase):
         self.assertEqual(response, "An error occurred while processing the input.")
         self.assertEqual(updated_chat_history, chat_history)
 
-    @patch("processing_request.find_profiles_azure")
-    @patch("processing_request.client.chat.completions.create")
+    @patch("llm_module.az_processing_request.find_profiles_azure")
+    @patch("llm_module.az_processing_request.client.chat.completions.create")
     def test_process_input_no_content_attribute(
         self, mock_completion, mock_find_profiles
     ):
