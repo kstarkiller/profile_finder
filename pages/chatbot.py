@@ -1,7 +1,7 @@
 from datetime import date
 import streamlit as st
 
-from processing_request import process_input
+from az_processing_request import process_input
 from model_precision_improvements import (
     structure_query,
 )  # Import de la fonction structure_query

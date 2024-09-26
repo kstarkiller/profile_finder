@@ -1,4 +1,4 @@
-# python -m unittest tests.test_embeddings_embedding_text
+# python -m unittest tests.test_az_embeddings_embedding_text
 import unittest
 from unittest.mock import patch, MagicMock
 import os

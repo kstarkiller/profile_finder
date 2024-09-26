@@ -1,4 +1,4 @@
-# python -m unittest tests.test_embeddings_generate_embeddings
+# python -m unittest tests.test_az_embeddings_generate_embeddings
 import unittest
 from unittest.mock import patch, MagicMock
 import pandas as pd

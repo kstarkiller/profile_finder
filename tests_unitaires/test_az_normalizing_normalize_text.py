@@ -1,4 +1,4 @@
-# python -m unittest tests.test_normalizing_normalize_text
+# python -m unittest tests.test_az_normalizing_normalize_text
 import unittest
 from data_processing.normalizing import normalize_text
 

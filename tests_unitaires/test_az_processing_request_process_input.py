@@ -1,7 +1,7 @@
-# python -m unittest tests.test_processing_request_process_input
+# python -m unittest tests.test_az_processing_request_process_input
 import unittest
 from unittest.mock import MagicMock, patch
-from processing_request import process_input
+from az_processing_request import process_input
 
 
 class TestProcessInput(unittest.TestCase):
