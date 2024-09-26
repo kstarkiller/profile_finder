@@ -3,7 +3,7 @@ from openai import AzureOpenAI
 from llm_module.az_search import find_profiles_azure
 
 LLM_gpt4 = "aiprofilesmatching-gpt-4-turbo"
-# LLM_gpt4_turbo = "gpt-4-turbo-1106-preview"
+# LLM_gpt4 = "gpt-4-turbo-1106-preview"
 EMBEDDER = "aiprofilesmatching-text-embedding-3-large"
 
 # Initialiser le client AzureOpenAI
@@ -14,7 +14,7 @@ client = AzureOpenAI(
 )
 
 
-def process_input(user_input, chat_history):
+def process_input(user_input: list, chat_history: list) -> tuple:
     """
     Process the user input and return the chatbot response.
 
@@ -35,10 +35,7 @@ def process_input(user_input, chat_history):
             profiles = find_profiles_azure(user_input, EMBEDDER)
 
             # Verifier si la liste des profils n'est pas vide
-            if (
-                len(profiles) != 0
-                or profiles[0] != "Input too long. Please enter a shorter input."
-            ):
+            if len(profiles) != 0:
                 # Convertir les profils en string
                 profiles = [str(profile) for profile in profiles]
 
@@ -49,6 +46,8 @@ def process_input(user_input, chat_history):
                         + ", ".join(profiles),
                     }
                 )
+            else:
+                raise ValueError("No profiles found for the given input.")
 
     prompt = user_input[-1]["query"]
 

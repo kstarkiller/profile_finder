@@ -1,3 +1,4 @@
+import sys
 import os
 import requests
 from requests.adapters import HTTPAdapter
@@ -7,6 +8,7 @@ from azure.search.documents import SearchClient
 from azure.search.documents.models import VectorizedQuery
 from azure.core.pipeline.transport import RequestsTransport
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from data_embedding.modules.embed_text import embedding_text
 from data_processing.normalizing import normalize_text
 
@@ -22,11 +24,9 @@ class SSLAdapter(HTTPAdapter):
         kwargs["ssl_context"] = context
         return super(SSLAdapter, self).init_poolmanager(*args, **kwargs)
 
-
-# Application globale de l'adaptateur SSL personnalisé à la session requests
+# Appliquer l'adaptateur SSL au client HTTP
 session = requests.Session()
-adapter = SSLAdapter()
-session.mount("https://", adapter)
+session.mount("https://", SSLAdapter())
 
 
 # Custom transport class to set the session
@@ -56,51 +56,53 @@ if not search_service_endpoint or not search_service_api_key:
 # Créez un client de recherche avec désactivation SSL
 credential = AzureKeyCredential(search_service_api_key)
 search_client = CustomSearchClient(
-    endpoint=search_service_endpoint, index_name=index_name, credential=credential
+    endpoint=search_service_endpoint, index_name=index_name, credential=credential, session=session
 )
 
 
-def find_profiles_azure(user_input, model):
+def find_profiles_azure(user_input: list, model: str) -> list:
     """
     Find profiles using Azure Cognitive Search.
 
-    :param user_input: str (e. g. "Who's Karen ?")
+    :param user_input: list of dict containing the user input and context (if any) as a string (e.g. [{"query": "Who's Scrum Master ?", "context": "Scrum"}])
     :param model: str (e. g. "aiprofilesmatching-text-embedding-3-large")
     :return: list of str (e. g. ["Karen is a Software engineer with 5 years of experience.", ...])
     """
-
     try:
         # Vérifier que l'entrée utilisateur est vide ou si il est trop long
-        if user_input == "":
+        if user_input[-1]["query"] == "" or len(user_input[-1]["query"]) == 0:
             return []
-        elif len(user_input[-1]["query"]) >= 1000:
+        elif len(user_input[-1]["query"]) >= 10000:
             return ["Input too long. Please enter a shorter input."]
 
         # Normaliser l'entrée utilisateur
-        user_input = normalize_text(user_input[-1]["context"])
+        user_input[-1]["context"] = normalize_text(user_input[-1]["context"])
 
         # Générer l'embedding de la requête
-        query_embedded = embedding_text(user_input, model)
+        query_embedded = embedding_text(user_input[-1]["query"], model)
 
         # Créez une requête vectorielle
         vector_query = VectorizedQuery(
             vector=query_embedded,
-            k_nearest_neighbors=30,
+            k_nearest_neighbors=20,
             fields="content_vector",
             kind="vector",
         )
 
         # Effectuez la recherche
         results = search_client.search(
-            search_text=user_input,
+            # search_text=user_input[-1]["query"],
             vector_queries=[vector_query],
             select=["id", "content"],
         )
 
         profiles = []
         for result in results:
-            profile_text = result["content"]
-            profiles.append(profile_text)
+            if isinstance(result, dict) and "content" in result:
+                profile_text = result["content"]
+                profiles.append(profile_text)
+            else:
+                print(f"Unexpected result format: {result}")
 
         print(f"Number of profiles found: {len(profiles)}")
 
