@@ -39,6 +39,11 @@ def apply_custom_styles():
                 color: #333333;
             }
 
+            /* Ne pas afficher l'id stSidebarNav */'
+            #stSidebarNav {
+                display: none;
+            }
+
             /* Modifier l'apparence des boutons */
             .stButton>button {
                 padding: 10px 24px;

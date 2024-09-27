@@ -1,7 +1,7 @@
 import streamlit as st
 from datetime import date
 
-from app.processing_request import process_input
+from processing_request import process_input
 
 context = f"""
         You are a French chatbot assistant that helps the user find team members based on their location, availability and skills.
