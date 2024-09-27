@@ -8,16 +8,30 @@ venv/
 # Fichiers
 *.csv
 *.xlsx
-*.log
-*.sqlite3
-*.json
-*.sqlite3-journal
-*.db
+*.xls
+*.svg
 *.bin
+*.log
+*.json
+*.sqlite3
+*.db
+*.sqlite3-journal
 
-# Fichiers temporaires Python
+# # Docker
+# Dockerfile
+# docker-compose.yml
+# .dockerignore
+
+# indexes
+*.faiss
+
+# Ignore les fichiers compilés et les artefacts de construction
+*.o
 *.pyc
+*.pyo
+*.pyd
 __pycache__/
+
 
 # Dossiers et fichiers souvent utilisés pour les projets de développement
 node_modules/
@@ -28,6 +42,3 @@ Thumbs.db
 .idea/
 .vscode/
 *.sublime-workspace
-
-# Credentials et endpoint Azure
-config.py
