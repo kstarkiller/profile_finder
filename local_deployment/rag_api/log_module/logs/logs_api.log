@@ -1,8 +1,0 @@
-2024-09-27 17:03:39,555 - INFO - Note: NumExpr detected 16 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
-2024-09-27 17:03:39,555 - INFO - NumExpr defaulting to 8 threads.
-2024-09-27 17:03:39,623 - ERROR - Documents must be a list of strings.
-2024-09-27 17:03:39,625 - INFO - Found 1 documents.
-2024-09-27 17:03:39,625 - ERROR - Error embedding document 0: Erreur Ollama
-2024-09-27 17:03:39,626 - INFO - Found 2 documents.
-2024-09-27 17:03:39,626 - INFO - Batch 0 added to the collection.
-2024-09-27 17:03:39,626 - INFO - Batch 1 added to the collection.
