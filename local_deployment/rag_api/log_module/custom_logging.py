@@ -5,11 +5,11 @@ import os
 # Logs path according to the os
 if os.name == "posix":
     logs_path = (
-        r"/home/kevin/simplon/briefs/avv-matcher/rag_api/log_module/logs/logs_api.log"
+        r"/home/kevin/simplon/briefs/avv-matcher/local_deployment/rag_api/log_module/logs/logs_api.log"
     )
 else:
     logs_path = (
-        r"C:\Users\k.simon\Projet\avv-matcher\rag_api\log_module\logs\logs_api.log"
+        r"C:\Users\k.simon\Projet\avv-matcher\local_deployment\rag_api\log_module\logs\logs_api.log"
     )
 
 # Logging module configuration

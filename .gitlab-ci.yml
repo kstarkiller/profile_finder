@@ -38,9 +38,9 @@ test_main:
   image: python:3.11.9
   extends: .check_ppxt_variables
   script:
-    - cd local_deployment
+    - cd local_deployment/rag_api
     - pip install -r requirements.txt
-    - python -m unittest discover -s tests
+    - python -m unittest discover -s test_unitaires
 
 build:
   stage: build
