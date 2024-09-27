@@ -1,4 +1,5 @@
 stages:
+  - security_check
   - test
   - build
   - deploy
@@ -9,9 +10,6 @@ variables:
   AZURE_WEBAPP: aiprofilesmatchingWebApp
   AZURE_RG: rg-cgi-weu-cloud-genAIshowcase-dev
 
-include:
-- template: Security/Secret-Detection.gitlab-ci.yml
-
 .check_deploy_variables:
   before_script:
   - if [ -z "$AZURE_OPENAI_API_KEY" ] || [ -z "$AZURE_OPENAI_ENDPOINT" ] || [ -z "$AZURE_SEARCH_API_KEY" ] || [ -z "$AZURE_SEARCH_ENDPOINT" ] || [ -z "$AZURE_SP_ID" ] || [ -z "$AZURE_SP_SECRET" ] || [ -z "$AZURE_TENANT" ]; then echo "Une ou plusieurs variables d'environnement ne sont pas définies"; exit 1; fi
@@ -20,11 +18,18 @@ include:
   before_script:
   - if [ -z "$RAG_LOCAL_API_KEY" ]; then echo "Une ou plusieurs variables d'environnement ne sont pas définies"; exit 1; fi
 
+security_check:
+  stage: security_check
+  include:
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
 test_deploy:
   stage: test
   only:
     - deploy
   image: python:3.11.9
+  needs:
+    - security_check
   extends: .check_deploy_variables
   script:
     - cd azure_deployment
@@ -36,13 +41,15 @@ test_main:
   only:
     - main
   image: python:3.11.9
+  needs:
+    - security_check
   extends: .check_ppxt_variables
   script:
     - cd local_deployment
     - pip install -r requirements.txt
     - python -m unittest discover -s tests
 
-build_deploy:
+build:
   stage: build
   only:
     - deploy
@@ -72,13 +79,13 @@ build_deploy:
     - az acr login --name $AZURE_ACR
     - docker push $IMAGE_TAG
 
-deploy_deploy:
+deploy:
   stage: deploy
   only:
     - deploy
   image: mcr.microsoft.com/azure-cli
   needs:
-    - build_deploy
+    - build
   extends: .check_deploy_variables
   script:
     - az login --service-principal -u "$AZURE_SP_ID" -p "$AZURE_SP_SECRET" --tenant "$AZURE_TENANT"
