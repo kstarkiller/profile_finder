@@ -9,32 +9,52 @@ variables:
   AZURE_WEBAPP: aiprofilesmatchingWebApp
   AZURE_RG: rg-cgi-weu-cloud-genAIshowcase-dev
 
-.check_variables:
+include:
+- template: Security/Secret-Detection.gitlab-ci.yml
+
+.check_deploy_variables:
   before_script:
   - if [ -z "$AZURE_OPENAI_API_KEY" ] || [ -z "$AZURE_OPENAI_ENDPOINT" ] || [ -z "$AZURE_SEARCH_API_KEY" ] || [ -z "$AZURE_SEARCH_ENDPOINT" ] || [ -z "$AZURE_SP_ID" ] || [ -z "$AZURE_SP_SECRET" ] || [ -z "$AZURE_TENANT" ]; then echo "Une ou plusieurs variables d'environnement ne sont pas définies"; exit 1; fi
 
-test:
+.check_ppxt_variables:
+  before_script:
+  - if [ -z "$RAG_LOCAL_API_KEY" ]; then echo "Une ou plusieurs variables d'environnement ne sont pas définies"; exit 1; fi
+
+test_deploy:
   stage: test
+  only:
+    - deploy
   image: python:3.11.9
-  extends: .check_variables
+  extends: .check_deploy_variables
   script:
     - cd azure_deployment
     - pip install -r requirements.txt
     - python -m unittest discover -s tests
 
-build:
+test_main:
+  stage: test
+  only:
+    - main
+  image: python:3.11.9
+  extends: .check_ppxt_variables
+  script:
+    - cd local_deployment
+    - pip install -r requirements.txt
+    - python -m unittest discover -s tests
+
+build_deploy:
   stage: build
   only:
     - deploy
   image: ubuntu:20.04
   needs:
-    - test
+    - test_deploy
   services:
     - docker:20.10.16-dind
   variables:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
-  extends: .check_variables
+  extends: .check_deploy_variables
   before_script:
     - apt-get update && apt-get install -y ca-certificates curl apt-transport-https lsb-release gnupg
     - curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
@@ -52,14 +72,14 @@ build:
     - az acr login --name $AZURE_ACR
     - docker push $IMAGE_TAG
 
-deploy:
+deploy_deploy:
   stage: deploy
   only:
     - deploy
   image: mcr.microsoft.com/azure-cli
   needs:
-    - build
-  extends: .check_variables
+    - build_deploy
+  extends: .check_deploy_variables
   script:
     - az login --service-principal -u "$AZURE_SP_ID" -p "$AZURE_SP_SECRET" --tenant "$AZURE_TENANT"
     - ACR_PASSWORD=$(az acr credential show --name $AZURE_ACR --query "passwords[0].value" -o tsv)
