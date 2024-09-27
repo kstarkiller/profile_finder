@@ -14,9 +14,9 @@ from llm_module.generate_response import (
 from rag_module.embedding import embed_documents, retrieve_documents
 
 if os.name == "posix":
-    doc_path = r"/home/kevin/simplon/briefs/avv-matcher/local_deployment/rag_api/data/sources"
+    doc_path = r"data/sources"
     logs_path = (
-        r"/home/kevin/simplon/briefs/avv-matcher/local_deployment/rag_api/log_module/logs/logs_api.log"
+        r"log_module/logs/logs_api.log"
     )
 else:
     doc_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\local_deployment\\rag_api\\data\\sources"

@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 if os.name == "posix":
-    DOC_PATH = r"/home/kevin/simplon/briefs/avv-matcher/local_deployment/rag_api/data/sources"
+    DOC_PATH = r"data/sources"
 else:
     DOC_PATH = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\local_deployment\\rag_api\\data\\sources"
 

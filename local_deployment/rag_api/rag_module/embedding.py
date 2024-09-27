@@ -9,10 +9,10 @@ from rag_module.load_documents import load_documents
 
 # Path to the collection
 if os.name == "posix":
-    collection_path = r"/home/kevin/simplon/briefs/avv-matcher/local_deployment/rag_api/data/chroma/"
-    sources_path = r"/home/kevin/simplon/briefs/avv-matcher/local_deployment/rag_api/data/sources"
+    collection_path = r"data/chroma/"
+    sources_path = r"data/sources"
     logs_path = (
-        r"/home/kevin/simplon/briefs/avv-matcher/local_deployment/rag_api/log_module/logs/logs_api.log"
+        r"log_module/logs/logs_api.log"
     )
 else:
     collection_path = (

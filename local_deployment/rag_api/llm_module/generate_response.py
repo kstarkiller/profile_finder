@@ -27,7 +27,7 @@ ERROR_MESSAGES = {
 # Logs path according to the os
 if os.name == "posix":
     logs_path = (
-        r"/home/kevin/simplon/briefs/avv-matcher/local_deployment/rag_api/log_module/logs/logs_api.log"
+        r"log_module/logs/logs_api.log"
     )
 else:
     logs_path = (

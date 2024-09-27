@@ -11,7 +11,7 @@ venv/
 *.xls
 *.svg
 *.bin
-# *.log
+*.log
 *.json
 *.sqlite3
 *.db
