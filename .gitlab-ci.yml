@@ -1,5 +1,7 @@
+include:
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
 stages:
-  - security_check
   - test
   - build
   - deploy
@@ -18,18 +20,11 @@ variables:
   before_script:
   - if [ -z "$RAG_LOCAL_API_KEY" ]; then echo "Une ou plusieurs variables d'environnement ne sont pas définies"; exit 1; fi
 
-security_check:
-  stage: security_check
-  include:
-  - template: Security/Secret-Detection.gitlab-ci.yml
-
 test_deploy:
   stage: test
   only:
     - deploy
   image: python:3.11.9
-  needs:
-    - security_check
   extends: .check_deploy_variables
   script:
     - cd azure_deployment
@@ -41,8 +36,6 @@ test_main:
   only:
     - main
   image: python:3.11.9
-  needs:
-    - security_check
   extends: .check_ppxt_variables
   script:
     - cd local_deployment
