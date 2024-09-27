@@ -3,7 +3,11 @@ from tkinter.font import names
 import streamlit as st
 import streamlit_authenticator as stauth
 from styles import apply_custom_styles
-from pages import chatbot
+from pages.chatbot import display_accueil
+
+# Set page configuration
+st.set_page_config(layout="wide")
+apply_custom_styles()
 
 
 def main():
@@ -25,17 +29,18 @@ def main():
         credentials, "some_cookie_name", "some_signature_key", cookie_expiry_days=10
     )
 
+    st.title("PROFILE FINDER")
     # Render login widget
     name, authentication_status, username = authenticator.login(
-        "sidebar", None, 3, None, False, False, "Login"
+        "main", None, 3, None, False, False, "Login"
     )
 
     if authentication_status:
         st.sidebar.write(f"Bienvenue *{name}*")
         authenticator.logout("Logout", "sidebar")
 
-        chatbot.display_accueil()
-        apply_custom_styles()
+        display_accueil()
+
     elif authentication_status == False:
         st.error("Username/password is incorrect")
     elif authentication_status == None:

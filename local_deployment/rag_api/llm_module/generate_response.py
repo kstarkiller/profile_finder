@@ -2,6 +2,8 @@ import os
 import getpass
 import ollama
 import requests
+from requests.adapters import HTTPAdapter
+import ssl
 from typing import Optional
 from datetime import date
 import logging
@@ -38,6 +40,16 @@ logging.basicConfig(
     level=logging.INFO,  # Log level
     format="%(asctime)s - %(levelname)s - %(message)s",  # Log format
 )
+
+
+# Classe personnalisée pour désactiver la vérification SSL
+class SSLAdapter(HTTPAdapter):
+    def init_poolmanager(self, *args, **kwargs):
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+        kwargs["ssl_context"] = context
+        return super(SSLAdapter, self).init_poolmanager(*args, **kwargs)
 
 
 # Authenticate the user
@@ -186,6 +198,11 @@ def generate_perplexity_response(data: list, history: list, model: str) -> str:
         str: The generated response.
     """
 
+    # Application globale de l'adaptateur SSL personnalisé à la session requests
+    session = requests.Session()
+    adapter = SSLAdapter()
+    session.mount("https://", adapter)
+
     try:
         if not history or history == []:
             logging.warning("History is empty")
@@ -226,7 +243,7 @@ def generate_perplexity_response(data: list, history: list, model: str) -> str:
             )
 
         # Send the request to the Perplexity API
-        response = requests.post(url, headers=headers, json=payload)
+        response = session.post(url, headers=headers, json=payload)
         response.raise_for_status()  # Raise an error for bad responses
         # log HTTP response status if raised
         if response.status_code != 200:

@@ -2,6 +2,7 @@ import streamlit as st
 from datetime import date
 
 from processing_request import process_input
+from response_generator import response_generator
 
 context = f"""
         You are a French chatbot assistant that helps the user find team members based on their location, availability and skills.
@@ -12,6 +13,30 @@ context = f"""
         - Don't assume anything, don't mess with the data, and only return members that meet the user's criteria.
         - If several members match the criteria, present them in order of relevance (availability, skills, etc.).
         """
+
+
+# Fonction pour mettre à jour l'entrée de l'utilisateur et ajouter à l'historique
+def update_input():
+    """
+    Traite l'entrée de l'utilisateur et met à jour l'historique des conversations.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+    user_input = st.session_state["temp_input"]
+
+    # Ajouter la question et la réponse à l'historique
+    if user_input:
+        chatbot_response, updated_chat_history = process_input(
+            user_input, st.session_state["chat_history"]
+        )
+        st.session_state["chat_history"] = updated_chat_history
+        st.session_state["chat"].append(
+            {"user": user_input, "assistant": chatbot_response}
+        )
 
 
 def display_accueil():
@@ -33,7 +58,6 @@ def display_accueil():
     Returns:
         None
     """
-    st.title("Profile Finder Chatbot")
 
     # Initialiser l'état de session pour l'historique des conversations s'il n'existe pas déjà
     if "chat_history" not in st.session_state:
@@ -41,37 +65,17 @@ def display_accueil():
         st.session_state["chat_history"].append({"role": "system", "content": context})
         st.session_state["chat"] = []
 
-    # Fonction pour mettre à jour l'entrée de l'utilisateur et ajouter à l'historique
-    def update_input():
-        """
-        Traite l'entrée de l'utilisateur et met à jour l'historique des conversations.
-
-        Args:
-            None
-
-        Returns:
-            None
-        """
-        user_input = st.session_state["temp_input"]
-
-        # Ajouter la question et la réponse à l'historique
-        if user_input:
-            chatbot_response, updated_chat_history = process_input(
-                user_input, st.session_state["chat_history"]
-            )
-            st.session_state["chat_history"] = updated_chat_history
-            st.session_state["chat"].append(
-                {"user": user_input, "assistant": chatbot_response}
-            )
-
     # Champ de saisie pour l'utilisateur
     st.chat_input(
         placeholder="Posez votre question...", key="temp_input", on_submit=update_input
     )
 
+    # Afficher le message d'accueil si l'historique est vide
     if len(st.session_state["chat"]) == 0:
         with st.chat_message("Assistant"):
             st.write("Bonjour, comment puis-je vous aider ?")
+
+    # Afficher l'historique des conversations
     else:
         for i in range(len(st.session_state["chat"])):
             bot_message = st.session_state["chat"][i]["assistant"]
@@ -85,7 +89,7 @@ def display_accueil():
                 )
 
             with st.chat_message("Assistant"):
-                st.write(f"Assistant : {bot_message}")
+                st.write_stream(response_generator(bot_message))
                 # Ajouter un identifiant unique au message de l'assistant
                 st.markdown(
                     f"<div id='message-{i}-assistant'></div>", unsafe_allow_html=True

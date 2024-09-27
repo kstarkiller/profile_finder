@@ -9,14 +9,16 @@ from rag_module.load_documents import load_documents
 
 # Path to the collection
 if os.name == "posix":
-    collection_path = r"/home/kevin/simplon/briefs/avv-matcher/rag_api/chroma/"
-    sources_path = r"/home/kevin/simplon/briefs/avv-matcher/rag_api/sources"
+    collection_path = r"/home/kevin/simplon/briefs/avv-matcher/rag_api/data/chroma/"
+    sources_path = r"/home/kevin/simplon/briefs/avv-matcher/rag_api/data/sources"
     logs_path = (
         r"/home/kevin/simplon/briefs/avv-matcher/rag_api/log_module/logs/logs_api.log"
     )
 else:
-    collection_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\rag_api\\chroma\\"
-    sources_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\rag_api\\sources"
+    collection_path = (
+        r"C:\\Users\\k.simon\\Projet\\avv-matcher\\rag_api\\data\\chroma\\"
+    )
+    sources_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\rag_api\\data\\sources"
     logs_path = (
         r"C:\Users\k.simon\Projet\avv-matcher\rag_api\log_module\logs\logs_api.log"
     )
@@ -76,7 +78,7 @@ def embed_documents(file_path, model="llama3.1:8b", batch_size=10):
                 batch_embeddings.append(embedding)
                 batch_ids.append(str(i + j))  # Unique ID for each document
                 batch_texts.append(d)
-                logging.info(f"Document {i + j} embedded.")
+                # logging.info(f"Document {i + j} embedded.")
             except Exception as e:
                 logging.error(f"Error embedding document {i + j}: {e}")
                 raise  # Re-raise the exception to propagate it up
@@ -85,8 +87,10 @@ def embed_documents(file_path, model="llama3.1:8b", batch_size=10):
         collection.add(
             ids=batch_ids, embeddings=batch_embeddings, documents=batch_texts
         )
+        logging.info(f"Batch {i // batch_size} added to the collection.")
 
     return collection
+
 
 # Retrieve documents
 def retrieve_documents(question: str, model="llama3.1:8b"):
