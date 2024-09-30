@@ -1,4 +1,4 @@
-# Command : python -m unittest test_unitaires.test_ollama
+# Command: python -m unittest test_unitaires.test_ollama
 import unittest
 from unittest.mock import patch, MagicMock
 import logging

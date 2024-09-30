@@ -1,11 +1,6 @@
 import os
 import pandas as pd
 
-if os.name == "posix":
-    DOC_PATH = r"data/sources"
-else:
-    DOC_PATH = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\local_deployment\\rag_api\\data\\sources"
-
 
 def load_documents(file_path):
     """
@@ -20,7 +15,7 @@ def load_documents(file_path):
 
     # Check if the directory exists
     if not os.path.exists(file_path):
-        raise ValueError(f"Le répertoire {file_path} n'existe pas.")
+        raise ValueError(f"The directory {file_path} does not exist.")
 
     documents = pd.DataFrame()
 
@@ -28,7 +23,7 @@ def load_documents(file_path):
         # Crawl the directory to find the file
         files = os.listdir(file_path)
         if not files:
-            raise ValueError("Aucun fichier trouvé dans le répertoire.")
+            raise ValueError("No files found in the directory.")
 
         for file in files:
             file_ext = os.path.splitext(file)[1].lower()
@@ -37,9 +32,9 @@ def load_documents(file_path):
             if file_ext == ".csv":
                 documents = pd.read_csv(os.path.join(file_path, file))
             else:
-                raise ValueError(f"Le fichier {file} a une extension non supportée.")
+                raise ValueError(f"The file {file} has an unsupported extension.")
 
-            # transform the 'Combined' column into a list
+            # Transform the 'Combined' column into a list
             documents = documents["Combined"].apply(lambda x: x.split("\n"))
             documents = documents.to_list()
 
@@ -47,6 +42,6 @@ def load_documents(file_path):
             documents = [item for sublist in documents for item in sublist]
 
     except Exception as e:
-        raise ValueError(f"Erreur lors du chargement du document: {e}")
+        raise ValueError(f"Error loading the document: {e}")
 
     return documents

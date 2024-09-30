@@ -1,4 +1,4 @@
-# Command : python -m unittest test_unitaires.test_load_documents
+# Command: python -m unittest test_unitaires.test_load_documents
 import unittest
 from unittest.mock import patch
 import pandas as pd
@@ -24,7 +24,7 @@ class TestLoadDocuments(unittest.TestCase):
         self.addCleanup(self.patcher_read_csv.stop)
 
     def tearDown(self):
-        # Arrête tous les patchs
+        # Stop all patches
         patch.stopall()
 
     def test_load_documents_success(self):
@@ -56,7 +56,7 @@ class TestLoadDocuments(unittest.TestCase):
         # Setup mocks specific to this test
         self.mock_exists.return_value = True
         self.mock_listdir.return_value = ["test.csv"]
-        self.mock_read_csv.side_effect = ValueError("Erreur de lecture")
+        self.mock_read_csv.side_effect = ValueError("Error reading file")
 
         with self.assertRaises(ValueError):
             load_documents("dummy_path")

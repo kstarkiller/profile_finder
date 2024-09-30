@@ -4,13 +4,13 @@ import streamlit as st
 from llm_module.az_processing_request import process_input
 from llm_module.model_precision_improvements import (
     structure_query,
-)  # Import de la fonction structure_query
+)  # Import the function structure_query
 
 starting_context = f"""
 You are a French chatbot assistant that helps the user find team members based on their location, availability, skills, and certifications.
 - Format responses as concise and consistently as possible, using headers and tables when necessary. Don't explain what you're doing and summarize the data.
 - Use the current date ({date.today()}) for any time-related questions.
-- For months, consider the nearest future month unless otherwise specified. Don't consider months in the past or months more than 12 months in the futur, unless otherwise specified.
+- For months, consider the nearest future month unless otherwise specified. Don't consider months in the past or months more than 12 months in the future, unless otherwise specified.
 - Combine occupancy periods and percentages to calculate total availability over a given period.
 - Occupation rate is the reverse of availability rate.
 - Don't assume anything, don't mess with the data, and only return members that meet the user's criteria.
@@ -36,7 +36,7 @@ def display_accueil():
             user_input = st.session_state["temp_input"]
 
             if user_input:
-                # Rechercher le terme 'développeur' dans la question de l'utilisateur est le remplacer par 'profil'
+                # Search for the term 'développeur' in the user's question and replace it with 'profil'
                 if "développeur" in user_input:
                     modified_user_input = user_input.replace("développeur", "profil")
                 elif "développeurs" in user_input:
@@ -74,20 +74,20 @@ def display_accueil():
 
                 with st.chat_message("User"):
                     st.write(f"Vous : {user_message}")
-                    # Ajouter un identifiant unique au message de l'utilisateur
+                    # Add a unique identifier to the user's message
                     st.markdown(
                         f"<div id='message-{i}-user'></div>", unsafe_allow_html=True
                     )
 
                 with st.chat_message("Assistant"):
                     st.write(f"Assistant : {bot_message}")
-                    # Ajouter un identifiant unique au message de l'assistant
+                    # Add a unique identifier to the assistant's message
                     st.markdown(
                         f"<div id='message-{i}-assistant'></div>",
                         unsafe_allow_html=True,
                     )
 
-            # Ajouter un script JavaScript pour faire défiler jusqu'au début du message le plus récent
+            # Add a JavaScript script to scroll to the beginning of the most recent message
             st.markdown(
                 f"""
                 <script>

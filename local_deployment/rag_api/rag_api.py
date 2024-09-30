@@ -13,16 +13,11 @@ from llm_module.generate_response import (
 )
 from rag_module.embedding import embed_documents, retrieve_documents
 
-if os.name == "posix":
-    doc_path = r"data/sources"
-    logs_path = (
-        r"log_module/logs/logs_api.log"
-    )
-else:
-    doc_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\local_deployment\\rag_api\\data\\sources"
-    logs_path = (
-        r"C:\\Users\\k.simon\\Projet\\avv-matcher\\local_deployment\\rag_api\\log_module\\logs\\logs_api.log"
-    )
+# Vérifiez les configurations dans rag_api.py
+base_path = os.path.dirname(__file__)
+doc_path = os.path.join(base_path, "data", "combined")
+logs_path = os.path.join(base_path, "log_module", "logs", "logs_api.log")
+
 
 # Logging module configuration
 logging.basicConfig(
@@ -127,8 +122,8 @@ def process_question_ollama(input: ChatRequest):
     start_time = time.time()
     try:
         if data is None:
-            logging.error("Aucun document trouvé")
-            raise HTTPException(status_code=500, detail="Aucun document trouvé")
+            logging.error("No document found")
+            raise HTTPException(status_code=500, detail="No document found")
         response = generate_ollama_response(data, input.question, MODEL_LLM)
     except Exception as e:
         logging.error(f"Error generating response: {str(e)}")
@@ -169,8 +164,8 @@ def process_question_perplexity(input: ChatRequest):
     start_time = time.time()
     try:
         if data is None:
-            logging.error("Aucun document trouvé")
-            raise HTTPException(status_code=500, detail="Aucun document trouvé")
+            logging.error("No document found")
+            raise HTTPException(status_code=500, detail="No document found")
         response = generate_perplexity_response(
             data, input.history, "llama-3.1-70b-instruct"
         )

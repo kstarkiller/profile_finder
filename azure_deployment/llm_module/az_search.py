@@ -8,14 +8,14 @@ from azure.search.documents import SearchClient
 from azure.search.documents.models import VectorizedQuery
 from azure.core.pipeline.transport import RequestsTransport
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from data_embedding.modules.embed_text import embedding_text
 from data_processing.normalizing import normalize_text
 
 model = "aiprofilesmatching-text-embedding-3-large"
 
 
-# Classe personnalisée pour désactiver la vérification SSL
+# Custom class to disable SSL verification
 class SSLAdapter(HTTPAdapter):
     def init_poolmanager(self, *args, **kwargs):
         context = ssl.create_default_context()
@@ -24,7 +24,8 @@ class SSLAdapter(HTTPAdapter):
         kwargs["ssl_context"] = context
         return super(SSLAdapter, self).init_poolmanager(*args, **kwargs)
 
-# Appliquer l'adaptateur SSL au client HTTP
+
+# Apply the SSL adapter to the HTTP client
 session = requests.Session()
 session.mount("https://", SSLAdapter())
 
@@ -36,14 +37,14 @@ class CustomTransport(RequestsTransport):
         self.session = session
 
 
-# Classe personnalisée du client avec désactivation de la vérification SSL
+# Custom client class with SSL verification disabled
 class CustomSearchClient(SearchClient):
     def __init__(self, endpoint, index_name, credential, **kwargs):
         super().__init__(endpoint, index_name, credential, **kwargs)
         self._client._client._pipeline._transport = CustomTransport()
 
 
-# Assurez-vous que les variables d'environnement sont définies
+# Define the Azure Cognitive Search client and index name from environment variables
 search_service_endpoint = os.environ.get("AZURE_SEARCH_ENDPOINT")
 search_service_api_key = os.environ.get("AZURE_SEARCH_API_KEY")
 index_name = "aiprofilesmatching-index"
@@ -53,10 +54,13 @@ if not search_service_endpoint or not search_service_api_key:
         "Both AZURE_SEARCH_ENDPOINT and AZURE_SEARCH_API_KEY environment variables must be set."
     )
 
-# Créez un client de recherche avec désactivation SSL
+# Create a search client with SSL disabled
 credential = AzureKeyCredential(search_service_api_key)
 search_client = CustomSearchClient(
-    endpoint=search_service_endpoint, index_name=index_name, credential=credential, session=session
+    endpoint=search_service_endpoint,
+    index_name=index_name,
+    credential=credential,
+    session=session,
 )
 
 
@@ -69,19 +73,19 @@ def find_profiles_azure(user_input: list, model: str) -> list:
     :return: list of str (e. g. ["Karen is a Software engineer with 5 years of experience.", ...])
     """
     try:
-        # Vérifier que l'entrée utilisateur est vide ou si il est trop long
+        # Check if the user input is empty or too long
         if user_input[-1]["query"] == "" or len(user_input[-1]["query"]) == 0:
             return []
         elif len(user_input[-1]["query"]) >= 10000:
             return ["Input too long. Please enter a shorter input."]
 
-        # Normaliser l'entrée utilisateur
+        # Normalize the user input
         user_input[-1]["context"] = normalize_text(user_input[-1]["context"])
 
-        # Générer l'embedding de la requête
+        # Generate the embedding of the user input
         query_embedded = embedding_text(user_input[-1]["query"], model)
 
-        # Créez une requête vectorielle
+        # Create a vectorized query
         vector_query = VectorizedQuery(
             vector=query_embedded,
             k_nearest_neighbors=20,
@@ -89,7 +93,7 @@ def find_profiles_azure(user_input: list, model: str) -> list:
             kind="vector",
         )
 
-        # Effectuez la recherche
+        # Execute the search
         results = search_client.search(
             # search_text=user_input[-1]["query"],
             vector_queries=[vector_query],

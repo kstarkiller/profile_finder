@@ -2,7 +2,7 @@ import os
 import streamlit as st
 import streamlit_authenticator as stauth
 from styles import apply_custom_styles
-from pages.chatbot import display_accueil
+from pages.chatbot import display_chatbot
 
 # Set page configuration
 st.set_page_config(layout="wide")
@@ -35,10 +35,10 @@ def main():
     )
 
     if authentication_status:
-        st.sidebar.write(f"Bienvenue *{name}*")
+        st.sidebar.write(f"Welcome *{name}*")
         authenticator.logout("Logout", "sidebar")
 
-        display_accueil()
+        display_chatbot()
 
     elif authentication_status == False:
         st.error("Username/password is incorrect")

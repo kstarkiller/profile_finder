@@ -2,20 +2,15 @@ import pandas as pd
 from pprint import pprint
 import os
 
-# Paths according to the OS
-if os.name == "posix":
-    fixture_coaff_path = "data_processing/datas/fixtures/fixtures_coaff.csv"
-    fixture_psarm_path = "data_processing/datas/fixtures/fixtures_psarm.csv"
-    fixtures_certs_path = "data_processing/datas/fixtures/fixtures_certs.csv"
-    combined_result_path = "data_processing/datas/combined/combined_result.csv"
-else:
-    fixture_coaff_path = r"data_processing\datas\fixtures\fixtures_coaff.csv"
-    fixture_psarm_path = r"data_processing\datas\fixtures\fixtures_psarm.csv"
-    fixtures_certs_path = r"data_processing\datas\fixtures\fixtures_certs.csv"
-    combined_result_path = r"data_processing\datas\combined\combined_result.csv"
+# Paths
+base_path = os.path.dirname(__file__)
+fixtures_coaff_path = os.path.join(base_path, "fixtures", "fixtures_coaff.csv")
+fixtures_psarm_path = os.path.join(base_path, "fixtures", "fixtures_psarm.csv")
+fixtures_certs_path = os.path.join(base_path, "fixtures", "fixtures_certs.csv")
+combined_result_path = os.path.join(base_path, "combined", "combined_result.csv")
 
-coaff_df = pd.read_csv(fixture_coaff_path)
-psarm_df = pd.read_csv(fixture_psarm_path)
+coaff_df = pd.read_csv(fixtures_coaff_path)
+psarm_df = pd.read_csv(fixtures_psarm_path)
 certs_df = pd.read_csv(fixtures_certs_path)
 
 # Join the three dataframes with the 'Nom' column as key

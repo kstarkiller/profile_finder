@@ -8,6 +8,7 @@ from pages.chatbot import display_accueil
 st.set_page_config(layout="wide")
 apply_custom_styles()
 
+
 def main():
     names = ["Kevin"]
     usernames = [os.getenv("RAG_LOCAL_USERNAME")]
@@ -34,7 +35,7 @@ def main():
     )
 
     if authentication_status:
-        st.sidebar.write(f"Bienvenue *{name}*")
+        st.sidebar.write(f"Welcome *{name}*")
         authenticator.logout("Logout", "sidebar")
 
         display_accueil()
@@ -47,4 +48,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

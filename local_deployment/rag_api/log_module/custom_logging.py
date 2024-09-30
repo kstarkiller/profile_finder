@@ -1,16 +1,10 @@
 import logging
-from datetime import datetime
 import os
 
-# Logs path according to the os
-if os.name == "posix":
-    logs_path = (
-        r"log_module/logs/logs_api.log"
-    )
-else:
-    logs_path = (
-        r"C:\Users\k.simon\Projet\avv-matcher\local_deployment\rag_api\log_module\logs\logs_api.log"
-    )
+# Logs path
+base_path = os.path.dirname(__file__)
+logs_path = os.path.join(base_path, "logs", "local_api_access.log")
+
 
 # Logging module configuration
 logging.basicConfig(

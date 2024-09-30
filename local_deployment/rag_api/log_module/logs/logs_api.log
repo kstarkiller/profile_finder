@@ -1,0 +1,31 @@
+2024-09-30 20:11:15,492 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-09-30 20:11:15,634 - INFO - Found 646 documents.
+2024-09-30 20:11:17,682 - ERROR - Error embedding document 0: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+2024-09-30 20:11:17,682 - ERROR - Error embedding documents: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+2024-09-30 20:12:45,370 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-09-30 20:12:45,452 - INFO - Found 646 documents.
+2024-09-30 20:12:47,496 - ERROR - Error embedding document 0: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+2024-09-30 20:12:47,496 - ERROR - Error embedding documents: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+2024-09-30 20:38:41,796 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-09-30 20:38:41,876 - INFO - Found 646 documents.
+2024-09-30 20:38:43,907 - ERROR - Error embedding document 0: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée
+2024-09-30 20:48:06,302 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-09-30 20:48:06,383 - INFO - Found 646 documents.
+2024-09-30 20:48:06,385 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 404 Not Found"
+2024-09-30 20:48:06,385 - ERROR - Error embedding document 0: model "llama3.1:8b" not found, try pulling it first
+2024-09-30 20:48:44,624 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-09-30 20:48:44,702 - INFO - Found 646 documents.
+2024-09-30 20:48:44,992 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 20:48:45,301 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 20:48:45,540 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 20:48:45,791 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 20:48:45,962 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 20:48:46,206 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 20:48:46,453 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 20:48:46,724 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 20:48:46,961 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 20:48:47,202 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 20:48:47,244 - INFO - Batch 0 added to the collection.
+2024-09-30 20:48:47,515 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 20:48:47,756 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 20:48:48,010 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"

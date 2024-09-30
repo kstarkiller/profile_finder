@@ -15,10 +15,10 @@ context = f"""
         """
 
 
-# Fonction pour mettre à jour l'entrée de l'utilisateur et ajouter à l'historique
+# This function is used to display the chatbot interface and process the user input.
 def update_input():
     """
-    Traite l'entrée de l'utilisateur et met à jour l'historique des conversations.
+    Processes the user's input and updates the conversation history.
 
     Args:
         None
@@ -28,7 +28,7 @@ def update_input():
     """
     user_input = st.session_state["temp_input"]
 
-    # Ajouter la question et la réponse à l'historique
+    # Add the question and answer to the history
     if user_input:
         chatbot_response, updated_chat_history = process_input(
             user_input, st.session_state["chat_history"]
@@ -39,18 +39,18 @@ def update_input():
         )
 
 
-def display_accueil():
+def display_chatbot():
     """
-    Affiche l'interface d'accueil du chatbot.
+    Displays the chatbot's welcome interface.
 
-    Cette fonction initialise l'état de session pour l'historique des conversations si nécessaire,
-    définit une fonction pour mettre à jour l'entrée de l'utilisateur et l'ajouter à l'historique,
-    et affiche l'historique des conversations dans l'ordre inverse.
+    This function initializes the session state for the conversation history if necessary,
+    defines a function to update the user's input and add it to the history,
+    and displays the conversation history in reverse order.
 
-    - Initialise l'état de session 'chat_history' s'il n'existe pas déjà.
-    - Définit la fonction `update_input` pour traiter l'entrée de l'utilisateur et mettre à jour l'historique.
-    - Affiche un champ de saisie pour l'utilisateur.
-    - Affiche l'historique des conversations en ordre inverse, en alternant les messages de l'utilisateur et du chatbot.
+    - Initializes the 'chat_history' session state if it does not already exist.
+    - Defines the `update_input` function to process the user's input and update the history.
+    - Displays an input field for the user.
+    - Displays the conversation history in reverse order, alternating between user and chatbot messages.
 
     Args:
         None
@@ -59,23 +59,23 @@ def display_accueil():
         None
     """
 
-    # Initialiser l'état de session pour l'historique des conversations s'il n'existe pas déjà
+    # Init the session state for the conversation history if it doesn't already exist
     if "chat_history" not in st.session_state:
         st.session_state["chat_history"] = []
         st.session_state["chat_history"].append({"role": "system", "content": context})
         st.session_state["chat"] = []
 
-    # Champ de saisie pour l'utilisateur
+    # Input field for the user
     st.chat_input(
         placeholder="Posez votre question...", key="temp_input", on_submit=update_input
     )
 
-    # Afficher le message d'accueil si l'historique est vide
+    # Display the welcome message if the history is empty
     if len(st.session_state["chat"]) == 0:
         with st.chat_message("Assistant"):
             st.write("Bonjour, comment puis-je vous aider ?")
 
-    # Afficher l'historique des conversations
+    # Display the conversation history
     else:
         for i in range(len(st.session_state["chat"])):
             bot_message = st.session_state["chat"][i]["assistant"]
@@ -83,19 +83,19 @@ def display_accueil():
 
             with st.chat_message("User"):
                 st.write(f"Vous : {user_message}")
-                # Ajouter un identifiant unique au message de l'utilisateur
+                # Add a unique identifier to the user message
                 st.markdown(
                     f"<div id='message-{i}-user'></div>", unsafe_allow_html=True
                 )
 
             with st.chat_message("Assistant"):
                 st.write_stream(response_generator(bot_message))
-                # Ajouter un identifiant unique au message de l'assistant
+                # Add a unique identifier to the assistant message
                 st.markdown(
                     f"<div id='message-{i}-assistant'></div>", unsafe_allow_html=True
                 )
 
-        # Ajouter un script JavaScript pour faire défiler jusqu'au début du message le plus récent
+        # JavaScript to automatically scroll to the latest message
         st.markdown(
             f"""
             <script>
@@ -110,4 +110,4 @@ def display_accueil():
 
 
 if __name__ == "__main__":
-    display_accueil()
+    display_chatbot()

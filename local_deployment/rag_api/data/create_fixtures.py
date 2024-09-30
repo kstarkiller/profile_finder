@@ -3,37 +3,26 @@ from faker import Faker
 import random
 import os
 
-# Paths according to the OS
-if os.name == "posix":
-    psa_rm_path = (
-        r"data_processing/datas/sources/UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
-    )
-    coaff_path = r"data_processing/datas/sources/Coaff_V1.xlsx"
-    certs_path = (
-        r"data_processing/datas/sources/UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
-    )
-    fixtures_coaff = r"data_processing/datas/fixtures/fixtures_coaff.csv"
-    fixtures_psarm = r"data_processing/datas/fixtures/fixtures_psarm.csv"
-    fixtures_certs = r"data_processing/datas/fixtures/fixtures_certs.csv"
-else:
-    psa_rm_path = (
-        r"data_processing\datas\sources\UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
-    )
-    coaff_path = r"data_processing\datas\sources\Coaff_V1_cleaned.csv"
-    certs_path = (
-        r"data_processing\datas\sources\UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
-    )
-    fixtures_coaff = r"data_processing\datas\fixtures\fixtures_coaff.csv"
-    fixtures_psarm = r"data_processing\datas\fixtures\fixtures_psarm.csv"
-    fixtures_certs = r"data_processing\datas\fixtures\fixtures_certs.csv"
+# Paths
+base_path = os.path.dirname(__file__)
+psa_rm_path = os.path.join(
+    base_path, "sources", "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
+)
+coaff_path = os.path.join(base_path, "sources", "Coaff_V1.xlsx")
+certs_path = os.path.join(
+    base_path, "sources", "UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
+)
+fixtures_coaff = os.path.join(base_path, "fixtures", "fixtures_coaff.csv")
+fixtures_psarm = os.path.join(base_path, "fixtures", "fixtures_psarm.csv")
+fixtures_certs = os.path.join(base_path, "fixtures", "fixtures_certs.csv")
 
 fake = Faker()
 
 # Retrieve data from the PSA RM file
 psa_rm_df = pd.read_excel(psa_rm_path)
 
-# Read existing data from the COAFF .csv file
-coaff_df = pd.read_csv(coaff_path)
+# Read existing data from the COAFF file
+coaff_df = pd.read_excel(coaff_path)
 # Set the 3rd row as the header and remove the first two rows
 coaff_df = coaff_df.rename(columns=coaff_df.iloc[2].to_dict()).drop(coaff_df.index[:3])
 

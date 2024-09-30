@@ -1,4 +1,4 @@
-# Command : python -m unittest test_unitaires.test_perplexity
+# Command: python -m unittest test_unitaires.test_perplexity
 import unittest
 from unittest.mock import patch, MagicMock
 import logging

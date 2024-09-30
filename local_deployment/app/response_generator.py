@@ -4,33 +4,31 @@ import time
 
 def response_generator(response):
     response = "Assistant : " + response
-    lines = response.splitlines(True)  # Conserve les retours à la ligne
-    table_pattern = re.compile(
-        r"^\|.*\|$"
-    )  # Motif pour détecter les lignes de tableau Markdown
+    lines = response.splitlines(True)  # Preserve line breaks
+    table_pattern = re.compile(r"^\|.*\|$")  # Pattern to detect Markdown table lines
 
     buffer = []
     # in_table = False
 
     for line in lines:
-        # Vérifier que la ligne commence par '|' et se termine par '|'
+        # Check if the line starts with '|' and ends with '|'
         if table_pattern.match(line):
-            # Si une ligne de tableau est détectée, ajouter au tampon
+            # If a table line is detected, add to buffer
             buffer.append(line)
             # in_table = True
         else:
             if not table_pattern.match(line) and buffer:
-                # Si la fin du tableau est atteinte, émettre le tableau complet suivi d'un retour à la ligne
+                # If the end of the table is reached, emit the complete table followed by a line break
                 yield "".join(buffer) + "\n"
                 buffer = []
                 # in_table = False
 
-            # Émettre les mots ligne par ligne pour le texte normal
+            # Emit words line by line for normal text
             words = line.split()
             for i, word in enumerate(words):
                 yield word + (" " if i < len(words) - 1 else "\n")
                 time.sleep(0.05)
 
-    # Émettre tout contenu restant dans le tampon (dernier tableau)
+    # Emit any remaining content in the buffer (last table)
     if buffer:
         yield "".join(buffer)

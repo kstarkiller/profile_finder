@@ -15,18 +15,18 @@ else:
     profiles_file = r"data_processing\datas\sources\profils_uniques.txt"
     professions_file = r"data_processing\datas\sources\professions_uniques.txt"
 
-# Charger le modèle pré-entraîné pour le français
+# Load the pre-trained model for French
 nlp = spacy.load("fr_core_news_lg")
 
-# Liste des compétences
+# List of skills
 with open(descriptions_file, "r", encoding="utf-8") as file:
     content = file.read()
-# Diviser le contenu en éléments individuels et créer la liste
+# Split the content into individual elements and create the list
 skills_list = [desc.strip() for desc in content.split(",")]
-# Nettoyer la liste en supprimant les guillemets et les espaces superflus
+# Clean the list by removing quotes and extra spaces
 skills_list = [desc.strip('" ') for desc in skills_list]
 
-# Dictionnaire pour les niveaux de compétence et leurs mots-clés associés
+# Dictionary for skill levels and their associated keywords
 skill_levels = {
     "Expert": ["expert", "avancé", "expérimenté"],
     "Faible": ["débutant", "junior", "novice"],
@@ -34,45 +34,44 @@ skill_levels = {
     "Très bon": ["senior", "avancé", "fort"],
 }
 
-# Dictionnaire pour les acronymes et leurs définitions
+# Dictionary for acronyms and their definitions
 with open(acronyms_file, "r", encoding="utf-8") as f:
     acronyms_dict = json.load(f)
 
-# Liste des professions
+# List of professions
 with open(professions_file, "r", encoding="utf-8") as file:
     content = file.read()
 professions_list = [prof.strip() for prof in content.split(",")]
 professions_list = [prof.strip('" ') for prof in professions_list]
 
-# Expressions régulières pour détecter différents formats de dates
+# Regular expressions to detect different date formats
 date_patterns = [
-    # Formats existants
-    r"\b(\d{1,2}/\d{1,2}/\d{4})\b",  # JJ/MM/AAAA
-    r"\b(\d{1,2}-\d{1,2}-\d{4})\b",  # JJ-MM-AAAA
-    r"\b(\d{1,2} \w+ \d{4})\b",  # JJ Mois AAAA
-    r"\b(\w+ \d{4})\b",  # Mois AAAA
-    r"\b(\d{1,2} \d{1,2} \d{4})\b",  # JJ MM AAAA
-    r"\b(\d{1,2}/\d{1,2}/\d{2,4})\b",  # JJ/MM/AA
-    r"\b(\w+ \d{1,2}, \d{4})\b",  # Mois JJ, AAAA
-    r"\b(\w+ \d{1,2} \d{4})\b",  # Mois JJ AAAA
-    r"\b(\d{1,2}-\w+-\d{4})\b",  # JJ-Mois-AAAA
-    r"\b(\w+ \d{1,2}th, \d{4})\b",  # Mois JJth, AAAA
-    r"\b(\d{1,2}\.\d{1,2}\.\d{4})\b",  # JJ.MM.AAAA
-    r"\b(\d{4}-\d{2}-\d{2})\b",  # AAAA-MM-JJ (ISO 8601)
-    r"\b(\d{4}/\d{2}/\d{2})\b",  # AAAA/MM/JJ
-    r"\b(\d{4}\.\d{2}\.\d{2})\b",  # AAAA.MM.JJ
-    r"\b(\d{4} \d{2} \d{2})\b",  # AAAA MM JJ
-    r"\b(\d{4}-\w+-\d{2})\b",  # AAAA-Mois-JJ
-    r"\b(\d{4} \w+ \d{1,2})\b",  # AAAA Mois JJ
-    r"\b(\d{4} \w+)\b",  # AAAA Mois
-    r"\b(\d{2}\d{2}\d{2})\b",  # AAMMJJ (format compact)
+    # Existing formats
+    r"\b(\d{1,2}/\d{1,2}/\d{4})\b",  # DD/MM/YYYY
+    r"\b(\d{1,2}-\d{1,2}-\d{4})\b",  # DD-MM-YYYY
+    r"\b(\d{1,2} \w+ \d{4})\b",  # DD Month YYYY
+    r"\b(\w+ \d{4})\b",  # Month YYYY
+    r"\b(\d{1,2} \d{1,2} \d{4})\b",  # DD MM YYYY
+    r"\b(\d{1,2}/\d{1,2}/\d{2,4})\b",  # DD/MM/YY
+    r"\b(\w+ \d{1,2}, \d{4})\b",  # Month DD, YYYY
+    r"\b(\w+ \d{1,2} \d{4})\b",  # Month DD YYYY
+    r"\b(\d{1,2}-\w+-\d{4})\b",  # DD-Month-YYYY
+    r"\b(\w+ \d{1,2}th, \d{4})\b",  # Month DDth, YYYY
+    r"\b(\d{1,2}\.\d{1,2}\.\d{4})\b",  # DD.MM.YYYY
+    r"\b(\d{4}-\d{2}-\d{2})\b",  # YYYY-MM-DD (ISO 8601)
+    r"\b(\d{4}/\d{2}/\d{2})\b",  # YYYY/MM/DD
+    r"\b(\d{4}\.\d{2}\.\d{2})\b",  # YYYY.MM.DD
+    r"\b(\d{4} \d{2} \d{2})\b",  # YYYY MM DD
+    r"\b(\d{4}-\w+-\d{2})\b",  # YYYY-Month-DD
+    r"\b(\d{4} \w+ \d{1,2})\b",  # YYYY Month DD
+    r"\b(\d{4} \w+)\b",  # YYYY Month
+    r"\b(\d{2}\d{2}\d{2})\b",  # YYMMDD (compact format)
 ]
 
-# Expression régulière pour détecter les mois en français
+# Regular expression to detect months in French
 month_pattern = r"\b(janvier|février|fevrier|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|decembre|Janvier|Février|Fevrier|Mars|Avril|Mai|Juin|Juillet|Août|Aout|Septembre|Octobre|Novembre|Décembre|Decembre)\b"
 
-
-# Compilez chaque pattern séparément avec le flag IGNORECASE
+# Compile each pattern separately with the IGNORECASE flag
 date_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in date_patterns]
 
 
@@ -98,48 +97,48 @@ def detect_skills_and_levels(text):
     doc = nlp(text)
     skills_detected = {}
 
-    # Parcours de chaque token dans le document 'doc'
+    # Iterate over each token in the document 'doc'
     for token in doc:
 
-        # Parcours de chaque compétence dans la liste 'skills_list'
+        # Iterate over each skill in the 'skills_list'
         for skill in skills_list:
 
-            # Vérifie si le 'skill' et le 'token' ont une similarité supérieure à 65%
+            # Check if the 'skill' and the 'token' have a similarity greater than 65%
             if fuzz.ratio(skill.lower(), token.text.lower()) > 70:
 
-                # Ajoute la compétence détectée dans le dictionnaire 'skills_detected' avec un niveau "Non spécifié"
+                # Add the detected skill to the 'skills_detected' dictionary with a level "Not specified"
                 skills_detected[skill] = "Non spécifié"
 
-                # Définit une fenêtre de contexte autour du token courant (7 tokens avant et 8 après)
+                # Define a context window around the current token (7 tokens before and 8 after)
                 context_window = doc[max(0, token.i - 7) : token.i + 8]
 
-                # Parcours des niveaux de compétence et des mots-clés associés dans 'skill_levels'
+                # Iterate over skill levels and associated keywords in 'skill_levels'
                 for level, keywords in skill_levels.items():
 
-                    # Parcours de chaque mot-clé associé à un niveau de compétence
+                    # Iterate over each keyword associated with a skill level
                     for keyword in keywords:
 
-                        # Vérifie si un mot-clé dans la fenêtre de contexte a une similarité supérieure à 80%
+                        # Check if any keyword in the context window has a similarity greater than 80%
                         if any(
                             fuzz.ratio(keyword, t.text.lower()) > 80
                             for t in context_window
                         ):
 
-                            # Trouve les index des tokens dans la fenêtre de contexte correspondant au mot-clé
+                            # Find the indices of tokens in the context window corresponding to the keyword
                             keyword_index = [
                                 t.i
                                 for t in context_window
                                 if fuzz.ratio(keyword, t.text.lower()) > 70
                             ]
 
-                            # Si un mot-clé est trouvé dans la fenêtre de contexte et qu'il est à moins de 7 positions du token courant
+                            # If a keyword is found in the context window and it is within 7 positions of the current token
                             if keyword_index and abs(keyword_index[0] - token.i) <= 7:
 
-                                # Met à jour le niveau de compétence détecté pour cette compétence
+                                # Update the detected skill level for this skill
                                 skills_detected[skill] = level
-                                break  # Sort de la boucle des mots-clés une fois le niveau de compétence détecté
+                                break  # Exit the keyword loop once the skill level is detected
 
-    print(f"Compétences détectées : {skills_detected}")
+    print(f"Detected skills: {skills_detected}")
     return skills_detected
 
 
@@ -154,31 +153,31 @@ def detect_profession(text):
     doc = nlp(text)
     professions = {}
 
-    # Parcours de chaque token dans le document 'doc'
+    # Iterate over each token in the document 'doc'
     for token in doc:
 
-        # Parcours de chaque profession dans la liste 'professions_list'
+        # Iterate over each profession in the 'professions_list'
         for profession in professions_list:
 
-            # Vérifie si la 'profession' et le 'token' ont une similarité supérieure à 70%
+            # Check if the 'profession' and the 'token' have a similarity greater than 70%
             if fuzz.ratio(profession.lower(), token.text.lower()) > 70:
 
-                # Ajoute la profession détectée dans le dictionnaire 'professions' avec un niveau de confiance
+                # Add the detected profession to the 'professions' dictionary with a confidence level
                 professions[profession] = fuzz.ratio(
                     profession.lower(), token.text.lower()
                 )
 
-    # Trie les professions par ordre de confiance décroissante
+    # Sort professions by descending order of confidence
     sorted_professions = sorted(professions.items(), key=lambda x: x[1], reverse=True)
 
-    # Retourne la profession principale avec le niveau de confiance le plus élevé
+    # Return the main profession with the highest confidence level
     return sorted_professions[0] if sorted_professions else None
 
 
 def get_main_skill(skills):
     if not skills:
         return None
-    # Trie par ordre d'apparition ou par niveau de confiance
+    # Sort by order of appearance or confidence level
     sorted_skills = sorted(skills.items(), key=lambda x: len(x[1]), reverse=True)
     return sorted_skills[0]
 
@@ -188,9 +187,9 @@ def detect_acronyms_and_definitions(text):
 
     for acronym, definition in acronyms_dict.items():
         patterns = [
-            rf"\b{re.escape(acronym)}\b",  # Acronyme seul
-            rf"{re.escape(acronym)}\s*\({re.escape(definition)}\)",  # Acronyme suivi de définition entre parenthèses
-            rf"\b{re.escape(definition)}\b",  # Définition seule
+            rf"\b{re.escape(acronym)}\b",  # Acronym alone
+            rf"{re.escape(acronym)}\s*\({re.escape(definition)}\)",  # Acronym followed by definition in parentheses
+            rf"\b{re.escape(definition)}\b",  # Definition alone
         ]
 
         for pattern in patterns:
@@ -198,7 +197,7 @@ def detect_acronyms_and_definitions(text):
 
             if matches:
                 acronyms_detected[acronym] = definition
-                break  # On arrête la recherche pour cet acronyme si on l'a déjà trouvé
+                break  # Stop searching for this acronym if it has already been found
 
     return acronyms_detected
 
@@ -211,10 +210,10 @@ def structure_query(query):
     :return: str (query structured with extracted entities)
     """
 
-    print(f"Requête utilisateur : {query}")  # Debug print
+    print(f"User query: {query}")  # Debug print
     doc = nlp(query)
 
-    # Extraction des entités
+    # Extract entities
     person_names = []
     location = None
     dates = detect_dates(query)
@@ -235,45 +234,45 @@ def structure_query(query):
         elif ent.label_ == "DATE":
             dates.append(ent.text)
 
-    # Extraire les mois du texte
+    # Extract months from the text
     month_matches = re.findall(month_pattern, query.lower())
     months.extend(month_matches)
 
-    # Trier les dates et identifier date de début et date de fin
+    # Sort dates and identify start and end dates
     dates = sorted(dates)
-    date_debut = dates[0] if dates else "Non spécifiée"
-    date_fin = dates[1] if len(dates) > 1 else "Non spécifiée"
+    start_date = dates[0] if dates else "Not specified"
+    end_date = dates[1] if len(dates) > 1 else "Not specified"
 
-    # Créer une liste pour enregistrer les valeurs
+    # Create a list to record values
     values = []
 
-    # Ajouter les valeurs de person_names s'il y en a
+    # Add values from person_names if any
     if person_names:
         values.extend(person_names)
 
-    # Ajouter la valeur de location si elle est spécifiée
+    # Add the value of location if specified
     if location:
         values.append(location)
 
-    # Ajouter les valeurs de dates s'il y en a
+    # Add values from dates if any
     if dates:
         values.extend(dates)
 
-    # # Ajouter les valeurs de months s'il y en a
+    # # Add values from months if any
     # if months:
     #     values.extend(months)
 
-    # Ajouter la valeur de skill_with_levels s'il y en a
+    # Add the value of skill_with_levels if any
     if skills_with_levels:
         values.extend(skills_with_levels.keys())
 
-    # Ajouter les valeurs de acronyms_with_definitions s'il y en a
+    # Add values from acronyms_with_definitions if any
     if acronyms_with_definitions:
         values.extend(acronyms_with_definitions.keys())
 
-    # Convertir la liste en une chaîne de caractères séparée par des virgules
+    # Convert the list to a comma-separated string
     values_str = ", ".join(values)
 
-    # Afficher les valeurs
-    print(f"Valeur(s) détéctée(s) : {values_str}")
+    # Display the values
+    print(f"Detected value(s): {values_str}")
     return values_str

@@ -6,7 +6,7 @@ LLM_gpt4 = "aiprofilesmatching-gpt-4-turbo"
 # LLM_gpt4 = "gpt-4-turbo-1106-preview"
 EMBEDDER = "aiprofilesmatching-text-embedding-3-large"
 
-# Initialiser le client AzureOpenAI
+# Initialize the AzureOpenAI client
 client = AzureOpenAI(
     api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
     api_version="2024-02-01",
@@ -22,21 +22,21 @@ def process_input(user_input: list, chat_history: list) -> tuple:
     :param chat_history: list of dict containing the chat history (user and assistant messages) as strings
     :return: str, list of dict
     """
-    # Validation de l'entrée utilisateur
+    # Validate the user input
     if not user_input[-1]["query"].strip():
         return "Please enter a valid input.", chat_history
 
-    # Vérifier que chat_history ne contient que le contexte de départ (system)
-    # Il s'agit donc de la première requête de l'utilisateur
+    # Check that chat_history contains only the initial context (system)
+    # This is therefore the user's first request
     if len(chat_history) <= 1:
-        # Vérifier que le context n'est pas vide ou null
+        # Check that the context is not empty or null
         if user_input[-1]["context"] != "":
-            # Prétraitement de l'entrée utilisateur
+            # Preprocess the user input
             profiles = find_profiles_azure(user_input, EMBEDDER)
 
-            # Verifier si la liste des profils n'est pas vide
+            # Check if the list of profiles is not empty
             if len(profiles) != 0:
-                # Convertir les profils en string
+                # Convert profiles to string
                 profiles = [str(profile) for profile in profiles]
 
                 chat_history.append(
@@ -51,23 +51,23 @@ def process_input(user_input: list, chat_history: list) -> tuple:
 
     prompt = user_input[-1]["query"]
 
-    # Ajouter la nouvelle entrée utilisateur à l'historique
+    # Add the new user input to the history
     chat_history.append({"role": "user", "content": prompt})
 
-    # Créer une requête de complétion de chat en utilisant le client Azure OpenAI
+    # Create a chat completion request using the Azure OpenAI client
     try:
         completion = client.chat.completions.create(
             model=LLM_gpt4, messages=chat_history
         )
 
-        # Récupérer la réponse du modèle
+        # Retrieve the model's response
         if hasattr(completion, "choices") and len(completion.choices) > 0:
             first_choice = completion.choices[0]
             if hasattr(first_choice, "message") and hasattr(
                 first_choice.message, "content"
             ):
                 response = first_choice.message.content
-                # Ajouter la réponse du chatbot à l'historique
+                # Add the chatbot's response to the history
                 chat_history.append({"role": "assistant", "content": response})
 
                 return response, chat_history

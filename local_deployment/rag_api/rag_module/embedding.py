@@ -1,27 +1,18 @@
 import chromadb
 import ollama
 import os
+import sys
 import logging
 from chromadb.config import Settings
 
 from rag_module.load_documents import load_documents
 
-
 # Path to the collection
-if os.name == "posix":
-    collection_path = r"data/chroma/"
-    sources_path = r"data/sources"
-    logs_path = (
-        r"log_module/logs/logs_api.log"
-    )
-else:
-    collection_path = (
-        r"C:\\Users\\k.simon\\Projet\\avv-matcher\\local_deployment\\rag_api\\data\\chroma\\"
-    )
-    sources_path = r"C:\\Users\\k.simon\\Projet\\avv-matcher\\local_deployment\\rag_api\\data\\sources"
-    logs_path = (
-        r"C:\Users\k.simon\Projet\avv-matcher\local_deployment\rag_api\log_module\logs\logs_api.log"
-    )
+collection_path = os.path.join(os.path.dirname(__file__), "..", "data", "chroma")
+logs_path = os.path.join(
+    os.path.dirname(__file__), "..", "log_module", "logs", "logs_api.log"
+)
+file_path = os.path.join(os.path.dirname(__file__), "..", "data", "combined")
 
 # Logging module configuration
 logging.basicConfig(
@@ -59,9 +50,7 @@ def embed_documents(file_path, model="llama3.1:8b", batch_size=10):
     # Verify the type of documents
     if not isinstance(documents, list):
         logging.error("Documents must be a list of strings.")
-        raise ValueError(
-            "La fonction load_documents doit retourner une liste de chaînes de caractères."
-        )
+        raise ValueError("The load_documents function must return a list of strings.")
 
     logging.info(f"Found {len(documents)} documents.")
 

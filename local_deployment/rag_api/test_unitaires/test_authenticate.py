@@ -1,4 +1,4 @@
-# Command : python -m unittest test_unitaires.test_authenticate
+# Command: python -m unittest test_unitaires.test_authenticate
 import unittest
 from unittest.mock import patch
 import logging

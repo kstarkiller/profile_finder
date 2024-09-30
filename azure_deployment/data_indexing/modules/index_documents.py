@@ -25,8 +25,8 @@ def index_documents(search_client, documents, batch_size=100, max_retries=3):
                 print(
                     f"Batch {i//original_batch_size + 1}: {len(results)} documents indexed"
                 )
-                i += batch_size  # Avance à la prochaine batch
-                batch_size = original_batch_size  # Réinitialise la taille du batch
+                i += batch_size  # Move to the next batch
+                batch_size = original_batch_size  # Reset the batch size
                 break
             except HttpResponseError as e:
                 if e.status_code == 413:  # Request Entity Too Large
@@ -39,5 +39,4 @@ def index_documents(search_client, documents, batch_size=100, max_retries=3):
                 retries += 1
                 time.sleep(2**retries)  # Exponential backoff
         if retries == max_retries:
-            # print(f"Failed to index batch after {max_retries} retries")
             raise Exception(f"Failed to index batch after {max_retries} retries")

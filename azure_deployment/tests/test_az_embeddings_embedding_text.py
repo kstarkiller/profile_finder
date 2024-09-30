@@ -7,20 +7,18 @@ from data_embedding.modules.embed_text import embedding_text
 
 class TestEmbeddingText(unittest.TestCase):
 
-    # Définir une fonction de test qui mocke la classe AzureOpenAI du module embed_text
+    # Define a test function that mocks the AzureOpenAI class from the embed_text module
     @patch("data_embedding.modules.embed_text.AzureOpenAI")
     def test_embedding_text_success(self, MockAzureOpenAI):
-        # Créer une instance de la classe AzureOpenAI mockée
+        # Create an instance of the mocked AzureOpenAI class
         mock_client = MockAzureOpenAI.return_value
 
-        # Définir la valeur de retour de la méthode embeddings.create du client mocké
+        # Define the return value of the embeddings.create method of the mocked client
         mock_client.embeddings.create.return_value.data = [
-            MagicMock(
-                embedding=[0.1, 0.2, 0.3]
-            )  # Données d'embedding mockées à retourner
+            MagicMock(embedding=[0.1, 0.2, 0.3])  # Mocked embedding data to return
         ]
 
-        # Définir temporairement des variables d'environnement pour la clé API et le point d'accès Azure OpenAI
+        # Temporarily set environment variables for the API key and Azure OpenAI endpoint
         with patch.dict(
             os.environ,
             {
@@ -28,34 +26,34 @@ class TestEmbeddingText(unittest.TestCase):
                 "AZURE_OPENAI_ENDPOINT": "https://fake.endpoint",
             },
         ):
-            # Définir le texte d'entrée et le modèle à utiliser dans la fonction embedding_text
+            # Define the input text and model to use in the embedding_text function
             text = "Test text"
             model = "test-model"
 
-            # Appeler la fonction embedding_text avec le texte et le modèle de test
+            # Call the embedding_text function with the test text and model
             result = embedding_text(text, model)
 
-            # Vérifier que le résultat correspond aux valeurs d'embedding attendues
+            # Verify that the result matches the expected embedding values
             self.assertEqual(result, [0.1, 0.2, 0.3])
 
-            # Vérifier que la classe AzureOpenAI a été instanciée avec les bons paramètres
+            # Verify that the AzureOpenAI class was instantiated with the correct parameters
             MockAzureOpenAI.assert_called_once_with(
                 api_key="fake_api_key",
-                api_version="2024-02-01",  # Assurer que la bonne version de l'API est utilisée
+                api_version="2024-02-01",  # Ensure the correct API version is used
                 azure_endpoint="https://fake.endpoint",
             )
 
-            # Vérifier que la méthode embeddings.create a été appelée une fois avec les bonnes entrées et le bon modèle
+            # Verify that the embeddings.create method was called once with the correct inputs and model
             mock_client.embeddings.create.assert_called_once_with(
                 input=[text], model=model
             )
 
-    # Remarques :
-    # - @patch est utilisé pour remplacer la classe AzureOpenAI par un mock pendant le test.
-    # - MockAzureOpenAI.return_value fournit une instance mockée de la classe AzureOpenAI.
-    # - patch.dict est utilisé pour définir temporairement des variables d'environnement dans le test.
-    # - MagicMock est utilisé pour créer une valeur de retour mockée pour les données d'embedding.
-    # - self.assertEqual et self.assert_called_once_with sont utilisés pour vérifier les résultats attendus du test.
+    # Notes:
+    # - @patch is used to replace the AzureOpenAI class with a mock during the test.
+    # - MockAzureOpenAI.return_value provides a mocked instance of the AzureOpenAI class.
+    # - patch.dict is used to temporarily set environment variables in the test.
+    # - MagicMock is used to create a mocked return value for the embedding data.
+    # - self.assertEqual and self.assert_called_once_with are used to verify the expected test results.
 
     @patch("data_embedding.modules.embed_text.AzureOpenAI")
     def test_special_characters(self, MockAzureOpenAI):
@@ -109,7 +107,7 @@ class TestEmbeddingText(unittest.TestCase):
                 input=[long_text], model=model
             )
 
-    # Cas de test d'erreurs
+    # Error test cases
     @patch("data_embedding.modules.embed_text.AzureOpenAI")
     def test_missing_api_key(self, MockAzureOpenAI):
         with patch.dict(

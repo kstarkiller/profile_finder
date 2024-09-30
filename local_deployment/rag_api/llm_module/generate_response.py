@@ -1,4 +1,5 @@
 import os
+import sys
 import getpass
 import ollama
 import requests
@@ -8,6 +9,7 @@ from typing import Optional
 from datetime import date
 import logging
 
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from log_module.custom_logging import log_access, log_response
 
 # Import environment variables
@@ -24,15 +26,13 @@ ERROR_MESSAGES = {
     "invalid_model": "The model {} is not available. Please choose a valid model from this list: {}",
 }
 
-# Logs path according to the os
-if os.name == "posix":
-    logs_path = (
-        r"log_module/logs/logs_api.log"
-    )
-else:
-    logs_path = (
-        r"C:\Users\k.simon\Projet\avv-matcher\local_deployment\rag_api\log_module\logs\logs_api.log"
-    )
+# Path to the collection
+# sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+logs_path = os.path.join(
+    os.path.dirname(__file__), "..", "log_module", "logs", "logs_api.log"
+)
+
+print(logs_path)
 
 # Logging module configuration
 logging.basicConfig(
@@ -42,7 +42,7 @@ logging.basicConfig(
 )
 
 
-# Classe personnalisée pour désactiver la vérification SSL
+# Personalized class to disable SSL verification
 class SSLAdapter(HTTPAdapter):
     def init_poolmanager(self, *args, **kwargs):
         context = ssl.create_default_context()
@@ -96,36 +96,36 @@ def validate_input(
         ValueError: Si les données d'entrée, la question ou le modèle sont invalides.
     """
 
-    # Authentifier l'utilisateur si les informations de connexion sont fournies
+    # Authenticate the user if login information is provided
     if username and password:
         authenticated = authenticate(username, password)
         if not authenticated:
             logging.warning(ERROR_MESSAGES["access_denied"])
             raise ValueError(ERROR_MESSAGES["access_denied"])
 
-    # Vérifier si les données sont fournies
+    # Check if data is provided
     if not data:
         logging.warning(ERROR_MESSAGES["no_data"])
         raise ValueError(ERROR_MESSAGES["no_data"])
 
-    # Vérifier si la liste de données est vide
+    # Check if data list is empty
     if not any(data):
         logging.warning(ERROR_MESSAGES["no_data"])
         raise ValueError(ERROR_MESSAGES["no_data"])
 
-    # Vérifier si la question est vide
+    # Check if the question is empty
     if not question or question.isspace() or not question.strip():
         logging.warning(ERROR_MESSAGES["no_question"])
         raise ValueError(ERROR_MESSAGES["no_question"])
 
-    # Vérifier si la question est trop longue
+    # Check if the question is too long
     if len(question) > 512:
         logging.warning(ERROR_MESSAGES["question_too_long"])
         raise ValueError(ERROR_MESSAGES["question_too_long"])
 
-    # Vérifier si l'argument optionnel model est fourni
+    # Check if the optional model argument is provided
     if model:
-        # Vérifier si le modèle est dans la liste des modèles disponibles
+        # Check if the model is in the list of available models
         available_models = ollama.list().get("models", [])
         model_names = [m["name"] for m in available_models]
         if model not in model_names:
@@ -198,7 +198,7 @@ def generate_perplexity_response(data: list, history: list, model: str) -> str:
         str: The generated response.
     """
 
-    # Application globale de l'adaptateur SSL personnalisé à la session requests
+    # Global application of the custom SSL adapter to the requests session
     session = requests.Session()
     adapter = SSLAdapter()
     session.mount("https://", adapter)
@@ -269,7 +269,7 @@ def generate_perplexity_response(data: list, history: list, model: str) -> str:
         else:
             log_response(history[-1]["content"], str(e))
         return str(e)
-    
+
     except requests.exceptions.HTTPError as e:
         logging.error(f"HTTP error occurred: {str(e)}")
         return "An unexpected error occurred" + str(e)

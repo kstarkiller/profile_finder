@@ -15,7 +15,7 @@ def embedding_text(text, model):  # model = "azure deployment name"
     AZURE_OPENAI_API_KEY = os.environ.get("AZURE_OPENAI_API_KEY")
     AZURE_OPENAI_ENDPOINT = os.environ.get("AZURE_OPENAI_ENDPOINT")
 
-    # Vérification du type de texte (TU)
+    # Check the type of text (Unit Test)
     if not isinstance(text, str):
         raise TypeError("The text must be a string.")
 

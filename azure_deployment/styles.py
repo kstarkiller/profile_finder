@@ -1,10 +1,11 @@
 import streamlit as st
 
+
 def apply_custom_styles():
     st.markdown(
         """
         <style>
-            /* Modifier le fond de l'ensemble de la page */
+            /* Change the background of the entire page */
             body {
                 background-color: #F3F3F3;
             }
@@ -14,12 +15,12 @@ def apply_custom_styles():
             #     display: none;
             # }
 
-            /* Na pas afficher .st-emotion-cache-79elbk */
+            /* Do not display .st-emotion-cache-79elbk */
             .st-emotion-cache-79elbk {
                 display: none;
             }
 
-            /* Changer la police et la couleur dans les titres et le centrer*/
+            /* Change the font and color in the titles and center them */
             h1 {
                 color: #FF4B4B;
                 font-family: 'Helvetica';
@@ -31,18 +32,18 @@ def apply_custom_styles():
                 font-family: 'Helvetica';
             }
 
-            /* Centrer le titre h1#profile_finder_chatbot */
+            /* Center the title h1#profile_finder_chatbot */
             h1#profile_finder_chatbot {
                 text-align: center;
             }
 
-            /* Personnaliser le fond et la couleur de la barre latérale */
+            /* Customize the background and color of the sidebar */
             .sidebar .sidebar-content {
                 background-color: #F0F0F0;
                 color: #333333;
             }
 
-            /* Modifier l'apparence des boutons */
+            /* Change the appearance of the buttons */
             .stButton>button {
                 # padding: 10% 24%;
                 # border-radius: 8%;
@@ -50,7 +51,7 @@ def apply_custom_styles():
                 # font-size: 16%;
             }
 
-            /* Réduire le margin de container */
+            /* Reduce the margin of the container */
             .st-emotion-cache-7tauuy {
                 padding: 2% 10%;
             }

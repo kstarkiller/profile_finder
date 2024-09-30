@@ -1,21 +1,14 @@
 import pandas as pd
 import os
 
-# Paths according to the OS
-if os.name == "posix":
-    psarm_path = (
-        "data_processing/datas/sources/UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
-    )
-    coaff_path = "data_processing/datas/sources/Coaff_V1.xlsx"
-    output_descriptions = "data_processing/datas/sources/descriptions_uniques.txt"
-    output_profiles = "data_processing/datas/sources/profils_uniques.txt"
-else:
-    psarm_path = (
-        r"data_processing\datas\sources\UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
-    )
-    coaff_path = r"data_processing\datas\sources\Coaff_V1_cleaned.csv"
-    output_descriptions = r"data_processing\datas\sources\descriptions_uniques.txt"
-    output_profiles = r"data_processing\datas\sources\profils_uniques.txt"
+# Paths
+base_path = os.path.dirname(__file__)
+psarm_path = os.path.join(
+    base_path, "sources", "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
+)
+coaff_path = os.path.join(base_path, "sources", "Coaff_V1.xlsx")
+output_descriptions = os.path.join(base_path, "sources", "descriptions_uniques.txt")
+output_profiles = os.path.join(base_path, "sources", "profils_uniques.txt")
 
 # Read the files into pandas DataFrames
 df_psarm = pd.read_excel(psarm_path)
