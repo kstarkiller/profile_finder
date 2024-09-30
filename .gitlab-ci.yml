@@ -20,21 +20,8 @@ variables:
   before_script:
   - if [ -z "$RAG_LOCAL_API_KEY" ]; then echo "Une ou plusieurs variables d'environnement ne sont pas définies"; exit 1; fi
 
-test_deploy:
+test_local_deployment:
   stage: test
-  only:
-    - deploy
-  image: python:3.11.9
-  extends: .check_deploy_variables
-  script:
-    - cd azure_deployment
-    - pip install -r requirements.txt
-    - python -m unittest discover -s tests
-
-test_main:
-  stage: test
-  only:
-    - main
   image: python:3.11.9
   extends: .check_ppxt_variables
   script:
@@ -43,10 +30,17 @@ test_main:
     - cd rag_api
     - python -m unittest discover -s test_unitaires
 
-build:
+test_azure_deployment:
+  stage: test
+  image: python:3.11.9
+  extends: .check_deploy_variables
+  script:
+    - cd azure_deployment
+    - pip install -r requirements.txt
+    - python -m unittest discover -s tests
+
+build_docker_image:
   stage: build
-  only:
-    - deploy
   image: ubuntu:20.04
   needs:
     - test_deploy
@@ -73,10 +67,8 @@ build:
     - az acr login --name $AZURE_ACR
     - docker push $IMAGE_TAG
 
-deploy:
+deploy_on_azure:
   stage: deploy
-  only:
-    - deploy
   image: mcr.microsoft.com/azure-cli
   needs:
     - build
