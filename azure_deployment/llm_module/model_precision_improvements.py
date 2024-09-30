@@ -10,10 +10,10 @@ if os.name == "posix":
     profiles_file = "data_processing/datas/sources/profils_uniques.txt"
     professions_file = "data_processing/datas/sources/professions_uniques.txt"
 else:
-    descriptions_file = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\sources\descriptions_uniques.txt"
-    acronyms_file = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\sources\acronyms.txt"
-    profiles_file = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\sources\profils_uniques.txt"
-    professions_file = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\sources\professions_uniques.txt"
+    descriptions_file = r"data_processing\datas\sources\descriptions_uniques.txt"
+    acronyms_file = r"data_processing\datas\sources\acronyms.txt"
+    profiles_file = r"data_processing\datas\sources\profils_uniques.txt"
+    professions_file = r"data_processing\datas\sources\professions_uniques.txt"
 
 # Charger le modèle pré-entraîné pour le français
 nlp = spacy.load("fr_core_news_lg")

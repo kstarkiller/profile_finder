@@ -10,10 +10,10 @@ if os.name == "posix":
     output_descriptions = "data_processing/datas/sources/descriptions_uniques.txt"
     output_profiles = "data_processing/datas/sources/profils_uniques.txt"
 else:
-    psarm_path = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\sources\UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
-    coaff_path = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\sources\Coaff_V1_cleaned.csv"
-    output_descriptions = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\sources\descriptions_uniques.txt"
-    output_profiles = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\sources\profils_uniques.txt"
+    psarm_path = r"data_processing\datas\sources\UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
+    coaff_path = r"data_processing\datas\sources\Coaff_V1_cleaned.csv"
+    output_descriptions = r"data_processing\datas\sources\descriptions_uniques.txt"
+    output_profiles = r"data_processing\datas\sources\profils_uniques.txt"
 
 # Lire les fichier dans des DataFrames pandas
 df_psarm = pd.read_excel(psarm_path)

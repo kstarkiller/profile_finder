@@ -9,10 +9,10 @@ if os.name == "posix":
     fixtures_certs_path = "data_processing/datas/fixtures/fixtures_certs.csv"
     combined_result_path = "data_processing/datas/combined/combined_result.csv"
 else:
-    fixture_coaff_path = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\fixtures\fixtures_coaff.csv"
-    fixture_psarm_path = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\fixtures\fixtures_psarm.csv"
-    fixtures_certs_path = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\fixtures\fixtures_certs.csv"
-    combined_result_path = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\combined\combined_result.csv"
+    fixture_coaff_path = r"data_processing\datas\fixtures\fixtures_coaff.csv"
+    fixture_psarm_path = r"data_processing\datas\fixtures\fixtures_psarm.csv"
+    fixtures_certs_path = r"data_processing\datas\fixtures\fixtures_certs.csv"
+    combined_result_path = r"data_processing\datas\combined\combined_result.csv"
 
 coaff_df = pd.read_csv(fixture_coaff_path)
 psarm_df = pd.read_csv(fixture_psarm_path)

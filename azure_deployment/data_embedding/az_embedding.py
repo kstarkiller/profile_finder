@@ -11,8 +11,8 @@ if os.name == "posix":
     combined_result_path = "data_processing/datas/combined/combined_result.csv"
     embedded_data_path = "data_processing/datas/embedded/embedded_datas.csv"
 else:
-    combined_result_path = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\processing_data\datas\combined\combined_result.csv"
-    embedded_data_path = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\processing_data\datas\embedded\embedded_datas.csv"
+    combined_result_path = r"processing_data\datas\combined\combined_result.csv"
+    embedded_data_path = r"processing_data\datas\embedded\embedded_datas.csv"
 
 # Load the data
 df = pd.read_csv(combined_result_path)

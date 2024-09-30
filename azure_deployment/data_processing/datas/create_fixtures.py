@@ -16,12 +16,12 @@ if os.name == "posix":
     fixtures_psarm = r"data_processing/datas/fixtures/fixtures_psarm.csv"
     fixtures_certs = r"data_processing/datas/fixtures/fixtures_certs.csv"
 else:
-    psa_rm_path = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\sources\UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
-    coaff_path = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\sources\Coaff_V1_cleaned.csv"
-    certs_path = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\sources\UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
-    fixtures_coaff = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\fixtures\fixtures_coaff.csv"
-    fixtures_psarm = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\fixtures\fixtures_psarm.csv"
-    fixtures_certs = r"C:\Users\k.simon\Projet\avv-matcher\azure_deployment\data_processing\datas\fixtures\fixtures_certs.csv"
+    psa_rm_path = r"data_processing\datas\sources\UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
+    coaff_path = r"data_processing\datas\sources\Coaff_V1_cleaned.csv"
+    certs_path = r"data_processing\datas\sources\UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
+    fixtures_coaff = r"data_processing\datas\fixtures\fixtures_coaff.csv"
+    fixtures_psarm = r"data_processing\datas\fixtures\fixtures_psarm.csv"
+    fixtures_certs = r"data_processing\datas\fixtures\fixtures_certs.csv"
 
 fake = Faker()
 
