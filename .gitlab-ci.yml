@@ -33,6 +33,8 @@ test_local_deployment:
 test_azure_deployment:
   stage: test
   image: python:3.11.9
+  needs:
+    - test_local_deployment
   extends: .check_deploy_variables
   script:
     - cd azure_deployment
@@ -43,7 +45,7 @@ build_docker_image:
   stage: build
   image: ubuntu:20.04
   needs:
-    - test_deploy
+    - test_azure_deployment
   services:
     - docker:20.10.16-dind
   variables:
@@ -71,7 +73,7 @@ deploy_on_azure:
   stage: deploy
   image: mcr.microsoft.com/azure-cli
   needs:
-    - build
+    - build_docker_image
   extends: .check_deploy_variables
   script:
     - az login --service-principal -u "$AZURE_SP_ID" -p "$AZURE_SP_SECRET" --tenant "$AZURE_TENANT"
