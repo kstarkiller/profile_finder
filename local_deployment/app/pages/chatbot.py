@@ -89,7 +89,11 @@ def display_chatbot():
                 )
 
             with st.chat_message("Assistant"):
-                st.write_stream(response_generator(bot_message))
+                # Check if i is the last message in the conversation
+                if i == len(st.session_state["chat"]) - 1:
+                    st.write_stream(response_generator(bot_message))
+                else:
+                    st.write(bot_message)
                 # Add a unique identifier to the assistant message
                 st.markdown(
                     f"<div id='message-{i}-assistant'></div>", unsafe_allow_html=True

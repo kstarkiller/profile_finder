@@ -804,3 +804,245 @@ Note : La disponibilité est calculée en fonction des périodes d'occupation et de
 2024-09-30 20:56:20,499 - INFO - Response generated in 11.631959676742554 seconds.
 
 
+2024-09-30 22:14:24,855 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 22:14:24,864 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-09-30 22:14:24,988 - INFO - RAG performed in 1.7977321147918701 seconds.
+
+2024-09-30 22:14:30,766 - INFO - 
+2024-09-30 22:14:30,766 - INFO - Question asked: J'ai besoin de trois développeurs à Montpellier disponibles immédiatement. Les profils les plus sénior.
+2024-09-30 22:14:30,766 - INFO - 
+2024-09-30 22:14:30,766 - INFO - Generated response: Voici les résultats de votre recherche :
+
+| Nom | Code | Profil | Localisation | Equipe | Disponibilité |
+| --- | --- | --- | --- | --- | --- |
+| Jennifer Hayes | 422011 | Expert | Mtp | Data Integration | 20% disponible à partir de 2024-10-19 |
+| John Wiley | 434338 | Confirmé | Mtp | MSBI | 80% disponible à partir de 2025-03-23 |
+| Patrick Gentry | 461356 | Sénior | Mtp | DSIA | 30% disponible à partir de 2025-03-17 |
+
+Ces trois développeurs sont basés à Montpellier et ont un profil sénior. Ils sont disponibles immédiatement, mais avec des taux de disponibilité variables.
+2024-09-30 22:14:30,766 - INFO - 
+2024-09-30 22:14:30,767 - INFO - Response generated in 5.779594421386719 seconds.
+
+
+2024-09-30 22:15:57,569 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 22:15:57,570 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-09-30 22:15:57,623 - INFO - RAG performed in 0.07192373275756836 seconds.
+
+2024-09-30 22:16:05,188 - INFO - 
+2024-09-30 22:16:05,188 - INFO - Question asked: Donne moi plus d'information sur Jennifer
+2024-09-30 22:16:05,188 - INFO - 
+2024-09-30 22:16:05,188 - INFO - Generated response: Voici plus d'informations sur Jennifer Hayes :
+
+**Nom** : Jennifer Hayes
+**Code** : 422011
+**Profil** : Expert
+**Localisation** : Montpellier (Mtp)
+**Equipe** : Data Integration
+**Manager** : Gregory Gomez
+
+**Disponibilité** :
+
+* Mission Direction de projet à 20% occupation à Dalkia du 2024-10-19 au 2025-03-16
+* Mission Direction de projet à 80% occupation à Fraikin du 2024-11-17 au 2024-12-08
+* Mission Direction de projet à 20% occupation à La Poste du 2024-05-12 au 2024-12-28
+
+**Compétences** :
+
+* Adobe Campaign (très bon niveau)
+* SAP GRC (niveau faible)
+* Validation des données (bon niveau)
+
+**Certifications** :
+
+* Microsoft PowerPlatFundamentls (PLPF) depuis le 2023-12-30 jusqu'au 2026-01-29
+2024-09-30 22:16:05,188 - INFO - 
+2024-09-30 22:16:05,189 - INFO - Response generated in 7.564716815948486 seconds.
+
+
+2024-09-30 22:17:19,765 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 22:17:19,765 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-09-30 22:17:19,822 - INFO - RAG performed in 0.08101987838745117 seconds.
+
+2024-09-30 22:17:25,056 - INFO - 
+2024-09-30 22:17:25,056 - INFO - Question asked: Qui est disponible immédiatement et pour les 4 prochains mois ?
+2024-09-30 22:17:25,056 - INFO - 
+2024-09-30 22:17:25,056 - INFO - Generated response: **Membres disponibles immédiatement et pour les 4 prochains mois**
+
+| Nom | Code | Localisation | Equipe | Disponibilité |
+| --- | --- | --- | --- | --- |
+| Norma Sexton | 450629 | Tours | MSBI | 20% |
+| Mr. Alex Nguyen | 470684 | Tours | DSIA | 20% |
+| Heather Perez DDS | LPS00332077 | Tours | MSBI | 80% |
+| Anna Nguyen | LPS00324325 | Mtp | TALEND | 50% |
+| Tammy Lawson | 475790 | Paris | TALEND | 80% |
+| James Daniels | 499658 | Paris | Data Integration | 20% |
+
+Remarque : La disponibilité est calculée en fonction des périodes d'occupation et des pourcentages d'occupation pour les 4 prochains mois.
+2024-09-30 22:17:25,056 - INFO - 
+2024-09-30 22:17:25,057 - INFO - Response generated in 5.234354257583618 seconds.
+
+
+2024-09-30 22:17:51,494 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 22:17:51,495 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-09-30 22:17:51,552 - INFO - RAG performed in 0.08143162727355957 seconds.
+
+2024-09-30 22:17:58,202 - INFO - 
+2024-09-30 22:17:58,202 - INFO - Question asked: Donne moi toutes les disponibilités de Norma
+2024-09-30 22:17:58,202 - INFO - 
+2024-09-30 22:17:58,202 - INFO - Generated response: **Disponibilités de Norma Sexton**
+
+| Période | Occupation | Pourcentage |
+| --- | --- | --- |
+| 2025-05-29 à 2025-11-11 | Disponible | 20% |
+| 2024-07-20 à 2025-07-05 | Mission Direction de projet | 80% (Fraikin) |
+| 2025-10-06 à 2026-08-31 | Mission Direction de projet | 80% (Dalkia) |
+| 2026-09-16 à 2027-08-20 | Mission Direction de projet | 100% (Club Med) |
+| 2027-07-01 à 2027-10-24 | Mission Direction de projet | 0% (BPCE) |
+| 2026-09-01 à 2026-09-15 | Congé | 100% |
+
+Remarque : Les périodes de disponibilité et d'occupation sont calculées en fonction des informations fournies.
+2024-09-30 22:17:58,202 - INFO - 
+2024-09-30 22:17:58,203 - INFO - Response generated in 6.6504950523376465 seconds.
+
+
+2024-09-30 22:29:45,280 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 22:29:45,281 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-09-30 22:29:45,338 - INFO - RAG performed in 1.73759126663208 seconds.
+
+2024-09-30 22:29:48,998 - INFO - 
+2024-09-30 22:29:48,998 - INFO - Question asked: Hello
+2024-09-30 22:29:48,998 - INFO - 
+2024-09-30 22:29:48,998 - INFO - Generated response: **Bonjour !**
+
+I'm a French chatbot assistant here to help you find team members based on their location, availability, and skills.
+
+**What can I help you with today?**
+
+Please provide me with your search criteria, such as:
+
+* Location (e.g., Tours, Paris, Mtp)
+* Availability (e.g., percentage, date range)
+* Skills (e.g., programming languages, software, expertise)
+
+I'll do my best to provide you with a list of matching team members.
+2024-09-30 22:29:48,998 - INFO - 
+2024-09-30 22:29:48,999 - INFO - Response generated in 3.6607794761657715 seconds.
+
+
+2024-09-30 22:30:10,299 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 22:30:10,300 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-09-30 22:30:10,361 - INFO - RAG performed in 0.0850381851196289 seconds.
+
+2024-09-30 22:30:12,554 - INFO - 
+2024-09-30 22:30:12,555 - INFO - Question asked: je voulais dire bonjour
+2024-09-30 22:30:12,555 - INFO - 
+2024-09-30 22:30:12,555 - INFO - Generated response: **Bonjour !** Enchanté ! Comment puis-je vous aider aujourd'hui ?
+2024-09-30 22:30:12,555 - INFO - 
+2024-09-30 22:30:12,556 - INFO - Response generated in 2.1945056915283203 seconds.
+
+
+2024-09-30 22:37:49,878 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 22:37:49,878 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-09-30 22:37:49,933 - INFO - RAG performed in 1.6912992000579834 seconds.
+
+2024-09-30 22:37:58,440 - INFO - 
+2024-09-30 22:37:58,440 - INFO - Question asked: hello
+2024-09-30 22:37:58,440 - INFO - 
+2024-09-30 22:37:58,440 - INFO - Generated response: **Bonjour !**
+
+I'm here to help you find team members based on their location, availability, and skills. How can I assist you today?
+
+Please provide me with some criteria to search for team members, such as:
+
+* Location (e.g. Tours, Paris, Mtp)
+* Availability (e.g. percentage of occupation, specific dates)
+* Skills (e.g. programming languages, software expertise)
+
+I'll do my best to provide you with a list of matching team members.
+2024-09-30 22:37:58,440 - INFO - 
+2024-09-30 22:37:58,441 - INFO - Response generated in 8.50751781463623 seconds.
+
+
+2024-09-30 22:38:10,885 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 22:38:10,885 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-09-30 22:38:10,941 - INFO - RAG performed in 0.07688617706298828 seconds.
+
+2024-09-30 22:38:15,455 - INFO - 
+2024-09-30 22:38:15,455 - INFO - Question asked: bonjour
+2024-09-30 22:38:15,455 - INFO - 
+2024-09-30 22:38:15,455 - INFO - Generated response: **Bonjour !**
+
+Je suis là pour vous aider à trouver des membres d'équipe en fonction de leur localisation, de leur disponibilité et de leurs compétences. Comment puis-je vous assister aujourd'hui ?
+
+Veuillez me fournir des critères pour rechercher des membres d'équipe, tels que :
+
+* Localisation (par exemple : Tours, Paris, Mtp)
+* Disponibilité (par exemple : pourcentage d'occupation, dates spécifiques)
+* Compétences (par exemple : langages de programmation, expertise logicielle)
+
+Je ferai de mon mieux pour vous fournir une liste de membres d'équipe correspondant à vos critères.
+
+**Quels sont vos critères de recherche ?**
+2024-09-30 22:38:15,455 - INFO - 
+2024-09-30 22:38:15,455 - INFO - Response generated in 4.513663291931152 seconds.
+
+
+2024-09-30 22:40:20,286 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 22:40:20,287 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-09-30 22:40:20,342 - INFO - RAG performed in 0.07478499412536621 seconds.
+
+2024-09-30 22:40:22,329 - INFO - 
+2024-09-30 22:40:22,330 - INFO - Question asked: bonjour
+2024-09-30 22:40:22,330 - INFO - 
+2024-09-30 22:40:22,330 - INFO - Generated response: Bonjour ! Comment puis-je vous aider aujourd'hui ? Vous cherchez des membres d'équipe en fonction de leur localisation, disponibilité et compétences ?
+2024-09-30 22:40:22,330 - INFO - 
+2024-09-30 22:40:22,331 - INFO - Response generated in 1.9880707263946533 seconds.
+
+
+2024-09-30 22:40:37,205 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 22:40:37,205 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-09-30 22:40:37,264 - INFO - RAG performed in 0.07758903503417969 seconds.
+
+2024-09-30 22:40:41,479 - INFO - 
+2024-09-30 22:40:41,479 - INFO - Question asked: donne moi trois développeur
+2024-09-30 22:40:41,479 - INFO - 
+2024-09-30 22:40:41,479 - INFO - Generated response: Voici trois développeurs qui correspondent à votre demande :
+
+| Nom | Code | Coefficient | Profil | Localisation | Equipe | Métier |
+| --- | --- | --- | --- | --- | --- | --- |
+| Doris Lucas DDS | 454148 | 150 | Sénior | Paris | Data Integration | Développeur, Programmeur |
+| James Daniels | 499658 | 150 | Confirmé | Paris | Data Integration | Développeur |
+| Jeffery Mcknight | LPS00272677 | 170 | Junior | Tours | MSBI | Développeur, Programmeur |
+
+Voulez-vous plus d'informations sur ces développeurs ou souhaitez-vous affiner votre recherche ?
+2024-09-30 22:40:41,479 - INFO - 
+2024-09-30 22:40:41,479 - INFO - Response generated in 4.215401649475098 seconds.
+
+
+2024-09-30 22:44:41,604 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-09-30 22:44:41,605 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-09-30 22:44:41,657 - INFO - RAG performed in 0.07384777069091797 seconds.
+
+2024-09-30 22:44:53,015 - INFO - 
+2024-09-30 22:44:53,015 - INFO - Question asked: Donne moi 10 développeurs
+2024-09-30 22:44:53,015 - INFO - 
+2024-09-30 22:44:53,015 - INFO - Generated response: Voici 10 développeurs qui correspondent à votre demande :
+
+| Nom | Code | Coefficient | Profil | Localisation | Equipe | Métier |
+| --- | --- | --- | --- | --- | --- | --- |
+| Doris Lucas DDS | 454148 | 150 | Sénior | Paris | Data Integration | Développeur, Programmeur |
+| Jeffery Mcknight | LPS00272677 | 170 | Junior | Tours | MSBI | Développeur, Programmeur |
+| Julian Smith | 506462 | 115 | Confirmé | Paris | Data Integration | Développeur, Programmeur |
+| Taylor Gonzalez DDS | 492379 | 105 | Confirmé | Paris | MSBI | Développeur, Programmeur |
+| Marcus Edwards | 461179 | 115 | Junior | Tours | ODI | Développeur, Programmeur |
+| Don Moss | LPS00185118 | 105 | Junior | Paris | Data Integration | Développeur, Programmeur |
+| Russell Arroyo PhD | 498913 | 115 | Junior | Paris | TALEND | Développeur, Programmeur |
+| John Thomas | 509072 | 100 | Expert | Paris | MSBI | Développeur, Programmeur |
+| Edward Bright | 498960 | 105 | Confirmé | Paris | TALEND | Développeur, Programmeur |
+| Martin Cole | LPS00331838 | 105 | Expert | Paris | DSIA | Développeur, Programmeur |
+
+Notez que ces développeurs ont des profils et des localisations différents. Si vous avez des critères spécifiques, je peux affiner la recherche.
+2024-09-30 22:44:53,015 - INFO - 
+2024-09-30 22:44:53,015 - INFO - Response generated in 11.358198165893555 seconds.
+
+
