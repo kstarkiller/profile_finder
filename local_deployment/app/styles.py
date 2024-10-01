@@ -9,11 +9,11 @@ def apply_custom_styles():
             body {
                 background-color: #F3F3F3;
             }
-                        
-            /* remove default sidebar */
-            # section[data-testid="stSidebar"]{
-            #     display: none;
-            # }
+
+            /* Do not display the Sidebar collapse button */            
+            .sidebar-toggle {
+                display: none;
+            }
 
             /* Do not display .st-emotion-cache-79elbk */
             .st-emotion-cache-79elbk {
