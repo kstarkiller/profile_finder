@@ -1,5 +1,4 @@
 import os
-import time
 import streamlit as st
 import streamlit_authenticator as stauth
 from sqlalchemy import create_engine, Column, Integer, String

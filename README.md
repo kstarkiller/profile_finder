@@ -19,6 +19,7 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
 
 - [Python 3.11.9](https://www.python.org/downloads/release/python-3119/)
 - [Ollama](https://ollama.com/download)
+- [PostgreSQL](https://www.postgresql.org/download/)
 - [Docker](https://www.docker.com/get-started)
 - [Git](https://git-scm.com/)
 
@@ -67,6 +68,8 @@ export AZURE_TENANT=<votre_azure_tenant>
 export RAG_LOCAL_API_KEY=<votre_rag_local_api_key>
 export RAG_LOCAL_USERNAME=<votre_username_pour_se_connecter_à_lapplication>
 export RAG_LOCAL_PASSWORD=<votre_password_pour_se_connecter_à_lapplication>
+export DB_USER=<votre_utilisateur_postgresql>
+export DB_PASSWORD=<votre_mot_de_passe_postgresql>
 ```
 
 ## Commandes Docker
@@ -86,11 +89,11 @@ docker run -d -p 8080:8080 --name your_container_name your_image_name
 Pour exécuter les tests unitaires localement :
 
 ```bash
-# Exécution des tests pour lancer l'application en local
+# Exécution des tests de l'application en local
 cd profile_finder/local_deployment/rag_api
 python -m unittest discover -s test_unitaires
 
-# Exécution des tests pour lancer l'application déployée sur Azure
+# Exécution des tests de l'application déployée sur Azure
 cd profile_finder/azure_deployment
 python -m unittest discover -s tests
 ```
