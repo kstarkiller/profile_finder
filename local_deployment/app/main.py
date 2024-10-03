@@ -1,9 +1,4 @@
-from math import log
-import re
-from isodate import Duration
-from openai import chat
 import streamlit as st
-from sympy import use
 
 st.set_page_config(initial_sidebar_state="expanded")
 
@@ -13,7 +8,6 @@ from modules.users_manager import login, logout
 from modules.signup_form import show_signup_form
 
 apply_custom_styles()
-
 
 def initialize_session_state():
     default_values = {
@@ -58,9 +52,10 @@ def main():
         st.sidebar.button(
             "New search",
             on_click=lambda: st.session_state.update(
-                rerun=True, chat_history=[], chat=[], duration=None),
-                use_container_width=True,
-            )
+                rerun=True, chat_history=[], chat=[], duration=None
+            ),
+            use_container_width=True,
+        )
         st.sidebar.markdown("### Older searches :")
 
         display_chatbot()

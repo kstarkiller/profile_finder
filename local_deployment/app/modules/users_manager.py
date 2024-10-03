@@ -92,7 +92,9 @@ def create_user(name, email, password):
         password (str): Mot de passe de l'utilisateur
 
     Returns:
-        str: Nom de l'utilisateur si l'utilisateur est créé, sinon l'email de l'utilisateur si l'utilisateur existe déjà
+        str: Nom de l'utilisateur si l'utilisateur est créé avec succès,
+        str: Email de l'utilisateur si l'utilisateur existe déjà,
+        str: "User not found" si aucun utilisateur n'est trouvé
     """
 
     # Hasher le mot de passe avec le salt
@@ -117,9 +119,9 @@ def create_user(name, email, password):
         db.commit()
 
         # Récupérer le nom de l'utilisateur créé
-        registered_user_name = get_user(email, password)
+        registered_user = get_user(email, password)
         db.close()
-        return registered_user_name
+        return registered_user
 
 
 def signup(name, email, password):
@@ -139,12 +141,18 @@ def signup(name, email, password):
     if name and email and password:
         user_check = create_user(name, email, password)
 
-        if user_check == name:
+        if (
+            type(user_check) == tuple
+            and user_check[1] == email
+            and user_check[0] == name
+        ):
             st.session_state.update(
-                user_id=None, user_name=None, user_already_exists=False
+                user_name=user_check[0],
+                username=user_check[1],
+                user_already_exists=False,
             )
-            st.success(f"Thank you {user_check}, you're now registered!")
-        elif user_check == email:
+            st.success(f"Thank you {user_check[0]}, you're now registered!")
+        elif type(user_check) == str and user_check == email:
             st.session_state.update(
                 user_id=None, user_name=None, user_already_exists=True
             )

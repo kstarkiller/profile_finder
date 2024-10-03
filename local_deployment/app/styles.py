@@ -33,15 +33,17 @@ def apply_custom_styles():
                 padding-top: 1%;
             }
 
+            /*
             h2, h3, h4, h5, h6 {
                 color: #37474F;
                 font-family: 'Helvetica';
-            }
+            } */
 
             /* Center the title h1#profile_finder_chatbot */
             h1#profile_finder_chatbot {
                 text-align: center;
             }
+
 
             /* Customize the background and color of the sidebar */
             .sidebar .sidebar-content {
