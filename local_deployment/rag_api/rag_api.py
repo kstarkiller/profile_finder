@@ -131,7 +131,7 @@ def process_question_ollama(input: ChatRequest):
     end_time = time.time()
     logging.info(f"Response generated in {end_time - start_time} seconds.\n\n")
 
-    return {"response": response}
+    return {"response": response, "duration": end_time - start_time}
 
 
 @app.post(
@@ -175,7 +175,7 @@ def process_question_perplexity(input: ChatRequest):
     end_time = time.time()
     logging.info(f"Response generated in {end_time - start_time} seconds.\n\n")
 
-    return {"response": response}
+    return {"response": response, "duration": end_time - start_time}
 
 
 if __name__ == "__main__":

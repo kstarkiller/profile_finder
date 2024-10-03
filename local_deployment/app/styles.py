@@ -5,6 +5,12 @@ def apply_custom_styles():
     st.markdown(
         """
         <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            .stAppDeployButton {
+            visibility: hidden;
+            }
+
             /* Change the background of the entire page */
             body {
                 background-color: #F3F3F3;

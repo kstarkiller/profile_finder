@@ -21,6 +21,7 @@ def process_input(user_input, chat_history):
     Returns:
         str: The chatbot response.
         list: The updated chat history.
+        float: The duration of the response generation.
     """
     # Validate user input
     if not user_input:
@@ -52,4 +53,8 @@ def process_input(user_input, chat_history):
         {"role": "assistant", "content": response_data.get("response", "")}
     )
 
-    return response_data.get("response", ""), chat_history
+    return (
+        response_data.get("response", ""),
+        chat_history,
+        response_data.get("duration", 0),
+    )

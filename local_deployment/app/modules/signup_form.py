@@ -1,6 +1,6 @@
 import streamlit as st
 
-from pages.users_manager import signup
+from modules.users_manager import signup
 
 def show_signup_form():
     with st.form(key="signup_form"):

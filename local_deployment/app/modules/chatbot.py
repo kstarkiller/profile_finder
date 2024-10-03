@@ -1,8 +1,8 @@
 import streamlit as st
 from datetime import date
 
-from processing_request import process_input
-from response_generator import response_generator
+from modules.processing_request import process_input
+from modules.response_generator import response_generator
 
 context = f"""
         You are a French chatbot assistant that helps the user find team members based on their location, availability and skills.
@@ -30,13 +30,17 @@ def update_input():
 
     # Add the question and answer to the history
     if user_input:
-        chatbot_response, updated_chat_history = process_input(
-            user_input, st.session_state["chat_history"]
-        )
+        result = process_input(user_input, st.session_state["chat_history"])
+        if len(result) == 3:
+            chatbot_response, updated_chat_history, duration = result
+        else:
+            chatbot_response, updated_chat_history = result
+            duration = None  # or any default value you prefer
         st.session_state["chat_history"] = updated_chat_history
         st.session_state["chat"].append(
             {"user": user_input, "assistant": chatbot_response}
         )
+        st.session_state["duration"] = duration
 
 
 def display_chatbot():
@@ -64,16 +68,18 @@ def display_chatbot():
         st.session_state["chat_history"] = []
         st.session_state["chat_history"].append({"role": "system", "content": context})
         st.session_state["chat"] = []
+    if "duration" not in st.session_state:
+        st.session_state["duration"] = None
 
     # Input field for the user
     st.chat_input(
-        placeholder="Posez votre question...", key="temp_input", on_submit=update_input
+        placeholder="Ask your question here...", key="temp_input", on_submit=update_input
     )
 
     # Display the welcome message if the history is empty
     if len(st.session_state["chat"]) == 0:
         with st.chat_message("Assistant"):
-            st.write("Bonjour, comment puis-je vous aider ?")
+            st.write("How can I help you ?")
 
     # Display the conversation history
     else:
@@ -92,6 +98,7 @@ def display_chatbot():
                 # Check if i is the last message in the conversation
                 if i == len(st.session_state["chat"]) - 1:
                     st.write_stream(response_generator(bot_message))
+                    st.write(f"Durée de la réponse : {st.session_state['duration']} secondes")
                 else:
                     st.write(bot_message)
                 # Add a unique identifier to the assistant message
