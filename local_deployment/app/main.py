@@ -9,6 +9,7 @@ from modules.signup_form import show_signup_form
 
 apply_custom_styles()
 
+
 def initialize_session_state():
     default_values = {
         "user_name": None,
@@ -98,7 +99,9 @@ def main():
         if st.button(
             "Already have an account ? Login",
             key="login_button",
-            on_click=lambda: st.session_state.update(show_signup_form=False),
+            on_click=lambda: st.session_state.update(
+                show_signup_form=False, user_name=None
+            ),
         ):
             pass
 

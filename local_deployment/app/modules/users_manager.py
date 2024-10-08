@@ -5,11 +5,13 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 import bcrypt
 
 # Récupérer les informations de connexion à la base de données
-db_user = os.getenv("DB_USER")
-db_password = os.getenv("DB_PASSWORD")
+db_user = os.getenv("DB_USER").encode("utf-8")
+db_password = os.getenv("DB_PASSWORD").encode("utf-8")
 
 # Remplacer par vos propres informations de connexion
-engine = create_engine(f"postgresql://{db_user}:{db_password}@localhost:5432/st_users")
+engine = create_engine(
+    f"postgresql://{db_user.decode('utf-8')}:{db_password.decode('utf-8')}@localhost:5432/st_users"
+)
 Base = declarative_base()
 
 
@@ -26,28 +28,6 @@ Base.metadata.create_all(engine)
 
 # Créer une session pour interagir avec la base de données
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-# # Get users credentials with a database query
-# def get_cls_from_db():
-#     db = SessionLocal()
-#     users = db.query(User).all()
-#     db.close()
-
-#     usernames = [user.email for user in users]
-#     names = [user.name for user in users]
-#     passwords = [user.password for user in users]
-
-#     return {
-#         "usernames": {
-#             usernames[i]: {
-#                 "name": names[i],
-#                 "email": usernames[i],
-#                 "password": passwords[i],
-#             }
-#             for i in range(len(usernames))
-#         }
-#     }
 
 
 # Fonction pour récupérer un utilisateur par son username + password
