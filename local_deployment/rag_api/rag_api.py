@@ -9,7 +9,8 @@ import logging
 
 from llm_module.generate_response import (
     generate_ollama_response,
-    generate_perplexity_response,
+    generate_minai_response,
+    generate_conversation_id,
 )
 from rag_module.embedding import embed_documents, retrieve_documents
 
@@ -26,7 +27,7 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",  # Log format
 )
 
-MODEL_LLM = "llama3.1:8b"
+MODEL_LLM = "gpt-4o-mini"
 MODEL_EMBEDDING = "nomic-embed-text:latest"
 
 app = FastAPI()
@@ -135,11 +136,11 @@ def process_question_ollama(input: ChatRequest):
 
 
 @app.post(
-    "/perplexity_chat",
+    "/minai_chat",
     summary="Process question",
     description="This endpoint processes a question and returns a response with perplexity.",
 )
-def process_question_perplexity(input: ChatRequest):
+def process_question_minai(input: ChatRequest):
     """
     Process a question and return a response.
 
@@ -160,14 +161,17 @@ def process_question_perplexity(input: ChatRequest):
     end_time = time.time()
     logging.info(f"RAG performed in {end_time - start_time} seconds.\n")
 
+    # Create a conversation Title and ID
+    conversation_id = generate_conversation_id(MODEL_LLM, input.question)
+
     # Add question and retrieved data then generate a response
     start_time = time.time()
     try:
         if data is None:
             logging.error("No document found")
             raise HTTPException(status_code=500, detail="No document found")
-        response = generate_perplexity_response(
-            data, input.history, "llama-3.1-70b-instruct"
+        response = generate_minai_response(
+            data, conversation_id, input.history, MODEL_LLM
         )
     except Exception as e:
         logging.error(f"Error generating response: {str(e)}")

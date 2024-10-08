@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 import getpass
 import ollama
 import requests
@@ -15,7 +16,7 @@ from log_module.custom_logging import log_access, log_response
 # Import environment variables
 USERNAME = os.getenv("RAG_LOCAL_USERNAME")
 PASSWORD = os.getenv("RAG_LOCAL_PASSWORD")
-API_KEY = os.getenv("RAG_LOCAL_API_KEY")
+MINAI_API_KEY = os.getenv("MINAI_API_KEY")
 
 # Constants for error messages
 ERROR_MESSAGES = {
@@ -32,8 +33,6 @@ logs_path = os.path.join(
     os.path.dirname(__file__), "..", "log_module", "logs", "logs_api.log"
 )
 
-print(logs_path)
-
 # Logging module configuration
 logging.basicConfig(
     filename=logs_path,  # Log file name
@@ -43,13 +42,19 @@ logging.basicConfig(
 
 
 # Personalized class to disable SSL verification
-class SSLAdapter(HTTPAdapter):
-    def init_poolmanager(self, *args, **kwargs):
-        context = ssl.create_default_context()
-        context.check_hostname = False
-        context.verify_mode = ssl.CERT_NONE
-        kwargs["ssl_context"] = context
-        return super(SSLAdapter, self).init_poolmanager(*args, **kwargs)
+# class SSLAdapter(HTTPAdapter):
+#     def init_poolmanager(self, *args, **kwargs):
+#         context = ssl.create_default_context()
+#         context.check_hostname = False
+#         context.verify_mode = ssl.CERT_NONE
+#         kwargs["ssl_context"] = context
+#         return super(SSLAdapter, self).init_poolmanager(*args, **kwargs)
+
+
+# Global application of the custom SSL adapter to the requests session
+session = requests.Session()
+# adapter = SSLAdapter()
+# session.mount("https://", adapter)
 
 
 # Authenticate the user
@@ -184,8 +189,90 @@ def generate_ollama_response(
         return str(e)
 
 
+# # Generate a conversation Title
+# def generate_conversation_title(model: str, prompt: str) -> str:
+#     url = "https://api.1min.ai/api/features?isStreaming=true"
+#     headers = {
+#         "API-KEY": f"{MINAI_API_KEY}",
+#         "Content-Type": "application/json",
+#     }
+
+#     payload = {
+#         "type": "CHAT_WITH_AI",
+#         "model": f"{model}",
+#         "promptObject": {
+#             "prompt": f"Résume le prompt suivant en quelques mots: {prompt}",
+#             "isMixed": "false",
+#             "webSearch": "false"
+#         }
+#     }
+
+#     try:
+#         conversation_title = session.post(url, headers=headers, json=payload)
+
+#         return conversation_title
+
+#     except requests.exceptions.HTTPError as e:
+#         logging.error(f"HTTP error occurred: {str(e)}")
+#         return "An unexpected error occurred" + str(e)
+#     except requests.exceptions.RequestException as e:
+#         logging.error(f"Request exception occurred 1: {str(e)}")
+#         return "An unexpected error occurred" + str(e)
+#     except ValueError as e:
+#         logging.error(f"JSON decode error: {str(e)}")
+#         return "Failed to decode JSON response: " + str(e)
+
+
+def generate_conversation_id(model: str, prompt: str) -> str:
+    # Set up the API request
+    url = "https://api.1min.ai/api/conversations"
+    headers = {
+        "API-KEY": f"{MINAI_API_KEY}",
+        "Content-Type": "application/json",
+    }
+
+    # Prepare the payload with the model
+    payload = {
+        "type": "CHAT_WITH_AI",
+        "title": f"{prompt}",
+        "model": f"{model}",
+    }
+
+    try:
+        # Send the request to the Minai API
+        response = session.post(url, headers=headers, json=payload)
+        response.raise_for_status()  # Raise an HTTPError for bad responses
+
+        # Check if the response is empty
+        if not response.text:
+            logging.error("Empty response received from the API")
+            return "Empty response received from the API"
+
+        # Parse the response
+        try:
+            output = response.json()
+
+        except ValueError as e:
+            logging.error(f"JSON decode error: {str(e)}")
+            return "An unexpected error occurred: JSON decode error"
+
+        return output["conversation"]["uuid"]
+
+    except requests.exceptions.HTTPError as e:
+        logging.error(f"HTTP error occurred: {str(e)}")
+        return "An unexpected error occurred: " + str(e)
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Request exception occurred 2: {str(e)}")
+        return "An unexpected error occurred: " + str(e)
+    except ValueError as e:
+        logging.error(f"JSON decode error: {str(e)}")
+        return "Failed to decode JSON response: " + str(e)
+
+
 # Generate a response
-def generate_perplexity_response(data: list, history: list, model: str) -> str:
+def generate_minai_response(
+    data: list, conversation_id: str, history: list, model: str
+) -> str:
     """
     Generates a response using the Perplexity API.
 
@@ -198,11 +285,6 @@ def generate_perplexity_response(data: list, history: list, model: str) -> str:
         str: The generated response.
     """
 
-    # Global application of the custom SSL adapter to the requests session
-    session = requests.Session()
-    adapter = SSLAdapter()
-    session.mount("https://", adapter)
-
     try:
         if not history or history == []:
             logging.warning("History is empty")
@@ -214,53 +296,59 @@ def generate_perplexity_response(data: list, history: list, model: str) -> str:
         validate_input(data, history[-1]["content"])
 
         # Set up the API request
-        url = "https://api.perplexity.ai/chat/completions"
+        url = "https://api.1min.ai/api/features?isStreaming=true"
         headers = {
-            "Authorization": f"Bearer {API_KEY}",
+            "API-KEY": f"{MINAI_API_KEY}",
             "Content-Type": "application/json",
         }
 
-        # Prepare the payload with the model and the system's role and message
-        payload = {
-            "model": model,
-            "messages": [
-                {
-                    "role": history[0]["role"],
-                    "content": history[0]["content"]
-                    + "\n"
-                    + f"Use this data: {data} to respond to the user in this conversation.",
-                }
-            ],
-        }
-
         # Add the user and assistant messages to the payload
+        prompt = [
+            {
+                "role": history[0]["role"],
+                "content": history[0]["content"]
+                + "\n"
+                + f"Use this data: {data} to respond to the user in this conversation.",
+            }
+        ]
+
         for i, message in enumerate(history[1:], start=1):
-            payload["messages"].append(
+            prompt.append(
                 {
                     "role": "user" if i % 2 == 1 else "assistant",
                     "content": message["content"],
                 }
             )
 
+        # Prepare the payload with the model
+        payload = {
+            "type": "CHAT_WITH_AI",
+            "conversationId": f"{conversation_id}",
+            "model": f"{model}",
+            "promptObject": {
+                "prompt": f"{prompt}",
+                "isMixed": "false",
+                "webSearch": "false",
+            },
+        }
+
         # Send the request to the Perplexity API
-        response = session.post(url, headers=headers, json=payload)
+        response = requests.post(url, headers=headers, json=payload)
         response.raise_for_status()  # Raise an error for bad responses
-        # log HTTP response status if raised
+
+        # Log HTTP response status if raised
         if response.status_code != 200:
-            logging.error(
-                f"Perplexity API HTTP response status: {response.status_code}"
-            )
+            logging.error(f"1minAI API HTTP response status: {response.status_code}")
             print(response.status_code)
-            logging.error(f"Perplexity API HTTP response content: {response.content}")
+            logging.error(f"1minAI API HTTP response content: {response.content}")
             print(response.content)
 
-        # Parse the response
-        output = response.json()
-        generated_response = output["choices"][0]["message"]["content"]
+        # # Parse the response
+        # response_json = response.json()
 
         # Log and return the response
-        log_response(history[-1]["content"], generated_response)
-        return generated_response
+        log_response(history[-1]["content"], response.content)
+        return response.content.decode("utf-8")
 
     except ValueError as e:
         # Log the error message

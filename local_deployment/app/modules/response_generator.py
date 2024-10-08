@@ -3,7 +3,7 @@ import time
 
 
 def response_generator(response):
-    response = "Assistant : " + response
+    response = "Assistant : \n" + response
     lines = response.splitlines(True)  # Preserve line breaks
     table_pattern = re.compile(r"^\|.*\|$")  # Pattern to detect Markdown table lines
 

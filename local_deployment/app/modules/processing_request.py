@@ -30,8 +30,8 @@ def process_input(user_input, chat_history):
     # Add user input to chat history
     chat_history.append({"role": "user", "content": user_input})
 
-    # Generate a response via the RAG API endpoint "/perplexity_chat"
-    url = "http://localhost:8080/perplexity_chat"
+    # Generate a response via the RAG API endpoint "/minai_chat"
+    url = "http://localhost:8080/minai_chat"
     payload = {
         "question": user_input,
         "history": chat_history,
