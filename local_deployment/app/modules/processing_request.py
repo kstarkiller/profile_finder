@@ -1,4 +1,5 @@
 import requests
+import json
 
 ERROR_MESSAGES = {
     "no_data": "Please provide data to generate a response.",
@@ -10,7 +11,7 @@ MODEL_EMBEDDING = "nomic-embed-text:latest"
 
 
 # These functions are used to process the user input and return the chatbot response via the generate_perplexity_response function.
-def process_input(user_input, chat_history):
+def process_input(user_input, chat_history, chat_id):
     """
     Process the user input and return the chatbot response and updated chat history.
 
@@ -35,6 +36,7 @@ def process_input(user_input, chat_history):
     payload = {
         "question": user_input,
         "history": chat_history,
+        "chat_id": chat_id,
     }
 
     response = requests.post(url, json=payload)
@@ -42,7 +44,6 @@ def process_input(user_input, chat_history):
 
     # Check if the response contains errors
     if response.status_code != 200:
-        print(response_data)
         return (
             "An error occurred while generating the response.",
             chat_history,

@@ -48,6 +48,17 @@ class TestInput(BaseModel):
 class ChatRequest(BaseModel):
     question: str
     history: List[dict]
+    chat_id: str
+
+
+class IDrequest(BaseModel):
+    model: str
+    prompt: str
+
+
+class TitleRequest(BaseModel):
+    question: str
+    chat_id: str
 
 
 @app.get(
@@ -136,6 +147,27 @@ def process_question_ollama(input: ChatRequest):
 
 
 @app.post(
+    "/new_chat_id",
+    summary="New chat ID",
+    description="This endpoint generates a new chat ID.",
+)
+def new_chat_id(input: IDrequest):
+    """Generates a new chat ID.
+    This endpoint generates a new chat ID for a new conversation.
+
+    Args:
+        model (str): The model to use for the generation.
+        prompt (str): The prompt for the new id.
+
+    Returns:
+        new_id (str): The new chat ID.
+    """
+    new_id = generate_conversation_id(input.model, input.prompt)
+
+    return {"new_id": new_id}
+
+
+@app.post(
     "/minai_chat",
     summary="Process question",
     description="This endpoint processes a question and returns a response with perplexity.",
@@ -150,7 +182,6 @@ def process_question_minai(input: ChatRequest):
     Returns:
         dict: A dictionary containing the response generated.
     """
-
     # Embed the question and retrieve the documents
     start_time = time.time()
     try:
@@ -160,10 +191,6 @@ def process_question_minai(input: ChatRequest):
         raise HTTPException(status_code=500, detail=str(e))
     end_time = time.time()
     logging.info(f"RAG performed in {end_time - start_time} seconds.\n")
-
-    # Create a conversation Title and ID
-    conversation_id = generate_conversation_id(MODEL_LLM, input.question)
-
     # Add question and retrieved data then generate a response
     start_time = time.time()
     try:
@@ -171,7 +198,7 @@ def process_question_minai(input: ChatRequest):
             logging.error("No document found")
             raise HTTPException(status_code=500, detail="No document found")
         response = generate_minai_response(
-            data, conversation_id, input.history, MODEL_LLM
+            data, input.chat_id, input.history, MODEL_LLM
         )
     except Exception as e:
         logging.error(f"Error generating response: {str(e)}")
@@ -179,7 +206,8 @@ def process_question_minai(input: ChatRequest):
     end_time = time.time()
     logging.info(f"Response generated in {end_time - start_time} seconds.\n\n")
 
-    return {"response": response, "duration": end_time - start_time}
+    duration = round(end_time - start_time, 2)
+    return {"response": response, "duration": duration}
 
 
 if __name__ == "__main__":

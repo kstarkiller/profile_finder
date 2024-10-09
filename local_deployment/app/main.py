@@ -1,10 +1,17 @@
 import streamlit as st
+import ast
+from datetime import datetime
 
 st.set_page_config(initial_sidebar_state="expanded")
 
 from styles import apply_custom_styles
-from modules.chatbot import display_chatbot
-from modules.users_manager import login, logout
+from modules.chatbot import new_chat, existent_chat
+from modules.users_manager import (
+    login,
+    logout,
+    get_search_history,
+    get_search_by_chat_id,
+)
 from modules.signup_form import show_signup_form
 
 apply_custom_styles()
@@ -22,6 +29,10 @@ def initialize_session_state():
         "username": None,
         "login_attempted": False,
         "rerun": False,
+        "search_history": [],
+        "chat_history": [],
+        "chat": [],
+        "chat_id": "",
     }
     for key, value in default_values.items():
         if key not in st.session_state:
@@ -53,13 +64,44 @@ def main():
         st.sidebar.button(
             "New search",
             on_click=lambda: st.session_state.update(
-                rerun=True, chat_history=[], chat=[], duration=None
+                rerun=True, chat_history=[], chat=[], chat_id="", duration=None
             ),
             use_container_width=True,
         )
         st.sidebar.markdown("### Older searches :")
-
-        display_chatbot()
+        if "search_history" in st.session_state:
+            st.session_state["search_history"] = get_search_history(
+                st.session_state["username"]
+            )
+            if len(st.session_state["search_history"]) > 0:
+                for search in st.session_state["search_history"]:
+                    chat_history = search["chat_history"]
+                    date = search["last_update_date"][:10]
+                    date = datetime.strptime(date, "%Y-%m-%d").strftime("%d/%m/%Y")
+                    if isinstance(chat_history, str):
+                        chat_history = ast.literal_eval(
+                            chat_history
+                        )  # Convertir la chaîne en liste de dictionnaires
+                    if isinstance(chat_history, list) and len(chat_history) > 0:
+                        if st.sidebar.button(
+                            label=f"{date} - {chat_history[0]['content'][:25]}...",
+                            key=f"{search['chat_id']}",
+                        ):
+                            search_data = get_search_by_chat_id(search["chat_id"])
+                            st.session_state.update(
+                                chat_history=search_data["chat_history"],
+                                chat_id=search_data["chat_id"],
+                                rerun=True,
+                            )
+                    else:
+                        st.sidebar.markdown("No valid chat history found.")
+            else:
+                st.sidebar.markdown("No search history yet.")
+        
+        if st.session_state["chat_id"] == "":
+            new_chat()
+        else:
+            existent_chat()
 
     elif (
         not st.session_state["show_signup_form"]

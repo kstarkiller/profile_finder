@@ -27,8 +27,7 @@ ERROR_MESSAGES = {
     "invalid_model": "The model {} is not available. Please choose a valid model from this list: {}",
 }
 
-# Path to the collection
-# sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+# Path to the logs file
 logs_path = os.path.join(
     os.path.dirname(__file__), "..", "log_module", "logs", "logs_api.log"
 )
@@ -189,40 +188,6 @@ def generate_ollama_response(
         return str(e)
 
 
-# # Generate a conversation Title
-# def generate_conversation_title(model: str, prompt: str) -> str:
-#     url = "https://api.1min.ai/api/features?isStreaming=true"
-#     headers = {
-#         "API-KEY": f"{MINAI_API_KEY}",
-#         "Content-Type": "application/json",
-#     }
-
-#     payload = {
-#         "type": "CHAT_WITH_AI",
-#         "model": f"{model}",
-#         "promptObject": {
-#             "prompt": f"Résume le prompt suivant en quelques mots: {prompt}",
-#             "isMixed": "false",
-#             "webSearch": "false"
-#         }
-#     }
-
-#     try:
-#         conversation_title = session.post(url, headers=headers, json=payload)
-
-#         return conversation_title
-
-#     except requests.exceptions.HTTPError as e:
-#         logging.error(f"HTTP error occurred: {str(e)}")
-#         return "An unexpected error occurred" + str(e)
-#     except requests.exceptions.RequestException as e:
-#         logging.error(f"Request exception occurred 1: {str(e)}")
-#         return "An unexpected error occurred" + str(e)
-#     except ValueError as e:
-#         logging.error(f"JSON decode error: {str(e)}")
-#         return "Failed to decode JSON response: " + str(e)
-
-
 def generate_conversation_id(model: str, prompt: str) -> str:
     # Set up the API request
     url = "https://api.1min.ai/api/conversations"
@@ -232,11 +197,7 @@ def generate_conversation_id(model: str, prompt: str) -> str:
     }
 
     # Prepare the payload with the model
-    payload = {
-        "type": "CHAT_WITH_AI",
-        "title": f"{prompt}",
-        "model": f"{model}",
-    }
+    payload = {"type": "CHAT_WITH_AI", "title": f"{prompt}", "model": f"{model}"}
 
     try:
         # Send the request to the Minai API
@@ -270,9 +231,7 @@ def generate_conversation_id(model: str, prompt: str) -> str:
 
 
 # Generate a response
-def generate_minai_response(
-    data: list, conversation_id: str, history: list, model: str
-) -> str:
+def generate_minai_response(data: list, chat_id: str, history: list, model: str) -> str:
     """
     Generates a response using the Perplexity API.
 
@@ -323,7 +282,7 @@ def generate_minai_response(
         # Prepare the payload with the model
         payload = {
             "type": "CHAT_WITH_AI",
-            "conversationId": f"{conversation_id}",
+            "conversationId": f"{chat_id}",
             "model": f"{model}",
             "promptObject": {
                 "prompt": f"{prompt}",
@@ -342,9 +301,6 @@ def generate_minai_response(
             print(response.status_code)
             logging.error(f"1minAI API HTTP response content: {response.content}")
             print(response.content)
-
-        # # Parse the response
-        # response_json = response.json()
 
         # Log and return the response
         log_response(history[-1]["content"], response.content)
