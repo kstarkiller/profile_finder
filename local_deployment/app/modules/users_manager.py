@@ -31,7 +31,7 @@ class User(Base):
 class SearchHistory(Base):
     __tablename__ = "search_histories"
     chat_id = Column(String, unique=True, index=True, primary_key=True)
-    chat_history = Column(String)
+    chat_title = Column(String)
     user_email = Column(String, ForeignKey("users_credentials.email"))
     creation_date = Column(String)
     last_update_date = Column(String)
@@ -39,10 +39,26 @@ class SearchHistory(Base):
     def to_dict(self):
         return {
             "chat_id": self.chat_id,
-            "chat_history": self.chat_history,
+            "chat_title": self.chat_title,
             "user_email": self.user_email,
             "creation_date": self.creation_date,
             "last_update_date": self.last_update_date,
+        }
+
+class ChatHistory(Base):
+    __tablename__ = "conversations"
+    id = Column(Integer, primary_key=True)
+    chat_id = Column(String, ForeignKey("search_histories.chat_id"))
+    role = Column(String)
+    content = Column(String)
+    generation_time = Column(String)
+
+    def to_dict(self):
+        return {
+            "chat_id": self.chat_id,
+            "role": self.role,
+            "content": self.content,
+            "generation_time": self.generation_time,
         }
 
 
@@ -236,13 +252,13 @@ def logout():
 
 
 # Fonction pour ajouter une recherche à la base de données des recherches de l'utilisateur
-def add_search_to_history(chat_id, chat_history, user_email):
+def add_search_to_history(chat_id, first_message, user_email):
     """
     Ajoute une recherche à l'historique des recherches de l'utilisateur.
 
     Args:
         chat_id (str): Identifiant de la recherche
-        chat_history (list): Historique de la recherche
+        first_message (str): Premier message de la recherche
         user_email (str): Email de l'utilisateur
 
     Returns:
@@ -251,7 +267,7 @@ def add_search_to_history(chat_id, chat_history, user_email):
     db = SessionLocal()
     new_search = SearchHistory(
         chat_id=chat_id,
-        chat_history=str(chat_history),
+        chat_title=first_message,
         user_email=user_email,
         creation_date=str(datetime.today()),
         last_update_date=str(datetime.today()),
@@ -260,60 +276,88 @@ def add_search_to_history(chat_id, chat_history, user_email):
     db.commit()
     db.close()
 
-
 # Fonction pour mettre à jour une recherche dans la base de données des recherches de l'utilisateur
-def update_search_in_history(chat_id, chat_history):
+def update_search_in_history(chat_id):
     """
     Met à jour une recherche dans l'historique des recherches de l'utilisateur.
 
     Args:
         chat_id (str): Identifiant de la recherche
-        chat_history (list): Historique de la recherche
-        user_email (str): Email de l'utilisateur
 
     Returns:
         None
     """
     db = SessionLocal()
     search = db.query(SearchHistory).filter(SearchHistory.chat_id == chat_id).first()
-    search.chat_history = str(chat_history)
     search.last_update_date = str(datetime.today())
     db.commit()
     db.close()
 
-
-# Fonction pour récupérer la liste des recherches de l'utilisateur
+# Fonction pour récuperer la liste des recherches de l'utilisateur
 def get_search_history(user_email):
     """
-    Récupère l'historique des recherches de l'utilisateur.
+    Récupère la liste des recherches de l'utilisateur.
 
     Args:
         user_email (str): Email de l'utilisateur
 
     Returns:
-        list: Liste des recherches de l'utilisateur sous forme de dictionnaires
+        list: Liste des recherches de l'utilisateur
     """
     db = SessionLocal()
-    search_history = (
-        db.query(SearchHistory).filter(SearchHistory.user_email == user_email).all()
-    )
+    search_history = db.query(SearchHistory).filter(SearchHistory.user_email == user_email).all()
     db.close()
-    return [entry.to_dict() for entry in search_history]
 
+    return [search.to_dict() for search in search_history]
 
-# Fonction pour récupérer la recherche de l'utilisateur par chat_id
+# Fonction pour récuperer une recherche par son chat_id
 def get_search_by_chat_id(chat_id):
     """
-    Récupère une recherche de l'utilisateur par chat_id.
+    Récupère une recherche par son identifiant.
 
     Args:
         chat_id (str): Identifiant de la recherche
 
     Returns:
-        dict: Recherche de l'utilisateur sous forme de dictionnaire
+        dict: Détails de la recherche
     """
     db = SessionLocal()
     search = db.query(SearchHistory).filter(SearchHistory.chat_id == chat_id).first()
+    chat_history = db.query(ChatHistory).filter(ChatHistory.chat_id == chat_id).all()
     db.close()
 
-    return search.to_dict() if search else None
+    return {
+        "chat_id": search.chat_id,
+        "chat_history": [chat.to_dict() for chat in chat_history],
+    }
+
+# Fonction pour ajouter un message à la conversation en fonction du nombre de messages
+def add_message_to_chat(chat_id, chat_history, duration):
+    """
+    Ajoute un message à la conversation en fonction du nombre de messages.
+
+    Args:
+        chat_id (str): Identifiant de la conversation
+        chat_history (list): Historique de la conversation
+
+    Returns:
+        None
+    """
+    db = SessionLocal()
+    search = db.query(ChatHistory).filter(ChatHistory.chat_id == chat_id).all()
+    # Compter le nombre de messages dans la conversation
+    message_count = len(search)
+    # Ajouter les nouveaux messages à la conversation
+    for i, message in enumerate(chat_history):
+        if i < message_count:
+            continue
+        else :
+            new_message = ChatHistory(
+                chat_id=chat_id,
+                role=message["role"],
+                content=message["content"],
+                generation_time=duration,
+            )
+            db.add(new_message)
+    db.commit()
+    db.close()

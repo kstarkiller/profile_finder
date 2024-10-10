@@ -64,7 +64,7 @@ def main():
         st.sidebar.button(
             "New search",
             on_click=lambda: st.session_state.update(
-                rerun=True, chat_history=[], chat=[], chat_id="", duration=None
+                chat_history=[], chat=[], chat_id="", duration=None
             ),
             use_container_width=True,
         )
@@ -75,32 +75,29 @@ def main():
             )
             if len(st.session_state["search_history"]) > 0:
                 for search in st.session_state["search_history"]:
-                    chat_history = search["chat_history"]
+                    chat_title = search["chat_title"]
                     date = search["last_update_date"][:10]
                     date = datetime.strptime(date, "%Y-%m-%d").strftime("%d/%m/%Y")
-                    if isinstance(chat_history, str):
-                        chat_history = ast.literal_eval(
-                            chat_history
-                        )  # Convertir la chaîne en liste de dictionnaires
-                    if isinstance(chat_history, list) and len(chat_history) > 0:
+                    if isinstance(chat_title, str):
                         if st.sidebar.button(
-                            label=f"{date} - {chat_history[0]['content'][:25]}...",
+                            label=f"{date} - {chat_title[:25]}..." if len(chat_title) > 25 else f"{date} - {chat_title}",
                             key=f"{search['chat_id']}",
                         ):
                             search_data = get_search_by_chat_id(search["chat_id"])
                             st.session_state.update(
                                 chat_history=search_data["chat_history"],
                                 chat_id=search_data["chat_id"],
-                                rerun=True,
                             )
                     else:
                         st.sidebar.markdown("No valid chat history found.")
             else:
                 st.sidebar.markdown("No search history yet.")
-        
+        else:
+            st.sidebar.markdown("No search history yet.")
+
         if st.session_state["chat_id"] == "":
             new_chat()
-        else:
+        elif st.session_state["chat_id"] != "":
             existent_chat()
 
     elif (

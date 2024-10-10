@@ -18,6 +18,7 @@ def process_input(user_input, chat_history, chat_id):
     Args:
         user_input (str): The user input.
         chat_history (list): The chat history.
+        chat_id (str): The chat ID.
 
     Returns:
         str: The chatbot response.

@@ -183,16 +183,16 @@ def process_question_minai(input: ChatRequest):
         dict: A dictionary containing the response generated.
     """
     # Embed the question and retrieve the documents
-    start_time = time.time()
+    embedding_start_time = time.time()
     try:
         data = retrieve_documents(input.question, MODEL_EMBEDDING)
     except Exception as e:
         logging.error(f"Error retrieving documents: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
-    end_time = time.time()
-    logging.info(f"RAG performed in {end_time - start_time} seconds.\n")
+    embedding_end_time = time.time()
+    logging.info(f"RAG performed in {embedding_end_time - embedding_start_time} seconds.\n")
     # Add question and retrieved data then generate a response
-    start_time = time.time()
+    llm_start_time = time.time()
     try:
         if data is None:
             logging.error("No document found")
@@ -203,10 +203,10 @@ def process_question_minai(input: ChatRequest):
     except Exception as e:
         logging.error(f"Error generating response: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
-    end_time = time.time()
-    logging.info(f"Response generated in {end_time - start_time} seconds.\n\n")
+    llm_end_time = time.time()
+    logging.info(f"Response generated in {llm_end_time - llm_start_time} seconds.\n\n")
 
-    duration = round(end_time - start_time, 2)
+    duration = round(llm_end_time - llm_start_time, 2)
     return {"response": response, "duration": duration}
 
 
