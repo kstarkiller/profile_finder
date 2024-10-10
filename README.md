@@ -25,7 +25,7 @@ Before you begin, ensure you have the following installed on your machine
 
 ## Installation
 
-Clone the repository:
+1. Clone the repository:
 
     ```bash
     git clone <REPO_URL>
