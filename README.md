@@ -1,21 +1,21 @@
 # Profile Finder
 
-## Description du projet
+## Description of the Project
 
-Profile Finder est un Chatbot qui aide les utilisateurs à trouver des membres d'équipe en fonction de leur localisation, disponibilité, compétences et certifications.  
-Le projet utilise un modèle NLP pour structurer les requêtes des utilisateurs, un modèle d'embedding pour vectoriser la base de données des membres et les requêtes de l'utilisateur et enfin un modèle LLM pour fournir des réponses pertinentes.  
-Les réponses du LLM sont augmentées (RAG) grâce à des données pertinentes des membres. Ces données sont trouvées et ajoutées au contexte de la requête grâce à une recherche par similarité sémantique entre la base de données des membres et la requête de l'utilisateur, tous deux vectorisés grâce au même modèle d'embedding.
+Profile Finder is a chatbot designed to help users find team members based on their location, availability, skills, and certifications.
+The project utilizes an NLP model to structure user queries, an embedding model to vectorize both the member database and user queries, and finally, an LLM model to provide relevant responses.
+The LLM responses are augmented (RAG) with pertinent member data. This data is found and added to the query context through semantic similarity search between the member database and the user's query, both vectorized using the same embedding model.
+This chatbot can be easily used locally with your key from an AI service such as OpenAI, Perplexity, EdenAI, Phind, etc.
+However, it can also be fully deployed on Microsoft Azure using only Azure resources:
 
-Ce Chatbot peut être facilement utilisé en local grâce à votre clé d'un service IA tel que OpenAI, Perplexity, EdenAI, Phind, etc.
-Mais il peut tout aussi bien être déployé entièrement sur Microsoft Azure et n'utiliser que des ressources Azure :
- - Azure OpenAI Studio et ses modèles IA (LLM et Embedding).
- - Azure AI Search pour la recherche par similarité sémantique.
- - Azure Container Registry pour le dépot de l'image Docker.
- - Azure App Service pour le déploiement et l'hébergement de l'application.
+- Azure OpenAI Studio and its AI models (LLM and Embedding).
+- Azure AI Search for semantic similarity search.
+- Azure Container Registry for Docker image storage.
+- Azure App Service for application deployment and hosting.
 
-## Prérequis
+## Prerequisites
 
-Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur votre machine :
+Before you begin, ensure you have the following installed on your machine
 
 - [Python 3.11.9](https://www.python.org/downloads/release/python-3119/)
 - [Ollama](https://ollama.com/download)
@@ -25,55 +25,56 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
 
 ## Installation
 
-1. Clonez le dépôt :
+Clone the repository:
 
     ```bash
-    git clone <URL_DU_DEPOT>
+    git clone <REPO_URL>
     cd profile-finder
     ```
 
-2. Installez les dépendances pour le déploiement local :
+2. Install dependencies for local deployment:
 
-    ```bash
-    cd local_deployment
-    pip install -r requirements.txt
-    ```
+   ```bash
+   cd local_deployment
+   pip install -r requirements.txt
+   ```
 
-3. Installez les dépendances pour le déploiement Azure :
+3. Install dependencies for Azure deployment::
 
-    ```bash
-    cd ../azure_deployment
-    pip install -r requirements.txt
-    ```
+   ```bash
+   cd ../azure_deployment
+   pip install -r requirements.txt
+   ```
 
-4. Pull les modèles depuis Ollama
+4. Pull models from Ollama:
 
-    ```bash
-    ollama run llama3.1
-    ollama pull nomic-embed-text
-    ```
+   ```bash
+   ollama run llama3.1
+   ollama pull nomic-embed-text
+   ```
 
-## Variables d'environnement
+## Environment Variables
 
-Assurez-vous de définir les variables d'environnement suivantes sur votre machine :
+Ensure you set the following environment variables on your machine:
 
 ```bash
-export AZURE_OPENAI_API_KEY=<votre_azure_openai_api_key>
-export AZURE_OPENAI_ENDPOINT=<votre_azure_openai_endpoint>
-export AZURE_SEARCH_API_KEY=<votre_azure_search_api_key>
-export AZURE_SEARCH_ENDPOINT=<votre_azure_search_endpoint>
-export AZURE_SP_ID=<votre_azure_sp_id>
-export AZURE_SP_SECRET=<votre_azure_sp_secret>
-export AZURE_TENANT=<votre_azure_tenant>
-export RAG_LOCAL_API_KEY=<votre_rag_local_api_key>
-export RAG_LOCAL_USERNAME=<votre_username_pour_se_connecter_à_lapplication>
-export RAG_LOCAL_PASSWORD=<votre_password_pour_se_connecter_à_lapplication>
-export DB_USER=<votre_utilisateur_postgresql>
-export DB_PASSWORD=<votre_mot_de_passe_postgresql>
+export AZURE_OPENAI_API_KEY=<your_azure_openai_api_key>
+export AZURE_OPENAI_ENDPOINT=<your_azure_openai_endpoint>
+export AZURE_SEARCH_API_KEY=<your_azure_search_api_key>
+export AZURE_SEARCH_ENDPOINT=<your_azure_search_endpoint>
+export AZURE_SP_ID=<your_azure_sp_id>
+export AZURE_SP_SECRET=<your_azure_sp_secret>
+export AZURE_TENANT=<your_azure_tenant>
+export RAG_LOCAL_API_KEY=<your_rag_local_api_key>
+export RAG_LOCAL_USERNAME=<your_username_for_embedding>
+export RAG_LOCAL_PASSWORD=<your_password_for_embedding>
+export DB_USER=<your_postgresql_user>
+export DB_PASSWORD=<your_postgresql_password>
 ```
 
-## Commandes Docker
-Ce n'est pas nécessaire mais vous pouvez également créer votre propre image Docker comme suit :
+## Docker Commands
+
+It is not necessary, but you can also create your own Docker image as follows:
 
 ```bash
 docker build --build-arg AZURE_OPENAI_API_KEY=$AZURE_OPENAI_API_KEY \
@@ -85,20 +86,22 @@ docker build --build-arg AZURE_OPENAI_API_KEY=$AZURE_OPENAI_API_KEY \
 docker run -d -p 8080:8080 --name your_container_name your_image_name
 ```
 
-## Exécution des tests
-Pour exécuter les tests unitaires localement :
+## Running Tests
+
+To run unit tests locally::
 
 ```bash
-# Exécution des tests de l'application en local
+# Run local application tests
 cd profile_finder/local_deployment/rag_api
 python -m unittest discover -s test_unitaires
 
-# Exécution des tests de l'application déployée sur Azure
+# Run Azure deployed application tests
 cd profile_finder/azure_deployment
 python -m unittest discover -s tests
 ```
 
-## [LOCAL] Lancement de l'application
+## [LOCAL] Launching the Application
+
 ```bash
 cd profile_finder/local_deployment/rag_api
 python rag_api.py
@@ -108,14 +111,17 @@ streamlit run main.py
 ```
 
 ## CI/CD GitLab
-Le projet utilise GitLab CI/CD pour automatiser les tests et le déploiement. Le fichier de configuration se trouve à la racine ".gitlab-ci.yml".
-Les étapes sont :
-1. La vérification de potentiels secrets
-2. Les tests unitaires
-3. Le build de l'image Docker
-4. Le déploiement sur Azure
 
-## Structure du projet
+The project uses GitLab CI/CD to automate testing and deployment. The configuration file is located at the root ".gitlab-ci.yml".
+The steps are:
+
+1. Checking for potential secrets
+2. Running unit tests
+3. Building the Docker image
+4. Deploying on Azure
+
+## Project Structure
+
 ```
 profile-finder/
 ├── azure_deployment/
