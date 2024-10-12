@@ -80,7 +80,11 @@ def main():
                     date = datetime.strptime(date, "%Y-%m-%d").strftime("%d/%m/%Y")
                     if isinstance(chat_title, str):
                         if st.sidebar.button(
-                            label=f"{date} - {chat_title[:25]}..." if len(chat_title) > 25 else f"{date} - {chat_title}",
+                            label=(
+                                f"{date} - {chat_title[:22]}..."
+                                if len(chat_title) >= 22
+                                else f"{date} - {chat_title}"
+                            ),
                             key=f"{search['chat_id']}",
                         ):
                             search_data = get_search_by_chat_id(search["chat_id"])

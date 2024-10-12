@@ -1,0 +1,36 @@
+2024-10-12 15:39:30,140 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-10-12 15:39:30,153 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-10-12 15:39:30,303 - INFO - RAG performed in 2.3694374561309814 seconds.
+
+2024-10-12 15:39:37,604 - INFO - 
+2024-10-12 15:39:37,604 - INFO - Question asked: Qui est disponibles en janvier 2025 pour une mission python ?
+2024-10-12 15:39:37,604 - INFO - 
+2024-10-12 15:39:37,604 - INFO - Generated response: b"Pour janvier 2025, les personnes disponibles pour une mission Python sont :\n\n1. **Jennifer Dixon**\n   - Code: 499235\n   - Coefficient: 105\n   - Profil: Confirm\xc3\xa9\n   - Localisation: Tours\n   - \xc3\x89quipe: MSBI\n   - Manager: Zachary Greer\n   - Disponibilit\xc3\xa9: Disponible \xc3\xa0 50% du 2024-09-25 au 2025-01-20\n\n2. **David Lara**\n   - Code: 489032\n   - Coefficient: 105\n   - Profil: Confirm\xc3\xa9\n   - Localisation: Mtp\n   - \xc3\x89quipe: Data Integration\n   - Manager: Michael Owens\n   - Disponibilit\xc3\xa9: Disponible \xc3\xa0 20% du 2025-11-16 au 2026-04-28\n\n3. **Stacy Mcknight**\n   - Code: 498960\n   - Coefficient: 105\n   - Profil: Expert\n   - Localisation: Paris\n   - \xc3\x89quipe: MSBI\n   - Manager: Lisa Hill\n   - Disponibilit\xc3\xa9: Disponible \xc3\xa0 80% du 2025-01-25 au 2025-04-20\n\n4. **Joseph Cook**\n   - Code: 468042\n   - Coefficient: 100\n   - Profil: S\xc3\xa9nior\n   - Localisation: Paris\n   - \xc3\x89quipe: Data Management\n   - Manager: Kathryn Weber\n   - Disponibilit\xc3\xa9: Disponible \xc3\xa0 20% du 2023-10-28 au 2024-07-20\n\n5. **David Duarte**\n   - Code: 503564\n   - Coefficient: 150\n   - Profil: Confirm\xc3\xa9\n   - Localisation: Tours\n   - \xc3\x89quipe: TALEND\n   - Manager: Dawn Johnson\n   - Disponibilit\xc3\xa9: Disponible \xc3\xa0 50% du 2024-12-02 au 2025-03-20\n\n6. **Jesus Morgan**\n   - Code: 499457\n   - Coefficient: 105\n   - Profil: Junior\n   - Localisation: Paris\n   - \xc3\x89quipe: DSIA\n   - Manager: Christine Williams\n   - Disponibilit\xc3\xa9: Disponible \xc3\xa0 20% du 2025-07-03 au 2025-10-10\n\nCes personnes ont des disponibilit\xc3\xa9s pendant ou autour de janvier 2025. Si vous avez besoin de plus d'informations ou d'autres crit\xc3\xa8res, n'h\xc3\xa9sitez pas \xc3\xa0 demander."
+2024-10-12 15:39:37,604 - INFO - 
+2024-10-12 15:39:37,604 - INFO - Response generated in 7.300191640853882 seconds.
+
+
+2024-10-12 15:40:16,124 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-10-12 15:40:16,125 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-10-12 15:40:16,183 - INFO - RAG performed in 0.08435702323913574 seconds.
+
+2024-10-12 15:40:21,623 - INFO - 
+2024-10-12 15:40:21,623 - INFO - Question asked: Trouve moi 3 personnes compétentes en scrum à Paris
+2024-10-12 15:40:21,623 - INFO - 
+2024-10-12 15:40:21,623 - INFO - Generated response: b'Voici trois personnes comp\xc3\xa9tentes en Scrum \xc3\xa0 Paris :\n\n1. **Victoria Delacruz**\n   - **Profil** : Confirm\xc3\xa9\n   - **Localisation** : Paris\n   - **\xc3\x89quipe** : Data Management\n   - **Comp\xc3\xa9tences** :\n     - Certifi\xc3\xa9e ServiceNow MC PredictiveIntell (SNMCPI)\n     - A des missions en gestion de donn\xc3\xa9es, avec comp\xc3\xa9tence en analyse et en d\xc3\xa9veloppement de logiciels.\n\n2. **Maria French**\n   - **Profil** : Expert\n   - **Localisation** : Paris\n   - **\xc3\x89quipe** : MSBI\n   - **Comp\xc3\xa9tences** :\n     - Certifi\xc3\xa9e Automation AnywhereAdvRPA Prof (AAARPA)\n     - Comp\xc3\xa9tente en ServiceNow IT Service Management.\n\n3. **Christian Williams**\n   - **Profil** : Confirm\xc3\xa9\n   - **Localisation** : Paris\n   - **\xc3\x89quipe** : ODI\n   - **Comp\xc3\xa9tences** :\n     - Certifi\xc3\xa9 Genesys Cloud CX Cert Prof (GCLDCXCP)\n     - Comp\xc3\xa9tent en gestion agile et d\xc3\xa9ploiement continu.\n\nCes professionnels ont des comp\xc3\xa9tences vari\xc3\xa9es dans le domaine de la gestion de projet agile et Scrum, et sont situ\xc3\xa9s \xc3\xa0 Paris.'
+2024-10-12 15:40:21,623 - INFO - 
+2024-10-12 15:40:21,623 - INFO - Response generated in 5.440733909606934 seconds.
+
+
+2024-10-12 15:41:13,872 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-10-12 15:41:13,873 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-10-12 15:41:13,930 - INFO - RAG performed in 0.08048748970031738 seconds.
+
+2024-10-12 15:41:21,050 - INFO - 
+2024-10-12 15:41:21,050 - INFO - Question asked: Donne moi plus d'info sur Jesus Morgan
+2024-10-12 15:41:21,050 - INFO - 
+2024-10-12 15:41:21,050 - INFO - Generated response: b"Voici plus d'informations sur **Jesus Morgan** :\n\n- **Nom**: Jesus Morgan\n- **Code**: 499457\n- **Coefficient**: 105\n- **Profil**: Junior\n- **Localisation**: Paris\n- **\xc3\x89quipe**: DSIA (Data Science and Integration Applications)\n- **Manager**: Christine Williams\n\n### Disponibilit\xc3\xa9s :\n- **Occupations**:\n  - Mission Direction de projet \xc3\xa0 50% aupr\xc3\xa8s de BPCE du 2024-09-27 au 2025-07-15\n  - Mission Direction de projet \xc3\xa0 50% aupr\xc3\xa8s de Club Med du 2025-05-31 au 2025-11-14\n  - Mission Direction de projet \xc3\xa0 80% aupr\xc3\xa8s de Orange du 2024-04-16 au 2024-09-11\n  - En cong\xc3\xa9 \xc3\xa0 100% du 2024-09-12 au 2024-09-26\n\n### Comp\xc3\xa9tences :\n- Comp\xc3\xa9tent en **Oracle** \xc3\xa0 un tr\xc3\xa8s bon niveau\n- Comp\xc3\xa9tent en **Oracle CRM** \xc3\xa0 un tr\xc3\xa8s bon niveau\n- Comp\xc3\xa9tent en **Raspberry Pi** \xc3\xa0 un niveau expert\n- Comp\xc3\xa9tent en **Spotfire** \xc3\xa0 un niveau faible\n\n### Certifications :\n- Certifi\xc3\xa9 **Quality Manager Certified (QM)** depuis le 2020-01-30 jusqu'au 2021-12-07\n- Certifi\xc3\xa9 **Salesforce Administrator (SFADMINI)** depuis le 2020-05-26 jusqu'au 2021-05-31\n- Certifi\xc3\xa9 **Siebel 8.0 Manager Ed 1 LVC (SIEB8MKT)** depuis le 2021-04-23 jusqu'au 2023-07-06\n\nSi vous avez besoin de plus d'informations ou si vous souhaitez savoir autre chose, n'h\xc3\xa9sitez pas \xc3\xa0 demander !"
+2024-10-12 15:41:21,050 - INFO - 
+2024-10-12 15:41:21,050 - INFO - Response generated in 7.119572401046753 seconds.
+
+

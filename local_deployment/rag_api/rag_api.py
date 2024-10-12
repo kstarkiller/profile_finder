@@ -27,7 +27,8 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",  # Log format
 )
 
-MODEL_LLM = "gpt-4o-mini"
+GPT_4O_MINI = "gpt-4o-mini"
+LLAMA_3_70B = "meta/meta-llama-3-70b-instruct"
 MODEL_EMBEDDING = "nomic-embed-text:latest"
 
 app = FastAPI()
@@ -136,7 +137,7 @@ def process_question_ollama(input: ChatRequest):
         if data is None:
             logging.error("No document found")
             raise HTTPException(status_code=500, detail="No document found")
-        response = generate_ollama_response(data, input.question, MODEL_LLM)
+        response = generate_ollama_response(data, input.question, LLAMA_3_70B)
     except Exception as e:
         logging.error(f"Error generating response: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -190,7 +191,9 @@ def process_question_minai(input: ChatRequest):
         logging.error(f"Error retrieving documents: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
     embedding_end_time = time.time()
-    logging.info(f"RAG performed in {embedding_end_time - embedding_start_time} seconds.\n")
+    logging.info(
+        f"RAG performed in {embedding_end_time - embedding_start_time} seconds.\n"
+    )
     # Add question and retrieved data then generate a response
     llm_start_time = time.time()
     try:
@@ -198,7 +201,7 @@ def process_question_minai(input: ChatRequest):
             logging.error("No document found")
             raise HTTPException(status_code=500, detail="No document found")
         response = generate_minai_response(
-            data, input.chat_id, input.history, MODEL_LLM
+            data, input.chat_id, input.history, LLAMA_3_70B
         )
     except Exception as e:
         logging.error(f"Error generating response: {str(e)}")
