@@ -11,6 +11,7 @@ from modules.users_manager import (
     logout,
     get_search_history,
     get_search_by_chat_id,
+    delete_search_from_history
 )
 from modules.signup_form import show_signup_form
 
@@ -33,6 +34,9 @@ def initialize_session_state():
         "chat_history": [],
         "chat": [],
         "chat_id": "",
+        "themebutton": "light",
+        "theme": "light",
+        "model": "meta/meta-llama-3-70b-instruct",
     }
     for key, value in default_values.items():
         if key not in st.session_state:
@@ -41,63 +45,133 @@ def initialize_session_state():
 
 def main():
     st.title("PROFILE FINDER")
+
     initialize_session_state()
 
     if (
         not st.session_state["show_signup_form"]
         and st.session_state["user_name"] is not None
     ):
-        # Display the user's name in the sidebar with an happy emoji
-        st.sidebar.markdown(f"### 👋 Hi {st.session_state['user_name']} !")
+        # Display the user's name in the sidebar with a happy emoji
+        st.sidebar.markdown(f"# 👋 Bonjour {st.session_state['user_name']} ! ")
 
         if st.session_state["authentication_status"]:
-            if st.sidebar.button(
-                "Logout",
-                key="logout_button",
-                on_click=lambda: logout(),
-                use_container_width=True,
-            ):
-                pass
+            with st.sidebar.container():
+                col1, col2 = st.sidebar.columns(2)
+                with col1:
+                    if st.button(
+                        "Déconnexion",
+                        key="logout_button",
+                        on_click=lambda: logout(),
+                        use_container_width=True,
+                    ):
+                        pass
+                with col2:
+                    if st.button(
+                        "Paramètres",
+                        key="settings_button",
+                        use_container_width=True,
+                    ):
+                        pass
 
-        # Afficher une ligne de séparation
-        st.sidebar.markdown("---")
+        # Display a separation line
+        st.sidebar.markdown(
+            "<div style='border-bottom: 1px solid white; margin: 20px 0;'></div>",
+            unsafe_allow_html=True,
+        )
+
+        # Model selection
+        st.sidebar.markdown("## Modèles disponibles :")
+        model_mapping = {
+            "Llama 3 70b - Meta": "meta/meta-llama-3-70b-instruct",
+            "Claude 3 Haiku - Anthropic": "claude-3-haiku-20240307",
+            "Command R - Cohere": "command",
+            "Gemini 1.5 Flash - Google": "gemini-1.5-flash",
+            "GPT 4o Mini - OpenAI": "gpt-4o-mini",
+            "GPT o1 Mini - OpenAI": "o1-mini",
+        }
+        model = st.sidebar.selectbox(
+            "Avec quel modèle souhaitez-vous interagir ?",
+            options=[
+                "Llama 3 70b - Meta",
+                "Claude 3 Haiku - Anthropic",
+                "Command R - Cohere",
+                "Gemini 1.5 Flash - Google",
+                "GPT 4o Mini - OpenAI",
+                "GPT o1 Mini - OpenAI",
+            ],
+            index=None,
+            placeholder="Choisissez un modèle...",
+        )
+
+        st.session_state.update(
+            model=model_mapping.get(model, st.session_state["model"])
+        )
+
+        # Display a separation line
+        st.sidebar.markdown(
+            "<div style='border-bottom: 1px solid white;margin: 20px 0;'></div>",
+            unsafe_allow_html=True,
+        )
+        st.sidebar.markdown("")
         st.sidebar.button(
-            "New search",
+            "Nouvelle recherche",
             on_click=lambda: st.session_state.update(
                 chat_history=[], chat=[], chat_id="", duration=None
             ),
             use_container_width=True,
         )
-        st.sidebar.markdown("### Older searches :")
+        st.sidebar.markdown("### Historique de recherche :")
         if "search_history" in st.session_state:
             st.session_state["search_history"] = get_search_history(
                 st.session_state["username"]
             )
+            displayed_chat_ids = set()
             if len(st.session_state["search_history"]) > 0:
                 for search in st.session_state["search_history"]:
+                    chat_id = search["chat_id"]
+                    if chat_id in displayed_chat_ids:
+                        continue
+                    displayed_chat_ids.add(chat_id)
+                    
                     chat_title = search["chat_title"]
                     date = search["last_update_date"][:10]
-                    date = datetime.strptime(date, "%Y-%m-%d").strftime("%d/%m/%Y")
-                    if isinstance(chat_title, str):
-                        if st.sidebar.button(
-                            label=(
-                                f"{date} - {chat_title[:22]}..."
-                                if len(chat_title) >= 22
-                                else f"{date} - {chat_title}"
-                            ),
-                            key=f"{search['chat_id']}",
-                        ):
-                            search_data = get_search_by_chat_id(search["chat_id"])
-                            st.session_state.update(
-                                chat_history=search_data["chat_history"],
-                                chat_id=search_data["chat_id"],
-                            )
-                    else:
-                        st.sidebar.markdown("No valid chat history found.")
+
+                    date = datetime.strptime(date, "%Y-%m-%d").strftime("%d/%m")
+                    with st.sidebar.container():
+                        col1_search, col2_search = st.sidebar.columns([8, 1])
+                        if isinstance(chat_title, str):
+                            with col1_search:
+                                # Chat button
+                                if st.button(
+                                    label=(
+                                        f"{date} - {chat_title[:21]}..."
+                                        if len(chat_title) >= 15
+                                        else f"{date} - {chat_title}"
+                                    ),
+                                    key=f"{search['chat_id']}",
+                                    use_container_width=True,
+                                ):
+                                    search_data = get_search_by_chat_id(search["chat_id"])
+                                    st.session_state.update(
+                                        chat_history=search_data["chat_history"],
+                                        chat_id=search_data["chat_id"],
+                                    )
+                            with col2_search:
+                                # Delete button
+                                if st.button(
+                                    "❌",
+                                    key=f"delete_{search['chat_id']}",
+                                    use_container_width=True,
+                                ):
+                                    delete_search_from_history(search["chat_id"])
+                                    st.rerun()
+                        else:
+                            st.sidebar.markdown("Aucun historique de chat valide trouvé.")
             else:
-                st.sidebar.markdown("No search history yet.")
+                st.sidebar.markdown("Pas encore d'historique de recherche.")
         else:
-            st.sidebar.markdown("No search history yet.")
+            st.sidebar.markdown("Pas encore d'historique de recherche.")
 
         if st.session_state["chat_id"] == "":
             new_chat()
@@ -109,10 +183,10 @@ def main():
         and st.session_state["user_name"] is None
     ):
         with st.form("login_form"):
-            st.subheader("Login")
+            st.subheader("Connexion")
             email = st.text_input("Email")
-            password = st.text_input("Password", type="password")
-            if st.form_submit_button("Login"):
+            password = st.text_input("Mot de passe", type="password")
+            if st.form_submit_button("Se connecter"):
                 auth_status, user = login(email, password)
                 if user is not None:
                     if type(user) == str:
@@ -132,7 +206,7 @@ def main():
                 )
 
         if st.button(
-            "New here? Sign up",
+            "Nouveau sur Profile Finder ? Inscrivez-vous",
             on_click=lambda: st.session_state.update(show_signup_form=True),
         ):
             pass
@@ -140,7 +214,7 @@ def main():
     elif st.session_state["show_signup_form"] and st.session_state["user_name"] is None:
         show_signup_form()
         if st.button(
-            "Already have an account ? Login",
+            "Vous avez déjà un compte ? Connectez-vous",
             key="login_button",
             on_click=lambda: st.session_state.update(
                 show_signup_form=False, user_name=None
