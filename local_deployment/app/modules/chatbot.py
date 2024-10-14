@@ -16,7 +16,8 @@ context = f"""You are a French chatbot assistant that helps the user find team m
         - For months, consider the nearest future month unless otherwise specified. Don't consider months in the past or months more than 12 months in the futur, unless otherwise specified.
         - Combine occupancy periods and percentages to calculate total availability over a given period.
         - Don't assume anything, don't mess with the data, and only return members that meet the user's criteria.
-        - If several members match the criteria, present them in order of relevance (availability, skills, etc.)."""
+        - If several members match the criteria, present them in order of relevance (availability, skills, etc.).
+        - Answer un markdown format, without using just one hashtag (#) for the title."""
 
 
 def initialize_session_state():
@@ -56,13 +57,19 @@ def update_input_new_chat():
             response = requests.post(url, json=payload)
             response.raise_for_status()  # Raise an error for bad status codes
             chat_id = response.json()["new_id"]
+            st.session_state.update(chat_id=chat_id)
+
+            chat_history = [{"role": "system", "content": context}]
+            st.session_state["chat_history"] = chat_history
 
         except requests.exceptions.HTTPError as http_err:
             print(f"HTTP error occurred: {http_err}")
         except Exception as err:
             print(f"An error occurred: {err}")
 
-    result = process_input(user_input, st.session_state["chat_history"], chat_id)
+    result = process_input(
+        user_input, st.session_state["chat_history"], chat_id, st.session_state["model"]
+    )
     if len(result) == 3:
         chatbot_response, updated_chat_history, duration = result
     else:
@@ -74,7 +81,7 @@ def update_input_new_chat():
 
     add_search_to_history(
         chat_id,
-        st.session_state["chat_history"][0]["content"],
+        st.session_state["chat_history"][1]["content"],
         st.session_state["username"],
     )
 
@@ -105,7 +112,10 @@ def update_input_existent_chat():
             message.pop("generation_time", None)
 
         result = process_input(
-            user_input, st.session_state["chat_history"], st.session_state["chat_id"]
+            user_input,
+            st.session_state["chat_history"],
+            st.session_state["chat_id"],
+            st.session_state["model"],
         )
         if len(result) == 3:
             chatbot_response, updated_chat_history, duration = result
@@ -151,18 +161,23 @@ def new_chat():
     # Initialize the session state if necessary
     initialize_session_state()
 
-    # Input field for the user
-    st.chat_input(
-        placeholder="Ask your question here...",
-        key="temp_input",
-        on_submit=update_input_new_chat,
-    )
-
     # Display the welcome message if the history is empty
     if len(st.session_state["chat"]) == 0:
+        st.chat_input(
+            placeholder="Posez votre question ici...",
+            key="temp_input",
+            on_submit=update_input_new_chat,
+        )
+
         with st.chat_message("Assistant"):
-            st.write("How can I help you ?")
+            st.write("Comment puis-je vous aider ?")
+
     elif len(st.session_state["chat"]) > 0:
+        st.chat_input(
+        placeholder="Continuez la conversation ici...",
+        key="history_temp_input",
+        on_submit=update_input_existent_chat,
+        )
         # Display the conversation history
         for i in range(len(st.session_state["chat"])):
             bot_message = st.session_state["chat"][i]["assistant"]
@@ -218,7 +233,7 @@ def existent_chat():
     """
 
     st.chat_input(
-        placeholder="Continue conversation here...",
+        placeholder="Continuez la conversation ici...",
         key="history_temp_input",
         on_submit=update_input_existent_chat,
     )

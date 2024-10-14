@@ -28,7 +28,11 @@ logging.basicConfig(
 )
 
 GPT_4O_MINI = "gpt-4o-mini"
+GPT_O1_MINI = "o1-mini"
 LLAMA_3_70B = "meta/meta-llama-3-70b-instruct"
+CLAUDE_HAIKU = "claude-3-haiku-20240307"
+COMMAND_COHERE = "command"
+GEMINI_1_5_FLASH = "gemini-1.5-flash"
 MODEL_EMBEDDING = "nomic-embed-text:latest"
 
 app = FastAPI()
@@ -50,6 +54,7 @@ class ChatRequest(BaseModel):
     question: str
     history: List[dict]
     chat_id: str
+    model: str
 
 
 class IDrequest(BaseModel):
@@ -201,7 +206,7 @@ def process_question_minai(input: ChatRequest):
             logging.error("No document found")
             raise HTTPException(status_code=500, detail="No document found")
         response = generate_minai_response(
-            data, input.chat_id, input.history, LLAMA_3_70B
+            data, input.chat_id, input.history, input.model
         )
     except Exception as e:
         logging.error(f"Error generating response: {str(e)}")

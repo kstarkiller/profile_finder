@@ -11,7 +11,7 @@ MODEL_EMBEDDING = "nomic-embed-text:latest"
 
 
 # These functions are used to process the user input and return the chatbot response via the generate_perplexity_response function.
-def process_input(user_input, chat_history, chat_id):
+def process_input(user_input, chat_history, chat_id, model):
     """
     Process the user input and return the chatbot response and updated chat history.
 
@@ -38,6 +38,7 @@ def process_input(user_input, chat_history, chat_id):
         "question": user_input,
         "history": chat_history,
         "chat_id": chat_id,
+        "model": model,
     }
 
     response = requests.post(url, json=payload)

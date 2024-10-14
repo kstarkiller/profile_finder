@@ -107,7 +107,7 @@ def retrieve_documents(question: str, model="llama3.1:8b"):
 
     # Query the collection with the embedded question for the most similar documents
     results = collection.query(
-        query_embeddings=[embedded_question["embedding"]], n_results=30
+        query_embeddings=[embedded_question["embedding"]], n_results=10
     )
     data = results["documents"]
 

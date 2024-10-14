@@ -197,7 +197,11 @@ def generate_conversation_id(model: str, prompt: str) -> str:
     }
 
     # Prepare the payload with the model
-    payload = {"type": "CHAT_WITH_AI", "title": f"{prompt}", "model": f"{model}"}
+    payload = {
+        "type": "CHAT_WITH_AI",
+        "title": f"{prompt}",
+        #    "model": f"{model}"
+    }
 
     try:
         # Send the request to the Minai API
@@ -290,9 +294,10 @@ def generate_minai_response(data: list, chat_id: str, history: list, model: str)
                 "webSearch": "false",
             },
         }
-
+        print(payload)
         # Send the request to the Perplexity API
         response = requests.post(url, headers=headers, json=payload)
+        print(response)
         response.raise_for_status()  # Raise an error for bad responses
 
         # Log HTTP response status if raised
@@ -304,6 +309,7 @@ def generate_minai_response(data: list, chat_id: str, history: list, model: str)
 
         # Log and return the response
         log_response(history[-1]["content"], response.content)
+        print(response.content)
         return response.content.decode("utf-8")
 
     except ValueError as e:

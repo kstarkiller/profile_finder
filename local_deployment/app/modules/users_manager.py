@@ -45,6 +45,7 @@ class SearchHistory(Base):
             "last_update_date": self.last_update_date,
         }
 
+
 class ChatHistory(Base):
     __tablename__ = "conversations"
     id = Column(Integer, primary_key=True)
@@ -174,22 +175,22 @@ def signup(name, email, password):
                 username=user_check[1],
                 user_already_exists=False,
             )
-            st.success(f"Thank you {user_check[0]}, you're now registered!")
+            st.success(f"Merci {user_check[0]}, vous êtes maintenant inscrit.")
         elif type(user_check) == str and user_check == email:
             st.session_state.update(
                 user_id=None, user_name=None, user_already_exists=True
             )
-            st.error("This email is already registered. Please use another one.")
+            st.error("Cette adresse email est déjà utilisée.")
         else:
             st.session_state.update(
                 user_id=None, user_name=None, user_already_exists=False
             )
             st.error(
-                "Sorry, an error occurred while registering you. Please try again."
+                "Une erreur s'est produite lors de l'enregistrement de l'utilisateur. Veuillez réessayer."
             )
 
     elif not name or not email or not password:
-        st.error("Please provide a name, an email and a password")
+        st.error("Merci de remplir tous les champs.")
 
 
 # Fonction pour se connecter
@@ -209,9 +210,9 @@ def login(email, password):
     try:
         user = get_user(email, password)
 
-        if user == "User not found":
+        if user == "utilisateur non trouvé":
             status = None
-        elif user == "Invalid password":
+        elif user == "Mot de passe incorrect":
             status = False
         else:
             status = True
@@ -243,9 +244,9 @@ def logout():
             st.session_state.update(
                 user_name=None, username=None, authentication_status=False
             )
-            st.success("You have been successfully logged out.")
+            st.success("Vous êtes maintenant déconnecté.")
         else:
-            st.error("You are not logged in.")
+            st.error("Vous n'êtes pas connecté.")
 
     except Exception as e:
         st.error(str(e))
@@ -276,6 +277,7 @@ def add_search_to_history(chat_id, first_message, user_email):
     db.commit()
     db.close()
 
+
 # Fonction pour mettre à jour une recherche dans la base de données des recherches de l'utilisateur
 def update_search_in_history(chat_id):
     """
@@ -293,6 +295,7 @@ def update_search_in_history(chat_id):
     db.commit()
     db.close()
 
+
 # Fonction pour récuperer la liste des recherches de l'utilisateur
 def get_search_history(user_email):
     """
@@ -305,10 +308,13 @@ def get_search_history(user_email):
         list: Liste des recherches de l'utilisateur
     """
     db = SessionLocal()
-    search_history = db.query(SearchHistory).filter(SearchHistory.user_email == user_email).all()
+    search_history = (
+        db.query(SearchHistory).filter(SearchHistory.user_email == user_email).all()
+    )
     db.close()
 
     return [search.to_dict() for search in search_history]
+
 
 # Fonction pour récuperer une recherche par son chat_id
 def get_search_by_chat_id(chat_id):
@@ -331,6 +337,7 @@ def get_search_by_chat_id(chat_id):
         "chat_history": [chat.to_dict() for chat in chat_history],
     }
 
+
 # Fonction pour ajouter un message à la conversation en fonction du nombre de messages
 def add_message_to_chat(chat_id, chat_history, duration):
     """
@@ -351,7 +358,7 @@ def add_message_to_chat(chat_id, chat_history, duration):
     for i, message in enumerate(chat_history):
         if i < message_count:
             continue
-        else :
+        else:
             new_message = ChatHistory(
                 chat_id=chat_id,
                 role=message["role"],
@@ -361,3 +368,27 @@ def add_message_to_chat(chat_id, chat_history, duration):
             db.add(new_message)
     db.commit()
     db.close()
+
+def delete_search_from_history(chat_id):
+    """
+    Supprime une recherche de l'historique des recherches de l'utilisateur.
+
+    Args:
+        chat_id (str): Identifiant de la recherche
+
+    Returns:
+        None
+    """
+    db = SessionLocal()
+    try:
+        # Supprimer les entrées correspondantes dans la table conversations
+        db.query(ChatHistory).filter(ChatHistory.chat_id == chat_id).delete()
+        # Supprimer l'entrée dans la table search_histories
+        search = db.query(SearchHistory).filter(SearchHistory.chat_id == chat_id).first()
+        db.delete(search)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise e
+    finally:
+        db.close()
