@@ -1,5 +1,7 @@
 import time
 import uvicorn
+import requests
+import json
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -33,16 +35,19 @@ LLAMA_3_70B = "meta/meta-llama-3-70b-instruct"
 CLAUDE_HAIKU = "claude-3-haiku-20240307"
 COMMAND_COHERE = "command"
 GEMINI_1_5_FLASH = "gemini-1.5-flash"
+OLLAMA_LLM_MODEL = "llama3.1:8b"
 MODEL_EMBEDDING = "nomic-embed-text:latest"
 
 app = FastAPI()
 
+# Allow CORS
+origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 
@@ -101,6 +106,7 @@ def embedding():
     # Embedding the documents
     start_time = time.time()
     try:
+        print(doc_path)
         collection = embed_documents(doc_path, MODEL_EMBEDDING)
     except Exception as e:
         logging.error(f"Error embedding documents: {str(e)}")
@@ -142,7 +148,7 @@ def process_question_ollama(input: ChatRequest):
         if data is None:
             logging.error("No document found")
             raise HTTPException(status_code=500, detail="No document found")
-        response = generate_ollama_response(data, input.question, LLAMA_3_70B)
+        response = generate_ollama_response(data, input.question, OLLAMA_LLM_MODEL)
     except Exception as e:
         logging.error(f"Error generating response: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

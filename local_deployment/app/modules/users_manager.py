@@ -8,6 +8,9 @@ import bcrypt
 # Récupérer les informations de connexion à la base de données
 db_user = os.getenv("DB_USER")
 db_password = os.getenv("DB_PASSWORD")
+db_name = os.getenv("DB_NAME")
+host = os.getenv("HOST")
+port = os.getenv("PORT")
 
 # Vérifier si les variables d'environnement sont définies
 if not db_user or not db_password:
@@ -16,7 +19,7 @@ if not db_user or not db_password:
     )
 
 # Remplacer par vos propres informations de connexion
-engine = create_engine(f"postgresql://{db_user}:{db_password}@localhost:5432/st_users")
+engine = create_engine(f"postgresql://{db_user}:{db_password}@{host}:{port}/{db_name}")
 Base = declarative_base()
 
 

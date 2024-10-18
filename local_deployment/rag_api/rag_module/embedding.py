@@ -22,7 +22,7 @@ logging.basicConfig(
 )
 
 
-def embed_documents(file_path, model="llama3.1:8b", batch_size=10):
+def embed_documents(file_path, model="nomic-embed-text:latest", batch_size=10):
     """
     Embeds the documents using an embedding model in batches.
 
@@ -34,12 +34,15 @@ def embed_documents(file_path, model="llama3.1:8b", batch_size=10):
     Returns:
         chromadb.Collection: A collection of the embedded documents.
     """
-
-    # Connect to the client
-    client = chromadb.PersistentClient(
-        path=collection_path,
-        settings=Settings(allow_reset=True),
-    )
+    try:
+        # Connect to the client
+        client = chromadb.PersistentClient(
+            path=collection_path,
+            settings=Settings(allow_reset=True),
+        )
+    except Exception as e:
+        logging.error(f"Error connecting to the ChromaDB client: {e}")
+        raise (f"Error connecting to the ChromaDB client: {e}")
 
     # Create a new collection or get existing one
     collection = client.get_or_create_collection(name="docs")
@@ -70,7 +73,7 @@ def embed_documents(file_path, model="llama3.1:8b", batch_size=10):
                 # logging.info(f"Document {i + j} embedded.")
             except Exception as e:
                 logging.error(f"Error embedding document {i + j}: {e}")
-                raise  # Re-raise the exception to propagate it up
+                raise  (f"Error embedding document {i + j}: {e}")
 
         # Add the batch to the collection
         collection.add(
@@ -82,7 +85,7 @@ def embed_documents(file_path, model="llama3.1:8b", batch_size=10):
 
 
 # Retrieve documents
-def retrieve_documents(question: str, model="llama3.1:8b"):
+def retrieve_documents(question: str, model="nomic-embed-text:latest"):
     """
     Embeds the question using an embedding model and queries the collection for the most similar document.
 
