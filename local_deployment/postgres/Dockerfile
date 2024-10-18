@@ -13,6 +13,3 @@ ENV POSTGRES_DB=${POSTGRES_DB}
 
 # Expose port 5432
 EXPOSE 5432
-
-# Ajouter une commande pour créer le rôle postgres
-RUN echo "CREATE ROLE postgres WITH LOGIN SUPERUSER PASSWORD '${POSTGRES_PASSWORD}';" > /docker-entrypoint-initdb.d/create_postgres_role.sql
