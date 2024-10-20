@@ -62,13 +62,16 @@ services:
     image: grafana/grafana:latest
     restart: unless-stopped
     container_name: grafana
+    environment:
+      GF_SMTP_USER: ${GF_SMTP_USER}
+      GF_SMTP_PASSWORD: ${GF_SMTP_PASSWORD}
     ports:
       - "3000:3000"
     networks:
       - metrics
     volumes:
       - grafana-storage:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/config/grafana.ini:/etc/grafana/grafana.ini
 
   prometheus:
     image: prom/prometheus:latest
@@ -83,7 +86,7 @@ services:
     volumes:
       - ./prometheus:/etc/prometheus
       - prom_data:/prometheus
-  
+
   nodeexporter:
     image: prom/node-exporter:v0.18.1
     container_name: nodeexporter

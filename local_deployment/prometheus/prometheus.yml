@@ -3,7 +3,7 @@ global:
   scrape_timeout: 10s
   evaluation_interval: 15s
   external_labels:
-    monitor: 'docker-host-alpha'
+    monitor: "docker-host-alpha"
 alerting:
   alertmanagers:
     - static_configs:
