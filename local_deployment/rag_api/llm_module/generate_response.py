@@ -80,10 +80,7 @@ def authenticate(username: str, password: str) -> bool:
 
 
 def validate_input(
-    data: list,
     question: str,
-    username: Optional[str] = None,
-    password: Optional[str] = None,
     model: Optional[str] = None,
 ) -> None:
     """
@@ -99,23 +96,6 @@ def validate_input(
     Raises:
         ValueError: Si les données d'entrée, la question ou le modèle sont invalides.
     """
-
-    # Authenticate the user if login information is provided
-    if username and password:
-        authenticated = authenticate(username, password)
-        if not authenticated:
-            logging.warning(ERROR_MESSAGES["access_denied"])
-            raise ValueError(ERROR_MESSAGES["access_denied"])
-
-    # Check if data is provided
-    if not data:
-        logging.warning(ERROR_MESSAGES["no_data"])
-        raise ValueError(ERROR_MESSAGES["no_data"])
-
-    # Check if data list is empty
-    if not any(data):
-        logging.warning(ERROR_MESSAGES["no_data"])
-        raise ValueError(ERROR_MESSAGES["no_data"])
 
     # Check if the question is empty
     if not question or question.isspace() or not question.strip():
@@ -138,53 +118,61 @@ def validate_input(
 
 
 def generate_ollama_response(
-    data: list, question: str, model: str = "llama3.1:8b"
+    data: list, history: list, model: str = "llama3.1:latest"
 ) -> str:
     """
     Generates a response using the model of your choice (llama3.1 8B here).
 
     Args:
-        data (list): The data to use for the response.
-        question (str): The question to respond to.
+        data (list, optional): The data to use for the response.
+        history (list): The chat history.
         model (str): The model to use for the response.
 
     Returns:
         str: The generated response.
     """
-
-    # Let user enter their credentials
-    username = input("Enter your username: ")
-    password = getpass.getpass("Enter your password: ")
-
     try:
+        if not history or history == []:
+            logging.warning("History is empty")
+            raise ValueError("History is empty")
+        if not model:
+            logging.warning("No model provided")
+            raise ValueError("No model provided")
         # Validate inputs
-        validate_input(data, question, username, password, model)
+        validate_input(question=history[-1]["content"], model=model)
 
-        prompt = f"""
-            You are a French chatbot assistant that helps the user find team members based on their location, availability and skills.
-            - Format responses as concise and consistently as possible, using headers and tables when necessary. Don't explain what you're doing and summarize the data.
-            - Use the current date ({date.today()}) for any time-related questions.
-            - For months, consider the nearest future month unless otherwise specified. Don't consider months in the past or months more than 12 months in the futur, unless otherwise specified.
-            - Combine occupancy periods and percentages to calculate total availability over a given period.
-            - Don't assume anything, don't mess with the data, and only return members that meet the user's criteria.
-            - If several members match the criteria, present them in order of relevance (availability, skills, etc.).
-            Using this data: {data}, respond to this prompt: {question}.
-            """
+        # Add the user and assistant messages to the prompt
+        prompt = [
+            {
+                "role": history[0]["role"],
+                "content": history[0]["content"]
+                + "\n"
+                + f"Use this data: {data} to respond to the user in this conversation.",
+            }
+        ]
+
+        for i, message in enumerate(history[1:], start=1):
+            prompt.append(
+                {
+                    "role": "user" if i % 2 == 1 else "assistant",
+                    "content": message["content"],
+                }
+            )
 
         # Generate the response
         output = ollama.generate(
             model=model,
-            prompt=prompt,
+            prompt=json.dumps(prompt),
         )
 
         response = output["response"]
         log_response(
-            question, response
+            history[-1]["content"], response
         )  # Log the asked question and the generated response
         return response
 
     except Exception as e:
-        log_response(question, str(e))  # Log the error message
+        log_response(history[-1]["content"], str(e))  # Log the error message
         return str(e)
 
 
@@ -256,7 +244,7 @@ def generate_minai_response(data: list, chat_id: str, history: list, model: str)
             logging.warning("No model provided")
             raise ValueError("No model provided")
         # Validate inputs
-        validate_input(data, history[-1]["content"])
+        validate_input(history[-1]["content"])
 
         # Set up the API request
         url = "https://api.1min.ai/api/features?isStreaming=true"
@@ -294,10 +282,9 @@ def generate_minai_response(data: list, chat_id: str, history: list, model: str)
                 "webSearch": "false",
             },
         }
-        print(payload)
+
         # Send the request to the Perplexity API
         response = requests.post(url, headers=headers, json=payload)
-        print(response)
         response.raise_for_status()  # Raise an error for bad responses
 
         # Log HTTP response status if raised
@@ -309,7 +296,6 @@ def generate_minai_response(data: list, chat_id: str, history: list, model: str)
 
         # Log and return the response
         log_response(history[-1]["content"], response.content)
-        print(response.content)
         return response.content.decode("utf-8")
 
     except ValueError as e:
@@ -322,7 +308,7 @@ def generate_minai_response(data: list, chat_id: str, history: list, model: str)
 
     except requests.exceptions.HTTPError as e:
         logging.error(f"HTTP error occurred: {str(e)}")
-        return "An unexpected error occurred" + str(e)
+        return f"I'm sorry, I can't answer you : {response.json()['message']}"
 
     except Exception as e:
         # Log the error message
@@ -330,4 +316,4 @@ def generate_minai_response(data: list, chat_id: str, history: list, model: str)
             log_response("No history", str(e))
         else:
             log_response(history[-1]["content"], str(e))
-        return "An unexpected error occurred: " + str(e)
+        return "I'm sorry, I can't answer you :" + str(e)

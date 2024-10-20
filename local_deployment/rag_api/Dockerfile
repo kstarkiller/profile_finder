@@ -21,8 +21,11 @@ COPY requirements.txt /app/
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Télécharger le modèle spaCy
+RUN python -m spacy download fr_core_news_lg
+
 # Démarrer Ollama en arrière-plan et attendre qu'il soit prêt
-RUN echo '#!/bin/bash\nollama serve &\nsleep 10\nollama pull nomic-embed-text:latest\nollama pull llama3.1:8b\nexec "$@"' > /entrypoint.sh && \
+RUN echo '#!/bin/bash\nollama serve &\nsleep 10\nollama pull nomic-embed-text:latest\nexec "$@"' > /entrypoint.sh && \
     chmod +x /entrypoint.sh
 
 # Copier le reste du code de l'application dans le répertoire de travail
@@ -32,19 +35,9 @@ COPY . /app
 EXPOSE 8080
 
 # Définir les arguments
-ARG DB_USER
-ARG DB_PASSWORD
-ARG DB_NAME
-ARG RAG_LOCAL_USER
-ARG RAG_LOCAL_PASSWORD
 ARG MINAI_API_KEY
 
 # Définir les variables d'environnement
-ENV DB_USER=$DB_USER
-ENV DB_PASSWORD=$DB_PASSWORD
-ENV DB_NAME=$DB_NAME
-ENV RAG_LOCAL_USER=$RAG_LOCAL_USER
-ENV RAG_LOCAL_PASSWORD=$RAG_LOCAL_PASSWORD
 ENV MINAI_API=$MINAI_API_KEY
 
 # Définir le point d'entrée pour lancer l'application

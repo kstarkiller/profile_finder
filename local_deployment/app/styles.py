@@ -17,7 +17,6 @@ def apply_custom_styles():
                 font-family: 'Helvetica';
                 padding-top: 0%;
             }
-        </style>
         """,
         unsafe_allow_html=True,
     )

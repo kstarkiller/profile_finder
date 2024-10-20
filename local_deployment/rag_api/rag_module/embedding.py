@@ -6,6 +6,7 @@ import logging
 from chromadb.config import Settings
 
 from rag_module.load_documents import load_documents
+from llm_module.model_precision_improvements import structure_query
 
 # Path to the collection
 collection_path = os.path.join(os.path.dirname(__file__), "..", "data", "chroma")
@@ -73,7 +74,7 @@ def embed_documents(file_path, model="nomic-embed-text:latest", batch_size=10):
                 # logging.info(f"Document {i + j} embedded.")
             except Exception as e:
                 logging.error(f"Error embedding document {i + j}: {e}")
-                raise  (f"Error embedding document {i + j}: {e}")
+                raise (f"Error embedding document {i + j}: {e}")
 
         # Add the batch to the collection
         collection.add(
@@ -96,6 +97,9 @@ def retrieve_documents(question: str, model="nomic-embed-text:latest"):
     Returns:
         str: The most similar document to the question.
     """
+    # Improve the question structure
+    question = structure_query(question)
+
     # Create embedding client
     embedded_question = ollama.embeddings(prompt=question, model=model)
 
@@ -110,7 +114,7 @@ def retrieve_documents(question: str, model="nomic-embed-text:latest"):
 
     # Query the collection with the embedded question for the most similar documents
     results = collection.query(
-        query_embeddings=[embedded_question["embedding"]], n_results=10
+        query_embeddings=[embedded_question["embedding"]], n_results=5
     )
     data = results["documents"]
 

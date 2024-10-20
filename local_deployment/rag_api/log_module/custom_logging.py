@@ -3,7 +3,7 @@ import os
 
 # Logs path
 base_path = os.path.dirname(__file__)
-logs_path = os.path.join(base_path, "logs", "local_api_access.log")
+logs_path = os.path.join(base_path, "logs", "local_api.log")
 
 
 # Logging module configuration

@@ -1,13 +1,12 @@
 import requests
 import json
 
+from modules.docker_check import api_host
+
 ERROR_MESSAGES = {
     "no_data": "Please provide data to generate a response.",
     "no_question": "Please provide a question to answer.",
 }
-
-MODEL_LLM = "llama-3.1-70b-instruct"
-MODEL_EMBEDDING = "nomic-embed-text:latest"
 
 
 # These functions are used to process the user input and return the chatbot response via the generate_perplexity_response function.
@@ -32,32 +31,41 @@ def process_input(user_input, chat_history, chat_id, model):
     # Add user input to chat history
     chat_history.append({"role": "user", "content": user_input})
 
-    # Generate a response via the RAG API endpoint "/minai_chat"
-    url = "http://localhost:8080/minai_chat"
-    payload = {
-        "question": user_input,
-        "history": chat_history,
-        "chat_id": chat_id,
-        "model": model,
-    }
+    # Determine the URL based on the model
+    url = (
+        "http://localhost:8080/ollama_chat"
+        if model == "llama3.1:latest"
+        else f"http://{api_host}:8080/minai_chat"
+    )
 
-    response = requests.post(url, json=payload)
-    response_data = response.json()
+    try:
+        # Generate a response via the RAG API endpoint
+        payload = {
+            "question": user_input,
+            "history": chat_history,
+            "chat_id": chat_id,
+            "model": model,
+        }
+        
+        response = requests.post(url, json=payload)
+        response_data = response.json()
 
-    # Check if the response contains errors
-    if response.status_code != 200:
-        return (
-            "An error occurred while generating the response.",
-            chat_history,
+        # Check if the response contains errors
+        if response.status_code != 200:
+            return (
+                "An error occurred while generating the response.",
+                chat_history,
+            )
+
+        # Add chatbot response to chat history
+        chat_history.append(
+            {"role": "assistant", "content": response_data.get("response", "")}
         )
 
-    # Add chatbot response to chat history
-    chat_history.append(
-        {"role": "assistant", "content": response_data.get("response", "")}
-    )
-
-    return (
-        response_data.get("response", ""),
-        chat_history,
-        response_data.get("duration", 0),
-    )
+        return (
+            response_data.get("response", ""),
+            chat_history,
+            response_data.get("duration", 0),
+        )
+    except requests.exceptions.RequestException as err:
+        return f"An error occurred: {err}", chat_history

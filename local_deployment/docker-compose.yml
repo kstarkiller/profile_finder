@@ -1,6 +1,7 @@
 services:
   postgres:
     image: postgres:latest
+    restart: always
     container_name: pf_postgres
     environment:
       POSTGRES_USER: ${DB_USER}
@@ -9,13 +10,13 @@ services:
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 10s
       retries: 5
       timeout: 5s
       start_period: 20s
     networks:
-      - mynetwork
+      - pf_network
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -23,10 +24,9 @@ services:
     build:
       context: ./rag_api
     image: pf_api
+    restart: always
     container_name: pf_api
     environment:
-      RAG_LOCAL_USERNAME: ${RAG_LOCAL_USERNAME}
-      RAG_LOCAL_PASSWORD: ${RAG_LOCAL_PASSWORD}
       MINAI_API_KEY: ${MINAI_API_KEY}
     ports:
       - "8080:8080"
@@ -34,12 +34,15 @@ services:
       postgres:
         condition: service_healthy
     networks:
-      - mynetwork
+      - pf_network
+    volumes:
+      - ollama_models:/root/.ollama/models 
 
   rag_front:
     build:
       context: ./app
     image: pf_front
+    restart: always
     container_name: pf_front
     environment:
       DB_USER: ${DB_USER}
@@ -53,10 +56,64 @@ services:
       postgres:
         condition: service_healthy
     networks:
-      - mynetwork
+      - pf_network
 
-volumes:
-  postgres_data:
+  grafana:
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - metrics
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+
+  prometheus:
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    container_name: prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - "9090:9090"
+    networks:
+      - metrics
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prom_data:/prometheus
+  
+  nodeexporter:
+    image: prom/node-exporter:v0.18.1
+    container_name: nodeexporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
+    expose:
+      - 9100
+    networks:
+      - metrics
+    labels:
+      org.label-schema.group: "monitoring"
 
 networks:
-  mynetwork:
+  pf_network:
+    driver: bridge
+    name: pf_network
+  metrics:
+    driver: bridge
+    name: metrics
+
+volumes:
+  postgres_data: {}
+  ollama_models: {}
+  grafana-storage: {}
+  prom_data: {}

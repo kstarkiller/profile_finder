@@ -5,11 +5,12 @@ from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import declarative_base, sessionmaker
 import bcrypt
 
+from modules.docker_check import db_host
+
 # Récupérer les informations de connexion à la base de données
 db_user = os.getenv("DB_USER")
 db_password = os.getenv("DB_PASSWORD")
 db_name = os.getenv("DB_NAME")
-host = os.getenv("HOST")
 port = os.getenv("PORT")
 
 # Vérifier si les variables d'environnement sont définies
@@ -18,8 +19,10 @@ if not db_user or not db_password:
         "Les variables d'environnement DB_USER et DB_PASSWORD doivent être définies"
     )
 
-# Remplacer par vos propres informations de connexion
-engine = create_engine(f"postgresql://{db_user}:{db_password}@{host}:{port}/{db_name}")
+# Créer une connexion à la base de données
+engine = create_engine(
+    f"postgresql://{db_user}:{db_password}@{db_host}:{port}/{db_name}"
+)
 Base = declarative_base()
 
 
@@ -55,14 +58,20 @@ class ChatHistory(Base):
     chat_id = Column(String, ForeignKey("search_histories.chat_id"))
     role = Column(String)
     content = Column(String)
-    generation_time = Column(String)
+    model = Column(String)
+    model_label = Column(String)
+    gen_duration = Column(String)
+    gen_time = Column(String)
 
     def to_dict(self):
         return {
             "chat_id": self.chat_id,
             "role": self.role,
             "content": self.content,
-            "generation_time": self.generation_time,
+            "model": self.model,
+            "model_label": self.model_label,
+            "gen_duration": self.gen_duration,
+            "gen_time": self.gen_time,
         }
 
 
@@ -342,7 +351,7 @@ def get_search_by_chat_id(chat_id):
 
 
 # Fonction pour ajouter un message à la conversation en fonction du nombre de messages
-def add_message_to_chat(chat_id, chat_history, duration):
+def add_message_to_chat(chat_id, chat_history, duration, model, model_label):
     """
     Ajoute un message à la conversation en fonction du nombre de messages.
 
@@ -366,11 +375,15 @@ def add_message_to_chat(chat_id, chat_history, duration):
                 chat_id=chat_id,
                 role=message["role"],
                 content=message["content"],
-                generation_time=duration,
+                model=model,
+                model_label=model_label,
+                gen_duration=duration,
+                gen_time=str(datetime.now().replace(microsecond=0)),
             )
             db.add(new_message)
     db.commit()
     db.close()
+
 
 def delete_search_from_history(chat_id):
     """
@@ -387,7 +400,9 @@ def delete_search_from_history(chat_id):
         # Supprimer les entrées correspondantes dans la table conversations
         db.query(ChatHistory).filter(ChatHistory.chat_id == chat_id).delete()
         # Supprimer l'entrée dans la table search_histories
-        search = db.query(SearchHistory).filter(SearchHistory.chat_id == chat_id).first()
+        search = (
+            db.query(SearchHistory).filter(SearchHistory.chat_id == chat_id).first()
+        )
         db.delete(search)
         db.commit()
     except Exception as e:

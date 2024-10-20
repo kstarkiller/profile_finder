@@ -1,5 +1,6 @@
 import streamlit as st
-import ast
+import os
+import platform
 from datetime import datetime
 
 st.set_page_config(initial_sidebar_state="expanded")
@@ -11,11 +12,25 @@ from modules.users_manager import (
     logout,
     get_search_history,
     get_search_by_chat_id,
-    delete_search_from_history
+    delete_search_from_history,
 )
 from modules.signup_form import show_signup_form
 
 apply_custom_styles()
+
+# Détecter le système d'exploitation
+is_windows = platform.system() == "Windows"
+is_unix = platform.system() in ["Linux", "Darwin"]
+
+
+# Vérifier si le code s'exécute dans un conteneur Docker
+def is_docker():
+    path = "/proc/self/cgroup"
+    return (
+        os.path.exists("/.dockerenv")
+        or os.path.isfile(path)
+        and any("docker" in line for line in open(path))
+    )
 
 
 def initialize_session_state():
@@ -83,9 +98,10 @@ def main():
         # Model selection
         st.sidebar.markdown("## Modèles disponibles :")
         model_mapping = {
-            "Llama 3 70b - Meta": "meta/meta-llama-3-70b-instruct",
+            ("[LOCAL] Llama 3.1 - Meta" if is_windows else "Llama 3 70b - Meta"): (
+                "llama3.1:latest" if is_windows else "meta/meta-llama-3-70b-instruct"
+            ),
             "Claude 3 Haiku - Anthropic": "claude-3-haiku-20240307",
-            "Command R - Cohere": "command",
             "Gemini 1.5 Flash - Google": "gemini-1.5-flash",
             "GPT 4o Mini - OpenAI": "gpt-4o-mini",
             "GPT o1 Mini - OpenAI": "o1-mini",
@@ -93,7 +109,7 @@ def main():
         model = st.sidebar.selectbox(
             "Avec quel modèle souhaitez-vous interagir ?",
             options=[
-                "Llama 3 70b - Meta",
+                "[LOCAL] Llama 3.1 - Meta" if is_windows else "Llama 3 70b - Meta",
                 "Claude 3 Haiku - Anthropic",
                 "Command R - Cohere",
                 "Gemini 1.5 Flash - Google",
@@ -133,7 +149,7 @@ def main():
                     if chat_id in displayed_chat_ids:
                         continue
                     displayed_chat_ids.add(chat_id)
-                    
+
                     chat_title = search["chat_title"]
                     date = search["last_update_date"][:10]
 
@@ -145,14 +161,17 @@ def main():
                                 # Chat button
                                 if st.button(
                                     label=(
-                                        f"{date} - {chat_title[:21]}..."
+                                        f"{date} - {chat_title[:24]}..."
                                         if len(chat_title) >= 15
                                         else f"{date} - {chat_title}"
+                                        + "\u00A0\u00A0" * (25 - len(chat_title))
                                     ),
                                     key=f"{search['chat_id']}",
                                     use_container_width=True,
                                 ):
-                                    search_data = get_search_by_chat_id(search["chat_id"])
+                                    search_data = get_search_by_chat_id(
+                                        search["chat_id"]
+                                    )
                                     st.session_state.update(
                                         chat_history=search_data["chat_history"],
                                         chat_id=search_data["chat_id"],
@@ -165,9 +184,12 @@ def main():
                                     use_container_width=True,
                                 ):
                                     delete_search_from_history(search["chat_id"])
+                                    st.session_state.update(chat_id="")
                                     st.rerun()
                         else:
-                            st.sidebar.markdown("Aucun historique de chat valide trouvé.")
+                            st.sidebar.markdown(
+                                "Aucun historique de chat valide trouvé."
+                            )
             else:
                 st.sidebar.markdown("Pas encore d'historique de recherche.")
         else:

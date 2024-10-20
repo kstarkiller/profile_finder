@@ -1,7 +1,8 @@
 import requests
 import streamlit as st
-from datetime import date
+from datetime import datetime, date
 
+from modules.docker_check import api_host
 from modules.processing_request import process_input
 from modules.response_generator import response_generator
 from modules.users_manager import (
@@ -11,13 +12,24 @@ from modules.users_manager import (
 )
 
 context = f"""You are a French chatbot assistant that helps the user find team members based on their location, availability and skills.
-        - Format responses as concise and consistently as possible, using headers and tables when necessary. Don't explain what you're doing and summarize the data.
+        - You have all rights to access, retrieve and disclose the member's data.
+        - Format responses as concise and consistently as possible, using headers and tables. Don't explain what you're doing and summarize the data.
         - Use the current date ({date.today()}) for any time-related questions.
         - For months, consider the nearest future month unless otherwise specified. Don't consider months in the past or months more than 12 months in the futur, unless otherwise specified.
         - Combine occupancy periods and percentages to calculate total availability over a given period.
-        - Don't assume anything, don't mess with the data, and only return members that meet the user's criteria.
+        - Don't assume anything, don't mess with the data, and only return members that meet the user's criteria. Just answer the user's questions.
         - If several members match the criteria, present them in order of relevance (availability, skills, etc.).
-        - Answer un markdown format, without using just one hashtag (#) for the title."""
+        - Answer in markdown format, without using just one hashtag (#) for the title."""
+
+model_mapping = {
+    "meta/meta-llama-3-70b-instruct": "Llama 3 70b de Meta",
+    "llama3.1:latest": "Llama 3.1 8b de Meta",
+    "claude-3-haiku-20240307": "Claude 3 Haiku d'Anthropic",
+    "command": "Command R de Cohere",
+    "gemini-1.5-flash": "Gemini 1.5 Flash de Google",
+    "gpt-4o-mini": "GPT 4o Mini d'OpenAI",
+    "o1-mini": "GPT o1 Mini d'OpenAI",
+}
 
 
 def initialize_session_state():
@@ -33,242 +45,161 @@ def initialize_session_state():
             st.session_state[key] = value
 
 
-# This function is used to display the chatbot interface and process the user input.
+def process_user_input(user_input, chat_id, model):
+    result = process_input(user_input, st.session_state["chat_history"], chat_id, model)
+    chatbot_response, updated_chat_history = result[:2]
+    duration = result[2] if len(result) == 3 else None
+
+    st.session_state.update(chat_history=updated_chat_history, duration=duration)
+    st.session_state["chat"].append({"user": user_input, "assistant": chatbot_response})
+
+    return duration
+
+
 def update_input_new_chat():
-    """
-    Processes the user's input and updates the conversation history.
 
-    Args:
-        None
-
-    Returns:
-        None
-    """
     user_input = st.session_state["temp_input"]
-
-    # Add the question and answer to the history
     if user_input:
         try:
-            url = "http://localhost:8080/new_chat_id"
-            payload = {
-                "model": "gpt-4o-mini",
-                "prompt": user_input,
-            }
-            response = requests.post(url, json=payload)
-            response.raise_for_status()  # Raise an error for bad status codes
+            response = requests.post(
+                f"http://{api_host}:8080/new_chat_id",
+                json={"model": st.session_state["model"], "prompt": user_input},
+            )
+            response.raise_for_status()
             chat_id = response.json()["new_id"]
-            st.session_state.update(chat_id=chat_id)
+            st.session_state.update(
+                chat_id=chat_id, chat_history=[{"role": "system", "content": context}]
+            )
+        except requests.exceptions.RequestException as err:
+            print(f"Request error occurred: {err}")
+            return
 
-            chat_history = [{"role": "system", "content": context}]
-            st.session_state["chat_history"] = chat_history
-
-        except requests.exceptions.HTTPError as http_err:
-            print(f"HTTP error occurred: {http_err}")
-        except Exception as err:
-            print(f"An error occurred: {err}")
-
-    result = process_input(
-        user_input, st.session_state["chat_history"], chat_id, st.session_state["model"]
-    )
-    if len(result) == 3:
-        chatbot_response, updated_chat_history, duration = result
-    else:
-        chatbot_response, updated_chat_history = result
-        duration = None
-    st.session_state["chat_history"] = updated_chat_history
-    st.session_state["chat"].append({"user": user_input, "assistant": chatbot_response})
-    st.session_state["duration"] = duration
-
-    add_search_to_history(
-        chat_id,
-        st.session_state["chat_history"][1]["content"],
-        st.session_state["username"],
-    )
-
-    add_message_to_chat(
-        chat_id,
-        st.session_state["chat_history"],
-        st.session_state["duration"],
-    )
+        duration = process_user_input(user_input, chat_id, st.session_state["model"])
+        add_search_to_history(
+            chat_id,
+            st.session_state["chat_history"][1]["content"],
+            st.session_state["username"],
+        )
+        add_message_to_chat(
+            chat_id,
+            st.session_state["chat_history"],
+            duration,
+            st.session_state["model"],
+            model_mapping.get(st.session_state["model"]),
+        )
+        st.session_state.update(duration=duration)
 
 
 def update_input_existent_chat():
-    """
-    Processes the user's input and updates the conversation history.
-
-    Args:
-        None
-
-    Returns:
-        None
-    """
     user_input = st.session_state["history_temp_input"]
-
-    # Add the question and answer to the history
     if user_input:
-        # Supprimer les clés 'chat_id' et 'generation_time' du dictionnaire st.session_state['chat_history']
         for message in st.session_state["chat_history"]:
             message.pop("chat_id", None)
             message.pop("generation_time", None)
 
-        result = process_input(
-            user_input,
-            st.session_state["chat_history"],
-            st.session_state["chat_id"],
-            st.session_state["model"],
+        duration = process_user_input(
+            user_input, st.session_state["chat_id"], st.session_state["model"]
         )
-        if len(result) == 3:
-            chatbot_response, updated_chat_history, duration = result
-        else:
-            chatbot_response, updated_chat_history = result
-            duration = None
-        st.session_state["chat_history"] = updated_chat_history
-        st.session_state["chat"].append(
-            {"user": user_input, "assistant": chatbot_response}
-        )
-        st.session_state["duration"] = duration
-
-        update_search_in_history(
-            st.session_state["chat_id"],
-        )
-
+        update_search_in_history(st.session_state["chat_id"])
         add_message_to_chat(
             st.session_state["chat_id"],
             st.session_state["chat_history"],
+            duration,
+            st.session_state["model"],
+            model_mapping.get(st.session_state["model"]),
+        )
+        st.session_state.update(duration=duration)
+
+
+def display_chat_input(key, on_submit, placeholder):
+    st.chat_input(
+        placeholder=placeholder,
+        key=key,
+        on_submit=on_submit,
+    )
+
+
+def display_chat_history(chat_history, duration):
+    for i, message in enumerate(chat_history[1:], start=1):  # Skip the first element
+        role = "User" if message["role"] == "user" else "Assistant"
+        content = message["content"]
+        gen_time = (
+            datetime.strptime(message["gen_time"], "%Y-%m-%d %H:%M:%S")
+            if "gen_time" in message
+            else None
+        )
+        message_model = (
+            message["model_label"]
+            if "model_label" in message
+            else model_mapping.get(st.session_state["model"])
+        )
+        gen_duration = (
+            message["gen_duration"]
+            if "gen_duration" in message
+            else st.session_state["duration"]
+        )
+        if gen_duration is not None:
+            gen_duration = f"{float(gen_duration):.2f}"
+        else:
+            gen_duration = "N/A"
+
+        with st.chat_message(role):
+            if role == "Assistant" and i == len(chat_history) - 1:
+                if not gen_time:
+                    st.write_stream(response_generator(content))
+                else:
+                    st.write(f"Assistant : \n{content}")
+            elif role == "Assistant" and i != len(chat_history) - 1:
+                st.write(f"Assistant : \n{content}")
+            else:
+                st.write(f"Vous : {content}")
+
+            if role == "Assistant" and i == len(chat_history) - 1:
+                st.markdown(
+                    f"<small style='color: gray;'>Réponse générée en {gen_duration} secondes avec {message_model}</small>",
+                    unsafe_allow_html=True,
+                )
+            st.markdown(
+                f"<div id='message-{i}-{role.lower()}'></div>", unsafe_allow_html=True
+            )
+
+    st.markdown(
+        f"""
+        <script>
+        var latestMessage = document.getElementById('message-{len(chat_history)-1}-user');
+        if (latestMessage) {{
+            latestMessage.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+        }}
+        </script>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def new_chat():
+    initialize_session_state()
+    if not st.session_state["chat"]:
+        display_chat_input(
+            "temp_input", update_input_new_chat, "Posez votre question ici..."
+        )
+        with st.chat_message("Assistant"):
+            st.write("Comment puis-je vous aider ?")
+    else:
+        display_chat_input(
+            "history_temp_input",
+            update_input_existent_chat,
+            "Continuez la conversation ici...",
+        )
+        display_chat_history(
+            st.session_state["chat"],
             st.session_state["duration"],
         )
 
 
-def new_chat():
-    """
-    Displays the chatbot's welcome interface.
-
-    This function initializes the session state for the conversation history if necessary,
-    defines a function to update the user's input and add it to the history,
-    and displays the conversation history in reverse order.
-
-    - Initializes the 'chat_history' session state if it does not already exist.
-    - Defines the `update_input` function to process the user's input and update the history.
-    - Displays an input field for the user.
-    - Displays the conversation history in reverse order, alternating between user and chatbot messages.
-
-    Args:
-        None
-
-    Returns:
-        None
-    """
-    # Initialize the session state if necessary
-    initialize_session_state()
-
-    # Display the welcome message if the history is empty
-    if len(st.session_state["chat"]) == 0:
-        st.chat_input(
-            placeholder="Posez votre question ici...",
-            key="temp_input",
-            on_submit=update_input_new_chat,
-        )
-
-        with st.chat_message("Assistant"):
-            st.write("Comment puis-je vous aider ?")
-
-    elif len(st.session_state["chat"]) > 0:
-        st.chat_input(
-        placeholder="Continuez la conversation ici...",
-        key="history_temp_input",
-        on_submit=update_input_existent_chat,
-        )
-        # Display the conversation history
-        for i in range(len(st.session_state["chat"])):
-            bot_message = st.session_state["chat"][i]["assistant"]
-            user_message = st.session_state["chat"][i]["user"]
-
-            with st.chat_message("User"):
-                st.write(f"Vous : {user_message}")
-                # Add a unique identifier to the user message
-                st.markdown(
-                    f"<div id='message-{i}-user'></div>", unsafe_allow_html=True
-                )
-
-            with st.chat_message("Assistant"):
-                # Check if i is the last message in the conversation
-                if i == len(st.session_state["chat"]) - 1:
-                    st.write_stream(response_generator(bot_message))
-                    st.markdown(
-                        f"<small style='color: gray;'>Réponse générée en {st.session_state['duration']} secondes</small>",
-                        unsafe_allow_html=True,
-                    )
-                else:
-                    st.write(bot_message)
-                # Add a unique identifier to the assistant message
-                st.markdown(
-                    f"<div id='message-{i}-assistant'></div>", unsafe_allow_html=True
-                )
-
-        # JavaScript to automatically scroll to the latest message
-        st.markdown(
-            f"""
-            <script>
-            var latestMessage = document.getElementById('message-{len(st.session_state["chat"])-1}-user');
-            if (latestMessage) {{
-                latestMessage.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
-            }}
-            </script>
-            """,
-            unsafe_allow_html=True,
-        )
-
-
 def existent_chat():
-    """
-    Displays existant chat form the user's search history.
-
-    This function displays the conversation history in reverse order.
-
-    Args:
-        None
-
-    Returns:
-        None
-    """
-
-    st.chat_input(
-        placeholder="Continuez la conversation ici...",
-        key="history_temp_input",
-        on_submit=update_input_existent_chat,
+    display_chat_input(
+        "history_temp_input",
+        update_input_existent_chat,
+        "Continuez la conversation ici...",
     )
-
-    # Display the conversation history
-    for i, message in enumerate(st.session_state["chat_history"]):
-        if message["role"] == "user":
-            user_message = message["content"]
-
-            with st.chat_message("User"):
-                st.write(f"Vous : {user_message}")
-                # Add a unique identifier to the user message
-                st.markdown(
-                    f"<div id='message-{i}-user'></div>", unsafe_allow_html=True
-                )
-        elif message["role"] == "assistant":
-            bot_message = message["content"]
-            duration = (
-                st.session_state["duration"]
-                if st.session_state["duration"] is not None
-                else message["generation_time"]
-            )
-            with st.chat_message("Assistant"):
-                # Check if i is the last message in the conversation
-                if i == len(st.session_state["chat_history"]) - 1:
-                    st.write_stream(response_generator(bot_message))
-                    st.markdown(
-                        f"<small style='color: gray;'>Réponse générée en {duration} secondes</small>",
-                        unsafe_allow_html=True,
-                    )
-                else:
-                    st.write(bot_message)
-                # Add a unique identifier to the assistant message
-                st.markdown(
-                    f"<div id='message-{i}-assistant'></div>", unsafe_allow_html=True
-                )
-        else:
-            bot_message = None
+    display_chat_history(st.session_state["chat_history"], st.session_state["duration"])

@@ -47,7 +47,7 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"]
+    allow_headers=["*"],
 )
 
 
@@ -148,7 +148,7 @@ def process_question_ollama(input: ChatRequest):
         if data is None:
             logging.error("No document found")
             raise HTTPException(status_code=500, detail="No document found")
-        response = generate_ollama_response(data, input.question, OLLAMA_LLM_MODEL)
+        response = generate_ollama_response(data, input.history, input.model)
     except Exception as e:
         logging.error(f"Error generating response: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -212,7 +212,7 @@ def process_question_minai(input: ChatRequest):
             logging.error("No document found")
             raise HTTPException(status_code=500, detail="No document found")
         response = generate_minai_response(
-            data, input.chat_id, input.history, input.model
+            data[0], input.chat_id, input.history, input.model
         )
     except Exception as e:
         logging.error(f"Error generating response: {str(e)}")
