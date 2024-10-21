@@ -25,7 +25,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN python -m spacy download fr_core_news_lg
 
 # Démarrer Ollama en arrière-plan et attendre qu'il soit prêt
-RUN echo '#!/bin/bash\nollama serve &\nsleep 10\nollama pull nomic-embed-text:latest\nexec "$@"' > /entrypoint.sh && \
+RUN echo '#!/bin/bash\nollama serve &\nsleep 10\nollama pull nomic-embed-text:v1.5\nexec "$@"' > /entrypoint.sh && \
     chmod +x /entrypoint.sh
 
 # Copier le reste du code de l'application dans le répertoire de travail
