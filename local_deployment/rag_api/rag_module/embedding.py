@@ -23,7 +23,7 @@ logging.basicConfig(
 )
 
 
-def embed_documents(file_path, model="nomic-embed-text:latest", batch_size=10):
+def embed_documents(file_path, model="nomic-embed-text:v1.5", batch_size=10):
     """
     Embeds the documents using an embedding model in batches.
 
@@ -86,7 +86,7 @@ def embed_documents(file_path, model="nomic-embed-text:latest", batch_size=10):
 
 
 # Retrieve documents
-def retrieve_documents(question: str, model="nomic-embed-text:latest"):
+def retrieve_documents(question: str, model="nomic-embed-text:v1.5"):
     """
     Embeds the question using an embedding model and queries the collection for the most similar document.
 

@@ -99,7 +99,7 @@ def main():
         st.sidebar.markdown("## Modèles disponibles :")
         model_mapping = {
             ("[LOCAL] Llama 3.1 - Meta" if is_windows else "Llama 3 70b - Meta"): (
-                "llama3.1:latest" if is_windows else "meta/meta-llama-3-70b-instruct"
+                "llama3.1:8b" if is_windows else "meta/meta-llama-3-70b-instruct"
             ),
             "Claude 3 Haiku - Anthropic": "claude-3-haiku-20240307",
             "Gemini 1.5 Flash - Google": "gemini-1.5-flash",
@@ -161,7 +161,7 @@ def main():
                                 # Chat button
                                 if st.button(
                                     label=(
-                                        f"{date} - {chat_title[:24]}..."
+                                        f"{date} - {chat_title[:23]}..."
                                         if len(chat_title) >= 15
                                         else f"{date} - {chat_title}"
                                         + "\u00A0\u00A0" * (25 - len(chat_title))

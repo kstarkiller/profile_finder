@@ -34,7 +34,7 @@ def process_input(user_input, chat_history, chat_id, model):
     # Determine the URL based on the model
     url = (
         "http://localhost:8080/ollama_chat"
-        if model == "llama3.1:latest"
+        if model == "llama3.1:8b" or model == "llama3.1:latest"
         else f"http://{api_host}:8080/minai_chat"
     )
 

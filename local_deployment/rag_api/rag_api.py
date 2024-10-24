@@ -36,7 +36,7 @@ CLAUDE_HAIKU = "claude-3-haiku-20240307"
 COMMAND_COHERE = "command"
 GEMINI_1_5_FLASH = "gemini-1.5-flash"
 OLLAMA_LLM_MODEL = "llama3.1:8b"
-MODEL_EMBEDDING = "nomic-embed-text:latest"
+MODEL_EMBEDDING = "nomic-embed-text:v1.5"
 
 app = FastAPI()
 
