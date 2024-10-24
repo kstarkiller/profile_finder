@@ -1,11 +1,6 @@
-# Fichier de configuration contenant des clés API
 config.py
-
-# Dossiers de l'environnement virtuel
 venv/
 .env
-
-# Fichiers
 *.csv
 *.xlsx
 *.xls
@@ -15,29 +10,22 @@ venv/
 *.sqlite3
 *.db
 *.sqlite3-journal
-
-# # Docker
-# Dockerfile
-# docker-compose.yml
-# .dockerignore
-
-# indexes
 *.faiss
-
-# Ignore les fichiers compilés et les artefacts de construction
 *.o
 *.pyc
 *.pyo
 *.pyd
-__pycache__/
-
-
-# Dossiers et fichiers souvent utilisés pour les projets de développement
 node_modules/
-.DS_Store
+node_modules
 Thumbs.db
-
-# Dossiers spécifiques aux IDEs
 .idea/
 .vscode/
 *.sublime-workspace
+test.py
+.DS_Store
+yala.py
+yala.yml
+speech.mp3
+path/
+__pycache__
+openlit/
