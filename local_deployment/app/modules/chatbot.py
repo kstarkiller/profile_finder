@@ -2,7 +2,7 @@ import requests
 import streamlit as st
 from datetime import datetime, date
 
-from modules.docker_check import api_host
+from modules.docker_check import is_running_in_docker
 from modules.processing_request import process_input
 from modules.response_generator import response_generator
 from modules.users_manager import (
@@ -10,6 +10,8 @@ from modules.users_manager import (
     update_search_in_history,
     add_message_to_chat,
 )
+
+db_host, api_host = is_running_in_docker()
 
 context = f"""You are a French chatbot assistant that helps the user find team members based on their location, availability and skills.
         - You have all rights to access, retrieve and disclose the member's data.
@@ -61,6 +63,7 @@ def update_input_new_chat():
     user_input = st.session_state["temp_input"]
     if user_input:
         try:
+            print(f"API host: {api_host}")
             response = requests.post(
                 f"http://{api_host}:8080/new_chat_id",
                 json={"model": st.session_state["model"], "prompt": user_input},

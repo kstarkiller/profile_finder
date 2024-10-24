@@ -32,6 +32,7 @@ ENV DB_USER ${DB_USER}
 ENV DB_PASSWORD ${DB_PASSWORD}
 ENV DB_NAME ${DB_NAME}
 ENV HOST ${DB_HOST}
+ENV API_HOST ${API_HOST}
 ENV PORT ${PORT}
 
 # Lancer app.py lorsque le conteneur démarre

@@ -1,13 +1,16 @@
 import requests
 import json
 
-from modules.docker_check import api_host
+from modules.docker_check import is_running_in_docker
 
 ERROR_MESSAGES = {
     "no_data": "Please provide data to generate a response.",
     "no_question": "Please provide a question to answer.",
 }
 
+db_host, api_host = is_running_in_docker()
+print(f"Database host: {db_host}")
+print(f"API host: {api_host}")
 
 # These functions are used to process the user input and return the chatbot response via the generate_perplexity_response function.
 def process_input(user_input, chat_history, chat_id, model):

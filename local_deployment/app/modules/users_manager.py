@@ -5,7 +5,9 @@ from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import declarative_base, sessionmaker
 import bcrypt
 
-from modules.docker_check import db_host
+from modules.docker_check import is_running_in_docker
+
+db_host, api_host = is_running_in_docker()
 
 # Récupérer les informations de connexion à la base de données
 db_user = os.getenv("DB_USER")

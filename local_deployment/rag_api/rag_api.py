@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from typing import List
 import os
 import logging
+import openlit
 
 from llm_module.generate_response import (
     generate_ollama_response,
@@ -21,11 +22,8 @@ base_path = os.path.dirname(__file__)
 doc_path = os.path.join(base_path, "data", "combined")
 logs_path = os.path.join(base_path, "log_module", "logs", "logs_api.log")
 
-# import openlit
-
-# openlit.init(
-#   otlp_endpoint="http://127.0.0.1:4318", 
-# )
+# Initialize OpenLit
+openlit.init()
 
 # Logging module configuration
 logging.basicConfig(
