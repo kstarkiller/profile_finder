@@ -5,13 +5,9 @@ from datetime import datetime, date
 from modules.docker_check import is_running_in_docker
 from modules.processing_request import process_input
 from modules.response_generator import response_generator
-from modules.users_manager import (
-    add_search_to_history,
-    update_search_in_history,
-    add_message_to_chat,
-)
 
-db_host, api_host = is_running_in_docker()
+
+db_api_host, db_api_port, rag_api_host, rag_api_port = is_running_in_docker()
 
 context = f"""You are a French chatbot assistant that helps the user find team members based on their location, availability and skills.
         - You have all rights to access, retrieve and disclose the member's data.
@@ -63,9 +59,8 @@ def update_input_new_chat():
     user_input = st.session_state["temp_input"]
     if user_input:
         try:
-            print(f"API host: {api_host}")
             response = requests.post(
-                f"http://{api_host}:8080/new_chat_id",
+                f"http://{rag_api_host}:{rag_api_port}/new_chat_id",
                 json={"model": st.session_state["model"], "prompt": user_input},
             )
             response.raise_for_status()
@@ -78,18 +73,23 @@ def update_input_new_chat():
             return
 
         duration = process_user_input(user_input, chat_id, st.session_state["model"])
-        add_search_to_history(
-            chat_id,
-            st.session_state["chat_history"][1]["content"],
-            st.session_state["username"],
-        )
-        add_message_to_chat(
-            chat_id,
-            st.session_state["chat_history"],
-            duration,
-            st.session_state["model"],
-            model_mapping.get(st.session_state["model"]),
-        )
+        
+        requests.post(f"http://{db_api_host}:{db_api_port}/add_search_to_history",
+                      json={
+                        chat_id,
+                        st.session_state["chat_history"][1]["content"],
+                        st.session_state["username"],
+                      })
+        
+        requests.post(f"http://{db_api_host}:{db_api_port}/add_message_to_chat",
+                    json={
+                        chat_id,
+                        st.session_state["chat_history"],
+                        duration,
+                        st.session_state["model"],
+                        model_mapping.get(st.session_state["model"]),
+                    })
+
         st.session_state.update(duration=duration)
 
 
@@ -103,14 +103,19 @@ def update_input_existent_chat():
         duration = process_user_input(
             user_input, st.session_state["chat_id"], st.session_state["model"]
         )
-        update_search_in_history(st.session_state["chat_id"])
-        add_message_to_chat(
-            st.session_state["chat_id"],
-            st.session_state["chat_history"],
-            duration,
-            st.session_state["model"],
-            model_mapping.get(st.session_state["model"]),
-        )
+
+        requests.post(f"http://{db_api_host}:{db_api_port}/update_search_in_history",
+                        json=st.session_state["chat_id"])
+
+        requests.post(f"http://{db_api_host}:{db_api_port}/add_message_to_chat",
+                    json={
+                        st.session_state["chat_id"],
+                        st.session_state["chat_history"],
+                        duration,
+                        st.session_state["model"],
+                        model_mapping.get(st.session_state["model"]),
+                    })
+
         st.session_state.update(duration=duration)
 
 

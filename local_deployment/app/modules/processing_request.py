@@ -8,9 +8,7 @@ ERROR_MESSAGES = {
     "no_question": "Please provide a question to answer.",
 }
 
-db_host, api_host = is_running_in_docker()
-print(f"Database host: {db_host}")
-print(f"API host: {api_host}")
+db_api_host, db_api_port, rag_api_host, rag_api_port = is_running_in_docker()
 
 # These functions are used to process the user input and return the chatbot response via the generate_perplexity_response function.
 def process_input(user_input, chat_history, chat_id, model):
@@ -38,7 +36,7 @@ def process_input(user_input, chat_history, chat_id, model):
     url = (
         "http://localhost:8080/ollama_chat"
         if model == "llama3.1:8b" or model == "llama3.1:latest"
-        else f"http://{api_host}:8080/minai_chat"
+        else f"http://{rag_api_host}:{rag_api_port}/minai_chat"
     )
 
     try:

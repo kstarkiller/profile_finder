@@ -5,7 +5,7 @@ import sys
 import logging
 from chromadb.config import Settings
 
-from rag_module.load_documents import load_documents
+from rag_module.load_documents import load_profile
 from llm_module.model_precision_improvements import structure_query
 
 # Path to the collection

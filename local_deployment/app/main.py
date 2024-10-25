@@ -1,7 +1,9 @@
 import streamlit as st
 import os
 import platform
+import requests
 from datetime import datetime
+import bcrypt
 
 st.set_page_config(initial_sidebar_state="expanded")
 
@@ -10,9 +12,8 @@ from modules.chatbot import new_chat, existent_chat
 from modules.users_manager import (
     login,
     logout,
-    get_search_history,
-    get_search_by_chat_id,
-    delete_search_from_history,
+    db_api_host,
+    db_api_port,
 )
 from modules.signup_form import show_signup_form
 
@@ -139,9 +140,12 @@ def main():
         )
         st.sidebar.markdown("### Historique de recherche :")
         if "search_history" in st.session_state:
-            st.session_state["search_history"] = get_search_history(
-                st.session_state["username"]
-            )
+            
+            st.session_state["search_history"] = requests.get(
+                f"http://{db_api_host}:{db_api_port}/get_search_history",
+                params={"user_email": st.session_state["username"]},
+            ).json()
+
             displayed_chat_ids = set()
             if len(st.session_state["search_history"]) > 0:
                 for search in st.session_state["search_history"]:
@@ -169,9 +173,8 @@ def main():
                                     key=f"{search['chat_id']}",
                                     use_container_width=True,
                                 ):
-                                    search_data = get_search_by_chat_id(
-                                        search["chat_id"]
-                                    )
+                                    search_data = requests.get(f"http://{db_api_host}:{db_api_port}/get_search_by_chat_id",
+                                                                params={"chat_id": search["chat_id"]}).json()
                                     st.session_state.update(
                                         chat_history=search_data["chat_history"],
                                         chat_id=search_data["chat_id"],
@@ -183,7 +186,10 @@ def main():
                                     key=f"delete_{search['chat_id']}",
                                     use_container_width=True,
                                 ):
-                                    delete_search_from_history(search["chat_id"])
+                                    requests.post(
+                                        f"http://{db_api_host}:{db_api_port}/delete_search_from_history",
+                                        json={"chat_id": search["chat_id"]},
+                                    )
                                     st.session_state.update(chat_id="")
                                     st.rerun()
                         else:

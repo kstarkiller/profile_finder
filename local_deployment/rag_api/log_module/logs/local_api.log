@@ -1,1 +1,107 @@
 
+2024-10-25 10:30:35,655 - INFO - Starting openLIT initialization...
+2024-10-25 10:30:36,377 - INFO - Instrumented openai
+2024-10-25 10:30:36,377 - INFO - Library for anthropic (anthropic) not found. Skipping instrumentation
+2024-10-25 10:30:36,377 - INFO - Library for cohere (cohere) not found. Skipping instrumentation
+2024-10-25 10:30:36,377 - INFO - Library for mistral (mistralai) not found. Skipping instrumentation
+2024-10-25 10:30:36,455 - INFO - Instrumented bedrock
+2024-10-25 10:30:36,455 - INFO - Library for vertexai (vertexai) not found. Skipping instrumentation
+2024-10-25 10:30:36,455 - INFO - Library for groq (groq) not found. Skipping instrumentation
+2024-10-25 10:30:36,471 - INFO - Instrumented ollama
+2024-10-25 10:30:36,471 - INFO - Library for gpt4all (gpt4all) not found. Skipping instrumentation
+2024-10-25 10:30:36,471 - INFO - Library for elevenlabs (elevenlabs) not found. Skipping instrumentation
+2024-10-25 10:30:36,471 - INFO - Library for vllm (vllm) not found. Skipping instrumentation
+2024-10-25 10:30:36,471 - INFO - Library for google-ai-studio (google.generativeai) not found. Skipping instrumentation
+2024-10-25 10:30:36,471 - INFO - Library for azure-ai-inference (azure.ai.inference) not found. Skipping instrumentation
+2024-10-25 10:30:36,471 - INFO - Library for langchain (langchain) not found. Skipping instrumentation
+2024-10-25 10:30:36,471 - INFO - Library for llama_index (llama_index) not found. Skipping instrumentation
+2024-10-25 10:30:36,471 - INFO - Library for haystack (haystack) not found. Skipping instrumentation
+2024-10-25 10:30:36,471 - INFO - Library for embedchain (embedchain) not found. Skipping instrumentation
+2024-10-25 10:30:36,471 - INFO - Instrumented chroma
+2024-10-25 10:30:36,471 - INFO - Library for pinecone (pinecone) not found. Skipping instrumentation
+2024-10-25 10:30:36,471 - INFO - Library for qdrant (qdrant_client) not found. Skipping instrumentation
+2024-10-25 10:30:36,471 - INFO - Library for milvus (pymilvus) not found. Skipping instrumentation
+2024-10-25 10:30:36,471 - INFO - Library for transformers (transformers) not found. Skipping instrumentation
+2024-10-25 13:49:53,997 - INFO - Starting openLIT initialization...
+2024-10-25 13:49:54,738 - INFO - Instrumented openai
+2024-10-25 13:49:54,740 - INFO - Library for anthropic (anthropic) not found. Skipping instrumentation
+2024-10-25 13:49:54,742 - INFO - Library for cohere (cohere) not found. Skipping instrumentation
+2024-10-25 13:49:54,743 - INFO - Library for mistral (mistralai) not found. Skipping instrumentation
+2024-10-25 13:49:54,833 - INFO - Instrumented bedrock
+2024-10-25 13:49:54,835 - INFO - Library for vertexai (vertexai) not found. Skipping instrumentation
+2024-10-25 13:49:54,835 - INFO - Library for groq (groq) not found. Skipping instrumentation
+2024-10-25 13:49:54,837 - INFO - Instrumented ollama
+2024-10-25 13:49:54,838 - INFO - Library for gpt4all (gpt4all) not found. Skipping instrumentation
+2024-10-25 13:49:54,838 - INFO - Library for elevenlabs (elevenlabs) not found. Skipping instrumentation
+2024-10-25 13:49:54,839 - INFO - Library for vllm (vllm) not found. Skipping instrumentation
+2024-10-25 13:49:54,840 - INFO - Library for google-ai-studio (google.generativeai) not found. Skipping instrumentation
+2024-10-25 13:49:54,842 - INFO - Library for azure-ai-inference (azure.ai.inference) not found. Skipping instrumentation
+2024-10-25 13:49:54,842 - INFO - Library for langchain (langchain) not found. Skipping instrumentation
+2024-10-25 13:49:54,843 - INFO - Library for llama_index (llama_index) not found. Skipping instrumentation
+2024-10-25 13:49:54,844 - INFO - Library for haystack (haystack) not found. Skipping instrumentation
+2024-10-25 13:49:54,845 - INFO - Library for embedchain (embedchain) not found. Skipping instrumentation
+2024-10-25 13:49:54,849 - INFO - Instrumented chroma
+2024-10-25 13:49:54,850 - INFO - Library for pinecone (pinecone) not found. Skipping instrumentation
+2024-10-25 13:49:54,850 - INFO - Library for qdrant (qdrant_client) not found. Skipping instrumentation
+2024-10-25 13:49:54,851 - INFO - Library for milvus (pymilvus) not found. Skipping instrumentation
+2024-10-25 13:49:54,852 - INFO - Library for transformers (transformers) not found. Skipping instrumentation
+2024-10-25 13:51:01,188 - ERROR - HTTP error occurred: 502 Server Error: Bad Gateway for url: https://api.1min.ai/api/conversations
+2024-10-25 13:51:07,162 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-10-25 13:51:07,878 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-10-25 13:51:08,489 - INFO - RAG performed in 5.2617573738098145 seconds.
+
+2024-10-25 13:51:10,230 - INFO - 
+2024-10-25 13:51:10,231 - INFO - Question asked: hello
+2024-10-25 13:51:10,231 - INFO - 
+2024-10-25 13:51:10,231 - INFO - Generated response: Response ended prematurely
+2024-10-25 13:51:10,231 - INFO - 
+2024-10-25 13:51:10,232 - INFO - Response generated in 1.7432186603546143 seconds.
+
+
+2024-10-25 13:52:18,346 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-10-25 13:52:18,349 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-10-25 13:52:18,491 - INFO - RAG performed in 0.3330814838409424 seconds.
+
+2024-10-25 13:52:18,506 - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2024-10-25 13:54:02,213 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-10-25 13:54:02,215 - INFO - 
+2024-10-25 13:54:02,215 - INFO - Question asked: Qui est disponible en janvier 2025 ?
+2024-10-25 13:54:02,216 - INFO - 
+2024-10-25 13:54:02,216 - INFO - Generated response: # Équipe disponible en janvier 2025
+
+| Nom | Code | Profil | Localisation |
+| --- | --- | --- | --- |
+| Sharon Day | 468654 | Confirmé | Mtp |
+| Yesenia Kim | 502314 | Confirmé | Paris |
+
+### Détails d'occupation et de disponibilité en janvier 2025
+
+- **Sharon Day** : Disponible à 50% depuis le 01/09/2024 jusqu'au 12/07/2025.
+- **Yesenia Kim** : Mission SSIS à 50% occupation à la Poste du 16/05/2024 au 19/04/2025, donc elle est disponible en janvier 2025.
+2024-10-25 13:54:02,216 - INFO - 
+2024-10-25 13:54:02,216 - INFO - Response generated in 103.72465109825134 seconds.
+
+
+2024-10-25 16:16:16,330 - INFO - Starting openLIT initialization...
+2024-10-25 16:16:17,100 - INFO - Instrumented openai
+2024-10-25 16:16:17,100 - INFO - Library for anthropic (anthropic) not found. Skipping instrumentation
+2024-10-25 16:16:17,100 - INFO - Library for cohere (cohere) not found. Skipping instrumentation
+2024-10-25 16:16:17,100 - INFO - Library for mistral (mistralai) not found. Skipping instrumentation
+2024-10-25 16:16:17,210 - INFO - Instrumented bedrock
+2024-10-25 16:16:17,210 - INFO - Library for vertexai (vertexai) not found. Skipping instrumentation
+2024-10-25 16:16:17,210 - INFO - Library for groq (groq) not found. Skipping instrumentation
+2024-10-25 16:16:17,226 - INFO - Instrumented ollama
+2024-10-25 16:16:17,226 - INFO - Library for gpt4all (gpt4all) not found. Skipping instrumentation
+2024-10-25 16:16:17,226 - INFO - Library for elevenlabs (elevenlabs) not found. Skipping instrumentation
+2024-10-25 16:16:17,226 - INFO - Library for vllm (vllm) not found. Skipping instrumentation
+2024-10-25 16:16:17,226 - INFO - Library for google-ai-studio (google.generativeai) not found. Skipping instrumentation
+2024-10-25 16:16:17,226 - INFO - Library for azure-ai-inference (azure.ai.inference) not found. Skipping instrumentation
+2024-10-25 16:16:17,226 - INFO - Library for langchain (langchain) not found. Skipping instrumentation
+2024-10-25 16:16:17,226 - INFO - Library for llama_index (llama_index) not found. Skipping instrumentation
+2024-10-25 16:16:17,226 - INFO - Library for haystack (haystack) not found. Skipping instrumentation
+2024-10-25 16:16:17,226 - INFO - Library for embedchain (embedchain) not found. Skipping instrumentation
+2024-10-25 16:16:17,241 - INFO - Instrumented chroma
+2024-10-25 16:16:17,241 - INFO - Library for pinecone (pinecone) not found. Skipping instrumentation
+2024-10-25 16:16:17,241 - INFO - Library for qdrant (qdrant_client) not found. Skipping instrumentation
+2024-10-25 16:16:17,241 - INFO - Library for milvus (pymilvus) not found. Skipping instrumentation
+2024-10-25 16:16:17,241 - INFO - Library for transformers (transformers) not found. Skipping instrumentation

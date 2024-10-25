@@ -1,13 +1,14 @@
 import pandas as pd
-from pprint import pprint
+import requests
 import os
+
+from docker_check import is_running_in_docker
 
 # Paths
 base_path = os.path.dirname(__file__)
 fixtures_coaff_path = os.path.join(base_path, "fixtures", "fixtures_coaff.csv")
 fixtures_psarm_path = os.path.join(base_path, "fixtures", "fixtures_psarm.csv")
 fixtures_certs_path = os.path.join(base_path, "fixtures", "fixtures_certs.csv")
-combined_result_path = os.path.join(base_path, "combined", "combined_result.csv")
 
 coaff_df = pd.read_csv(fixtures_coaff_path)
 psarm_df = pd.read_csv(fixtures_psarm_path)
@@ -136,5 +137,31 @@ resultat_df["Combined"] = (
 # Remove the character "\" from the 'Combined' column
 resultat_df["Combined"] = resultat_df["Combined"].str.replace('"', "")
 
-# Export the final result to csv
-resultat_df.to_csv(combined_result_path)
+db_host, db_port = is_running_in_docker()
+
+# Vider la table raw_profiles avant d'insérer les nouveaux profils
+try:
+    response = requests.post(f"http://{db_host}:{db_port}/truncate_profiles")
+    response.raise_for_status()
+
+    # Insérer le résultat final dans la base de données grâce à une réquète à l'api bdd
+    for index, row in resultat_df.iterrows():
+        payload = {
+            "membre": row["Membres"],
+            "mission": row["Missions"],
+            "competence": row["Compétences"],
+            "certification": row["Certifications"],
+            "combined": row["Combined"]
+        }
+
+        try:
+            response = requests.post(f"http://{db_host}:{db_port}/insert_profile", json=payload)
+            response.raise_for_status()
+    
+        except requests.exceptions.HTTPError as err:
+            print("HTTP error occurred:", err)
+            print("Response content:", response.content)
+
+except requests.exceptions.HTTPError as err:
+    print("HTTP error occurred:", err)
+    print("Response content:", response.content)
