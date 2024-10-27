@@ -3,13 +3,12 @@ import os
 import platform
 import requests
 from datetime import datetime
-import bcrypt
 
 st.set_page_config(initial_sidebar_state="expanded")
 
 from styles import apply_custom_styles
 from modules.chatbot import new_chat, existent_chat
-from modules.users_manager import (
+from modules.connexion_manager import (
     login,
     logout,
     db_api_host,
@@ -52,7 +51,7 @@ def initialize_session_state():
         "chat_id": "",
         "themebutton": "light",
         "theme": "light",
-        "model": "meta/meta-llama-3-70b-instruct",
+        "model": None,
     }
     for key, value in default_values.items():
         if key not in st.session_state:
@@ -107,6 +106,7 @@ def main():
             "GPT 4o Mini - OpenAI": "gpt-4o-mini",
             "GPT o1 Mini - OpenAI": "o1-mini",
         }
+
         model = st.sidebar.selectbox(
             "Avec quel modèle souhaitez-vous interagir ?",
             options=[
@@ -140,7 +140,7 @@ def main():
         )
         st.sidebar.markdown("### Historique de recherche :")
         if "search_history" in st.session_state:
-            
+
             st.session_state["search_history"] = requests.get(
                 f"http://{db_api_host}:{db_api_port}/get_search_history",
                 params={"user_email": st.session_state["username"]},
@@ -165,7 +165,7 @@ def main():
                                 # Chat button
                                 if st.button(
                                     label=(
-                                        f"{date} - {chat_title[:23]}..."
+                                        f"{date} - {chat_title[:20]}..."
                                         if len(chat_title) >= 15
                                         else f"{date} - {chat_title}"
                                         + "\u00A0\u00A0" * (25 - len(chat_title))
@@ -173,11 +173,14 @@ def main():
                                     key=f"{search['chat_id']}",
                                     use_container_width=True,
                                 ):
-                                    search_data = requests.get(f"http://{db_api_host}:{db_api_port}/get_search_by_chat_id",
-                                                                params={"chat_id": search["chat_id"]}).json()
+                                    search_data = requests.get(
+                                        f"http://{db_api_host}:{db_api_port}/get_search_by_chat_id",
+                                        params={"chat_id": str(search["chat_id"])},
+                                    ).json()
                                     st.session_state.update(
                                         chat_history=search_data["chat_history"],
                                         chat_id=search_data["chat_id"],
+                                        model=search_data["chat_history"][-1]["model"],
                                     )
                             with col2_search:
                                 # Delete button
@@ -188,7 +191,7 @@ def main():
                                 ):
                                     requests.post(
                                         f"http://{db_api_host}:{db_api_port}/delete_search_from_history",
-                                        json={"chat_id": search["chat_id"]},
+                                        json={"chat_id": str(search["chat_id"])},
                                     )
                                     st.session_state.update(chat_id="")
                                     st.rerun()

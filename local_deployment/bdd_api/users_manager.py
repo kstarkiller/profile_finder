@@ -102,13 +102,11 @@ def get_user(email, password):
     user = db.query(User).filter(User.email == email).first()
     db.close()
 
-    print(f"User found password: {user.password}")
-
-    if user.password:
+    if user:
         try:
-            valid_password = bcrypt.checkpw(password, user.password)
-            print(f"Checking password: {password} // {user.password}")
-            print(valid_password)
+            valid_password = bcrypt.checkpw(
+                password.encode("utf-8"), user.password.encode("utf-8")
+            )
         except UnicodeDecodeError as e:
             return f"Erreur de décodage : {str(e)}"
 
@@ -135,13 +133,14 @@ def create_user(name, email, password):
         str: Email de l'utilisateur si l'utilisateur existe déjà,
         str: "User not found" si aucun utilisateur n'est trouvé
     """
+    # Hasher le mot de passe avec le salt
+    hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
     db = SessionLocal()
-    print(f"Creating user: {name} // {email} // {password}")
 
     # Vérifier si l'utilisateur existe déjà
     already_known_user = db.query(User).filter(User.email == email).first()
-    print(f"Already known user: {already_known_user}")
-    if already_known_user is not None:
+    if already_known_user:
         db.close()
         return already_known_user.email
 
@@ -150,16 +149,16 @@ def create_user(name, email, password):
         new_user = User(
             name=name,
             email=email,
-            password=password,
+            password=hashed_password,
         )
         db.add(new_user)
         db.commit()
 
         # Récupérer le nom de l'utilisateur créé
         registered_user = get_user(email, password)
-        print(f"Registered user: {registered_user}")
         db.close()
         return registered_user
+
 
 # Fonction pour ajouter une recherche à la base de données des recherches de l'utilisateur
 def add_search_to_history(chat_id, first_message, user_email):
@@ -216,13 +215,16 @@ def get_search_history(user_email):
     Returns:
         list: Liste des recherches de l'utilisateur
     """
-    db = SessionLocal()
-    search_history = (
-        db.query(SearchHistory).filter(SearchHistory.user_email == user_email).all()
-    )
-    db.close()
+    try:
+        db = SessionLocal()
+        search_history = (
+            db.query(SearchHistory).filter(SearchHistory.user_email == user_email).all()
+        )
+        db.close()
 
-    return [search.to_dict() for search in search_history]
+        return [search.to_dict() for search in search_history]
+    except Exception as e:
+        return str(e)
 
 
 # Fonction pour récuperer une recherche par son chat_id
@@ -307,4 +309,3 @@ def delete_search_from_history(chat_id):
         raise e
     finally:
         db.close()
-

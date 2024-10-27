@@ -2,8 +2,6 @@ import pandas as pd
 import requests
 import os
 
-from docker_check import is_running_in_docker
-
 # Paths
 base_path = os.path.dirname(__file__)
 fixtures_coaff_path = os.path.join(base_path, "fixtures", "fixtures_coaff.csv")
@@ -137,31 +135,35 @@ resultat_df["Combined"] = (
 # Remove the character "\" from the 'Combined' column
 resultat_df["Combined"] = resultat_df["Combined"].str.replace('"', "")
 
-db_host, db_port = is_running_in_docker()
 
-# Vider la table raw_profiles avant d'insérer les nouveaux profils
-try:
-    response = requests.post(f"http://{db_host}:{db_port}/truncate_profiles")
-    response.raise_for_status()
+def insert_profiles(db_host, db_port):
+    # Vider la table raw_profiles avant d'insérer les nouveaux profils
+    try:
+        # Insérer le résultat final dans la base de données grâce à une réquète à l'api bdd
+        for index, row in resultat_df.iterrows():
+            payload = {
+                "membre": row["Membres"],
+                "mission": row["Missions"],
+                "competence": row["Compétences"],
+                "certification": row["Certifications"],
+                "combined": row["Combined"],
+            }
 
-    # Insérer le résultat final dans la base de données grâce à une réquète à l'api bdd
-    for index, row in resultat_df.iterrows():
-        payload = {
-            "membre": row["Membres"],
-            "mission": row["Missions"],
-            "competence": row["Compétences"],
-            "certification": row["Certifications"],
-            "combined": row["Combined"]
-        }
+            profiles_added = []
 
-        try:
-            response = requests.post(f"http://{db_host}:{db_port}/insert_profile", json=payload)
-            response.raise_for_status()
-    
-        except requests.exceptions.HTTPError as err:
-            print("HTTP error occurred:", err)
-            print("Response content:", response.content)
+            try:
+                response = requests.post(
+                    f"http://{db_host}:{db_port}/insert_profile", json=payload
+                )
+                response.raise_for_status()
+                profiles_added.append(response.json())
 
-except requests.exceptions.HTTPError as err:
-    print("HTTP error occurred:", err)
-    print("Response content:", response.content)
+            except requests.exceptions.HTTPError as err:
+                print("HTTP error occurred:", err)
+                print("Response content:", response.content)
+
+        return len(profiles_added)
+
+    except requests.exceptions.HTTPError as err:
+        print("HTTP error occurred:", err)
+        print("Response content:", response.content)

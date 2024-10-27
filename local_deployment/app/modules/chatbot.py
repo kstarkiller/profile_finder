@@ -58,6 +58,9 @@ def update_input_new_chat():
 
     user_input = st.session_state["temp_input"]
     if user_input:
+        if not st.session_state["model"]:
+            st.error("Veuillez sélectionner un modèle pour continuer.")
+            return
         try:
             response = requests.post(
                 f"http://{rag_api_host}:{rag_api_port}/new_chat_id",
@@ -73,22 +76,26 @@ def update_input_new_chat():
             return
 
         duration = process_user_input(user_input, chat_id, st.session_state["model"])
-        
-        requests.post(f"http://{db_api_host}:{db_api_port}/add_search_to_history",
-                      json={
-                        chat_id,
-                        st.session_state["chat_history"][1]["content"],
-                        st.session_state["username"],
-                      })
-        
-        requests.post(f"http://{db_api_host}:{db_api_port}/add_message_to_chat",
-                    json={
-                        chat_id,
-                        st.session_state["chat_history"],
-                        duration,
-                        st.session_state["model"],
-                        model_mapping.get(st.session_state["model"]),
-                    })
+
+        requests.post(
+            f"http://{db_api_host}:{db_api_port}/add_search_to_history",
+            json={
+                "chat_id": chat_id,
+                "first_message": st.session_state["chat_history"][1]["content"],
+                "user_email": st.session_state["username"],
+            },
+        )
+
+        requests.post(
+            f"http://{db_api_host}:{db_api_port}/add_message_to_chat",
+            json={
+                "chat_id": chat_id,
+                "chat_history": st.session_state["chat_history"],
+                "duration": duration,
+                "model": st.session_state["model"],
+                "model_label": model_mapping.get(st.session_state["model"]),
+            },
+        )
 
         st.session_state.update(duration=duration)
 
@@ -96,6 +103,9 @@ def update_input_new_chat():
 def update_input_existent_chat():
     user_input = st.session_state["history_temp_input"]
     if user_input:
+        if not st.session_state["model"]:
+            st.error("Veuillez sélectionner un modèle pour continuer.")
+            return
         for message in st.session_state["chat_history"]:
             message.pop("chat_id", None)
             message.pop("generation_time", None)
@@ -104,17 +114,21 @@ def update_input_existent_chat():
             user_input, st.session_state["chat_id"], st.session_state["model"]
         )
 
-        requests.post(f"http://{db_api_host}:{db_api_port}/update_search_in_history",
-                        json=st.session_state["chat_id"])
+        requests.post(
+            f"http://{db_api_host}:{db_api_port}/update_search_in_history",
+            json={"chat_id": st.session_state["chat_id"]},
+        )
 
-        requests.post(f"http://{db_api_host}:{db_api_port}/add_message_to_chat",
-                    json={
-                        st.session_state["chat_id"],
-                        st.session_state["chat_history"],
-                        duration,
-                        st.session_state["model"],
-                        model_mapping.get(st.session_state["model"]),
-                    })
+        requests.post(
+            f"http://{db_api_host}:{db_api_port}/add_message_to_chat",
+            json={
+                "chat_id": st.session_state["chat_id"],
+                "chat_history": st.session_state["chat_history"],
+                "duration": duration,
+                "model": st.session_state["model"],
+                "model_label": model_mapping.get(st.session_state["model"]),
+            },
+        )
 
         st.session_state.update(duration=duration)
 

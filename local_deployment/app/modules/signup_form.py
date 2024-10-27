@@ -1,6 +1,6 @@
 import streamlit as st
 
-from modules.users_manager import signup
+from modules.connexion_manager import signup
 
 
 def show_signup_form():

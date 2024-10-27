@@ -20,14 +20,36 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  bdd_api:
+    build:
+      context: ./bdd_api
+    image: pf_bdd_api
+    # restart: always
+    container_name: pf_bdd_api
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      HOST: postgres
+      PORT: 5432
+    ports:
+      - "5050:5050"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - pf_network
+
   rag_api:
     build:
       context: ./rag_api
     image: pf_api
-    restart: always
+    # restart: always
     container_name: pf_api
     environment:
       MINAI_API_KEY: ${MINAI_API_KEY}
+      DB_API_HOST: bdd_api
+      DB_API_PORT: 5050
     ports:
       - "8080:8080"
     depends_on:
@@ -42,15 +64,13 @@ services:
     build:
       context: ./app
     image: pf_front
-    restart: always
+    # restart: always
     container_name: pf_front
     environment:
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
-      HOST: postgres
-      API_HOST: rag_api
-      PORT: 5432
+      DB_API_HOST: bdd_api
+      DB_API_PORT: 5050
+      RAG_API_HOST: rag_api
+      RAG_API_PORT: 8080
     ports:
       - "8501:8501"
     depends_on:

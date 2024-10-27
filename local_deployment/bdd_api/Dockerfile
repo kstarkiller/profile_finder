@@ -24,14 +24,15 @@ COPY . /app
 RUN useradd -m appuser
 USER appuser
 
-# Rendre le port 8501 disponible pour le monde extérieur
-EXPOSE 8501
+# Rendre le port 8000 disponible pour le monde extérieur
+EXPOSE 5050
 
 # Définir les variables d'environnement à partir des arguments de construction
+ENV DB_USER=${DB_USER}
+ENV DB_PASSWORD=${DB_PASSWORD}
+ENV DB_NAME=${DB_NAME}
 ENV DB_API_HOST ${DB_API_HOST}
 ENV DB_API_HOST ${DB_API_HOST}
-ENV RAG_API_HOST ${RAG_API_HOST}
-ENV RAG_API_PORT ${RAG_API_PORT}
 
-# Lancer app.py lorsque le conteneur démarre
-CMD ["streamlit", "run", "main.py"]
+# Lancer l'application FastAPI lorsque le conteneur démarre
+CMD ["python", "data_api.py"]

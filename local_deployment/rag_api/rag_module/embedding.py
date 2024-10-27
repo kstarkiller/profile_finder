@@ -49,7 +49,7 @@ def embed_documents(file_path, model="nomic-embed-text:v1.5", batch_size=10):
     collection = client.get_or_create_collection(name="docs")
 
     # Load documents
-    documents = load_documents(file_path)
+    documents = load_profile(file_path)
 
     # Verify the type of documents
     if not isinstance(documents, list):

@@ -29,5 +29,3 @@ def load_profile():
     documents = documents["combined"].tolist()
 
     return documents
-
-load_profile()

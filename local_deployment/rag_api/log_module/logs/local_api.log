@@ -1,107 +1,143 @@
+2024-10-27 21:33:10,226 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 404 Not Found"
+2024-10-27 21:33:10,227 - ERROR - Error retrieving documents: model "nomic-embed-text:v1.5" not found, try pulling it first
+2024-10-27 21:36:27,408 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-10-27 21:36:27,504 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-10-27 21:36:27,657 - INFO - RAG performed in 8.229211568832397 seconds.
 
-2024-10-25 10:30:35,655 - INFO - Starting openLIT initialization...
-2024-10-25 10:30:36,377 - INFO - Instrumented openai
-2024-10-25 10:30:36,377 - INFO - Library for anthropic (anthropic) not found. Skipping instrumentation
-2024-10-25 10:30:36,377 - INFO - Library for cohere (cohere) not found. Skipping instrumentation
-2024-10-25 10:30:36,377 - INFO - Library for mistral (mistralai) not found. Skipping instrumentation
-2024-10-25 10:30:36,455 - INFO - Instrumented bedrock
-2024-10-25 10:30:36,455 - INFO - Library for vertexai (vertexai) not found. Skipping instrumentation
-2024-10-25 10:30:36,455 - INFO - Library for groq (groq) not found. Skipping instrumentation
-2024-10-25 10:30:36,471 - INFO - Instrumented ollama
-2024-10-25 10:30:36,471 - INFO - Library for gpt4all (gpt4all) not found. Skipping instrumentation
-2024-10-25 10:30:36,471 - INFO - Library for elevenlabs (elevenlabs) not found. Skipping instrumentation
-2024-10-25 10:30:36,471 - INFO - Library for vllm (vllm) not found. Skipping instrumentation
-2024-10-25 10:30:36,471 - INFO - Library for google-ai-studio (google.generativeai) not found. Skipping instrumentation
-2024-10-25 10:30:36,471 - INFO - Library for azure-ai-inference (azure.ai.inference) not found. Skipping instrumentation
-2024-10-25 10:30:36,471 - INFO - Library for langchain (langchain) not found. Skipping instrumentation
-2024-10-25 10:30:36,471 - INFO - Library for llama_index (llama_index) not found. Skipping instrumentation
-2024-10-25 10:30:36,471 - INFO - Library for haystack (haystack) not found. Skipping instrumentation
-2024-10-25 10:30:36,471 - INFO - Library for embedchain (embedchain) not found. Skipping instrumentation
-2024-10-25 10:30:36,471 - INFO - Instrumented chroma
-2024-10-25 10:30:36,471 - INFO - Library for pinecone (pinecone) not found. Skipping instrumentation
-2024-10-25 10:30:36,471 - INFO - Library for qdrant (qdrant_client) not found. Skipping instrumentation
-2024-10-25 10:30:36,471 - INFO - Library for milvus (pymilvus) not found. Skipping instrumentation
-2024-10-25 10:30:36,471 - INFO - Library for transformers (transformers) not found. Skipping instrumentation
-2024-10-25 13:49:53,997 - INFO - Starting openLIT initialization...
-2024-10-25 13:49:54,738 - INFO - Instrumented openai
-2024-10-25 13:49:54,740 - INFO - Library for anthropic (anthropic) not found. Skipping instrumentation
-2024-10-25 13:49:54,742 - INFO - Library for cohere (cohere) not found. Skipping instrumentation
-2024-10-25 13:49:54,743 - INFO - Library for mistral (mistralai) not found. Skipping instrumentation
-2024-10-25 13:49:54,833 - INFO - Instrumented bedrock
-2024-10-25 13:49:54,835 - INFO - Library for vertexai (vertexai) not found. Skipping instrumentation
-2024-10-25 13:49:54,835 - INFO - Library for groq (groq) not found. Skipping instrumentation
-2024-10-25 13:49:54,837 - INFO - Instrumented ollama
-2024-10-25 13:49:54,838 - INFO - Library for gpt4all (gpt4all) not found. Skipping instrumentation
-2024-10-25 13:49:54,838 - INFO - Library for elevenlabs (elevenlabs) not found. Skipping instrumentation
-2024-10-25 13:49:54,839 - INFO - Library for vllm (vllm) not found. Skipping instrumentation
-2024-10-25 13:49:54,840 - INFO - Library for google-ai-studio (google.generativeai) not found. Skipping instrumentation
-2024-10-25 13:49:54,842 - INFO - Library for azure-ai-inference (azure.ai.inference) not found. Skipping instrumentation
-2024-10-25 13:49:54,842 - INFO - Library for langchain (langchain) not found. Skipping instrumentation
-2024-10-25 13:49:54,843 - INFO - Library for llama_index (llama_index) not found. Skipping instrumentation
-2024-10-25 13:49:54,844 - INFO - Library for haystack (haystack) not found. Skipping instrumentation
-2024-10-25 13:49:54,845 - INFO - Library for embedchain (embedchain) not found. Skipping instrumentation
-2024-10-25 13:49:54,849 - INFO - Instrumented chroma
-2024-10-25 13:49:54,850 - INFO - Library for pinecone (pinecone) not found. Skipping instrumentation
-2024-10-25 13:49:54,850 - INFO - Library for qdrant (qdrant_client) not found. Skipping instrumentation
-2024-10-25 13:49:54,851 - INFO - Library for milvus (pymilvus) not found. Skipping instrumentation
-2024-10-25 13:49:54,852 - INFO - Library for transformers (transformers) not found. Skipping instrumentation
-2024-10-25 13:51:01,188 - ERROR - HTTP error occurred: 502 Server Error: Bad Gateway for url: https://api.1min.ai/api/conversations
-2024-10-25 13:51:07,162 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
-2024-10-25 13:51:07,878 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
-2024-10-25 13:51:08,489 - INFO - RAG performed in 5.2617573738098145 seconds.
-
-2024-10-25 13:51:10,230 - INFO - 
-2024-10-25 13:51:10,231 - INFO - Question asked: hello
-2024-10-25 13:51:10,231 - INFO - 
-2024-10-25 13:51:10,231 - INFO - Generated response: Response ended prematurely
-2024-10-25 13:51:10,231 - INFO - 
-2024-10-25 13:51:10,232 - INFO - Response generated in 1.7432186603546143 seconds.
+2024-10-27 21:36:27,659 - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2024-10-27 21:36:27,659 - WARNING - The model llama3.1:8b is not available. Please choose a valid model from this list: ['nomic-embed-text:v1.5', 'mistral:7b', 'llama3.2:3b', 'llama3.1:latest']
+2024-10-27 21:36:27,659 - INFO - 
+2024-10-27 21:36:27,659 - INFO - Question asked: Hello
+2024-10-27 21:36:27,659 - INFO - 
+2024-10-27 21:36:27,659 - INFO - Generated response: The model llama3.1:8b is not available. Please choose a valid model from this list: ['nomic-embed-text:v1.5', 'mistral:7b', 'llama3.2:3b', 'llama3.1:latest']
+2024-10-27 21:36:27,659 - INFO - 
+2024-10-27 21:36:27,659 - INFO - Response generated in 0.0020058155059814453 seconds.
 
 
-2024-10-25 13:52:18,346 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
-2024-10-25 13:52:18,349 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
-2024-10-25 13:52:18,491 - INFO - RAG performed in 0.3330814838409424 seconds.
+2024-10-27 21:52:51,713 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-10-27 21:52:51,808 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-10-27 21:52:51,933 - INFO - RAG performed in 2.2361667156219482 seconds.
 
-2024-10-25 13:52:18,506 - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
-2024-10-25 13:54:02,213 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
-2024-10-25 13:54:02,215 - INFO - 
-2024-10-25 13:54:02,215 - INFO - Question asked: Qui est disponible en janvier 2025 ?
-2024-10-25 13:54:02,216 - INFO - 
-2024-10-25 13:54:02,216 - INFO - Generated response: # Équipe disponible en janvier 2025
-
-| Nom | Code | Profil | Localisation |
-| --- | --- | --- | --- |
-| Sharon Day | 468654 | Confirmé | Mtp |
-| Yesenia Kim | 502314 | Confirmé | Paris |
-
-### Détails d'occupation et de disponibilité en janvier 2025
-
-- **Sharon Day** : Disponible à 50% depuis le 01/09/2024 jusqu'au 12/07/2025.
-- **Yesenia Kim** : Mission SSIS à 50% occupation à la Poste du 16/05/2024 au 19/04/2025, donc elle est disponible en janvier 2025.
-2024-10-25 13:54:02,216 - INFO - 
-2024-10-25 13:54:02,216 - INFO - Response generated in 103.72465109825134 seconds.
+2024-10-27 21:52:51,935 - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2024-10-27 21:52:51,936 - WARNING - The model llama3.1:8b is not available. Please choose a valid model from this list: ['nomic-embed-text:v1.5', 'mistral:7b', 'llama3.2:3b', 'llama3.1:latest']
+2024-10-27 21:52:51,936 - INFO - 
+2024-10-27 21:52:51,936 - INFO - Question asked: Qui est-tu ?
+2024-10-27 21:52:51,936 - INFO - 
+2024-10-27 21:52:51,936 - INFO - Generated response: The model llama3.1:8b is not available. Please choose a valid model from this list: ['nomic-embed-text:v1.5', 'mistral:7b', 'llama3.2:3b', 'llama3.1:latest']
+2024-10-27 21:52:51,936 - INFO - 
+2024-10-27 21:52:51,936 - INFO - Response generated in 0.0029685497283935547 seconds.
 
 
-2024-10-25 16:16:16,330 - INFO - Starting openLIT initialization...
-2024-10-25 16:16:17,100 - INFO - Instrumented openai
-2024-10-25 16:16:17,100 - INFO - Library for anthropic (anthropic) not found. Skipping instrumentation
-2024-10-25 16:16:17,100 - INFO - Library for cohere (cohere) not found. Skipping instrumentation
-2024-10-25 16:16:17,100 - INFO - Library for mistral (mistralai) not found. Skipping instrumentation
-2024-10-25 16:16:17,210 - INFO - Instrumented bedrock
-2024-10-25 16:16:17,210 - INFO - Library for vertexai (vertexai) not found. Skipping instrumentation
-2024-10-25 16:16:17,210 - INFO - Library for groq (groq) not found. Skipping instrumentation
-2024-10-25 16:16:17,226 - INFO - Instrumented ollama
-2024-10-25 16:16:17,226 - INFO - Library for gpt4all (gpt4all) not found. Skipping instrumentation
-2024-10-25 16:16:17,226 - INFO - Library for elevenlabs (elevenlabs) not found. Skipping instrumentation
-2024-10-25 16:16:17,226 - INFO - Library for vllm (vllm) not found. Skipping instrumentation
-2024-10-25 16:16:17,226 - INFO - Library for google-ai-studio (google.generativeai) not found. Skipping instrumentation
-2024-10-25 16:16:17,226 - INFO - Library for azure-ai-inference (azure.ai.inference) not found. Skipping instrumentation
-2024-10-25 16:16:17,226 - INFO - Library for langchain (langchain) not found. Skipping instrumentation
-2024-10-25 16:16:17,226 - INFO - Library for llama_index (llama_index) not found. Skipping instrumentation
-2024-10-25 16:16:17,226 - INFO - Library for haystack (haystack) not found. Skipping instrumentation
-2024-10-25 16:16:17,226 - INFO - Library for embedchain (embedchain) not found. Skipping instrumentation
-2024-10-25 16:16:17,241 - INFO - Instrumented chroma
-2024-10-25 16:16:17,241 - INFO - Library for pinecone (pinecone) not found. Skipping instrumentation
-2024-10-25 16:16:17,241 - INFO - Library for qdrant (qdrant_client) not found. Skipping instrumentation
-2024-10-25 16:16:17,241 - INFO - Library for milvus (pymilvus) not found. Skipping instrumentation
-2024-10-25 16:16:17,241 - INFO - Library for transformers (transformers) not found. Skipping instrumentation
+2024-10-27 21:55:47,948 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-10-27 21:55:48,044 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-10-27 21:55:48,167 - INFO - RAG performed in 0.25290966033935547 seconds.
+
+2024-10-27 21:55:48,169 - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2024-10-27 21:55:48,169 - WARNING - The model llama3.1:8b is not available. Please choose a valid model from this list: ['nomic-embed-text:v1.5', 'mistral:7b', 'llama3.2:3b', 'llama3.1:latest']
+2024-10-27 21:55:48,169 - INFO - 
+2024-10-27 21:55:48,169 - INFO - Question asked: hello
+2024-10-27 21:55:48,170 - INFO - 
+2024-10-27 21:55:48,170 - INFO - Generated response: The model llama3.1:8b is not available. Please choose a valid model from this list: ['nomic-embed-text:v1.5', 'mistral:7b', 'llama3.2:3b', 'llama3.1:latest']
+2024-10-27 21:55:48,170 - INFO - 
+2024-10-27 21:55:48,170 - INFO - Response generated in 0.0029904842376708984 seconds.
+
+
+2024-10-27 22:28:30,549 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-10-27 22:28:30,641 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-10-27 22:28:30,763 - INFO - RAG performed in 2.218421459197998 seconds.
+
+2024-10-27 22:28:30,765 - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2024-10-27 22:28:49,280 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-10-27 22:28:49,280 - INFO - 
+2024-10-27 22:28:49,280 - INFO - Question asked: Qui est disponible en janvier 2024 ?
+2024-10-27 22:28:49,280 - INFO - 
+2024-10-27 22:28:49,280 - INFO - Generated response: Based on the provided data, it appears that you are looking for information about employee availability and skills. The first part of your message seems to be a JSON object containing employee data, including their name, code, coefficient, profile, location, team, manager, and various certifications and competencies.
+
+The second part of your message is a question: "Qui est disponible en janvier 2024 ?" which translates to "Who is available in January 2024?" in English.
+
+To answer this question based on the provided data:
+
+1. First, you'll need to parse the JSON object to extract relevant information about each employee.
+2. Then, for each employee, check their availability status and occupation percentage for January 2024.
+
+Given the structured nature of the data, I can help with this task in a step-by-step manner. Here's how we might approach it:
+
+### Step 1: Parse the JSON Data
+
+First, let's parse the provided JSON to extract relevant employee information into Python dictionaries or another format that's easy to work with.
+
+```python
+import json
+
+# Your data here, replace 'your_data' with the actual content of your JSON object
+data = """{
+    "Nom": "Terrance Franklin",
+    # ... rest of the data ...
+}"""
+
+parsed_data = json.loads(data)
+
+print(parsed_data)
+```
+
+### Step 2: Filter Availability for January 2024
+
+Next, we'll write a function to check who is available in January 2024 based on their occupation status and percentage.
+
+- **Assuming** each mission or leave has a clear start and end date, and considering the occupation percentages are relative (e.g., % of total occupation), you can calculate whether an employee's time was part of January 2024.
+
+```python
+import datetime
+
+# This function should be adjusted based on your actual data structure.
+def is_available(employee_data):
+    start_date = datetime.date(2024, 1, 1)
+    end_date = datetime.date(2024, 1, 31)
+
+    for mission in employee_data['Missions']:
+        if isinstance(mission['start_date'], str):  # Assuming 'date' string format like '2025-07-04'
+            start_date_mission = datetime.datetime.strptime(mission['start_date'], '%Y-%m-%d').date()
+            end_date_mission = datetime.datetime.strptime(mission['end_date'], '%Y-%m-%d').date()
+
+        # Check if the mission dates overlap with January 2024
+        if (start_date <= start_date_mission < end_date) or \
+           (start_date < end_date_mission <= end_date) or \
+           (start_date <= start_date_mission and end_date_mission <= end_date):
+            return False
+
+    # If no overlapping missions, the employee is considered available
+    return True
+
+available_employees = []
+for data in parsed_data:
+    if is_available(data):
+        print(f"Employee {data['Nom']} is available.")
+
+# Based on your actual 'Missions' structure, adjust this part to calculate availability correctly.
+```
+
+### Important Considerations:
+
+1. **Data Structure:** Adjust the parsing and filtering logic based on your actual data structure.
+
+2. **Occupation Percentage Logic:** This example assumes a simple check for overlapping dates with January 2024. Depending on how occupation percentages are used (e.g., to calculate total time worked), you might need to adjust this part significantly.
+
+3. **Real-World Implementation:** For accurate results, ensure your data is in a clean format and consider more sophisticated filtering methods if needed.
+
+This approach should give you a good starting point. You may need to adjust the parsing logic based on your actual JSON structure and the way occupation percentages are calculated in relation to availability.
+2024-10-27 22:28:49,280 - INFO - 
+2024-10-27 22:28:49,280 - INFO - Response generated in 18.517040252685547 seconds.
+
+
+2024-10-27 22:30:07,463 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-10-27 22:30:07,464 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-10-27 22:30:07,520 - INFO - RAG performed in 2.33827543258667 seconds.
+
+2024-10-27 22:30:09,553 - INFO - 
+2024-10-27 22:30:09,553 - INFO - Question asked: Trouve moi des membres compétent en scrum
+2024-10-27 22:30:09,553 - INFO - 
+2024-10-27 22:30:09,553 - INFO - Generated response: b'## Membres comp\xc3\xa9tents en Scrum\n\n| Nom      | Code | Profil | Localisation | Comp\xc3\xa9tences                                                                                      |\n| :------- | :--- | :----- | :----------- | :------------------------------------------------------------------------------------------------ |\n| Ryan Pham | 504658 | Junior | Mtp          | Certified Professional Scrum Master I (PSM) since 2022-07-12 and until 2025-02-03                  | \n'
+2024-10-27 22:30:09,553 - INFO - 
+2024-10-27 22:30:09,553 - INFO - Response generated in 2.033389091491699 seconds.
+
+

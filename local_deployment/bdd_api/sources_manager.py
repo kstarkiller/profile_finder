@@ -24,6 +24,7 @@ engine = create_engine(
 )
 Base = declarative_base()
 
+
 # Définir le modèle de la table raw_profiles
 class Profile(Base):
     __tablename__ = "raw_profiles"
@@ -41,11 +42,17 @@ Base.metadata.create_all(engine)
 # Créer une session pour interagir avec la base de données
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+
 def get_profiles():
     session = SessionLocal()
     profiles = session.query(Profile).all()
-    session.close()
-    return {"profiles": profiles}
+    if not profiles:
+        session.close()
+        return {"profiles": []}
+    else:
+        session.close()
+        return {"profiles": profiles}
+
 
 def truncate_table():
     session = SessionLocal()
@@ -54,6 +61,7 @@ def truncate_table():
     session.close()
     return {"message": "Table vidée avec succès"}
 
+
 def insert_profile(payload: dict):
     session = SessionLocal()
     profile = Profile(
@@ -61,7 +69,7 @@ def insert_profile(payload: dict):
         missions=payload["mission"],
         competences=payload["competence"],
         certifications=payload["certification"],
-        combined=payload["combined"]
+        combined=payload["combined"],
     )
     session.add(profile)
     session.commit()

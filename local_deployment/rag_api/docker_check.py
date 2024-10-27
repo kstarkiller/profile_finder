@@ -5,10 +5,10 @@ import os
 def is_running_in_docker():
     try:
         with open("/proc/1/cgroup", "rt") as f:
-            db_host = os.getenv("HOST")
-            db_port = os.getenv("DB_PORT")
-            return db_host, api_host
+            db_api_host = os.getenv("DB_API_HOST")
+            db_api_port = os.getenv("DB_API_PORT")
+            return db_api_host, db_api_port
     except FileNotFoundError:
-        db_host = "localhost"
-        db_port = "5050"
-        return db_host, db_port
+        db_api_host = "localhost"
+        db_api_port = 5050
+        return db_api_host, db_api_port

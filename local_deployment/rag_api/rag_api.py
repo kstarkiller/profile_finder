@@ -8,7 +8,6 @@ from pydantic import BaseModel
 from typing import List
 import os
 import logging
-import openlit
 
 from llm_module.generate_response import (
     generate_ollama_response,
@@ -16,14 +15,13 @@ from llm_module.generate_response import (
     generate_conversation_id,
 )
 from rag_module.embedding import embed_documents, retrieve_documents
+from data.pre_processing import insert_profiles
+from docker_check import is_running_in_docker
 
 # Vérifiez les configurations dans rag_api.py
 base_path = os.path.dirname(__file__)
 doc_path = os.path.join(base_path, "data", "combined")
 logs_path = os.path.join(base_path, "log_module", "logs", "logs_api.log")
-
-# Initialize OpenLit
-openlit.init()
 
 # Logging module configuration
 logging.basicConfig(
@@ -43,15 +41,15 @@ MODEL_EMBEDDING = "nomic-embed-text:v1.5"
 
 app = FastAPI()
 
-# Allow CORS
-origins = ["*"]
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# # Allow CORS
+# origins = ["*"]
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 
 class TestInput(BaseModel):
@@ -89,6 +87,46 @@ def test(input: TestInput):
     This is a test endpoint to check if the API is working properly.
     """
     return {"message": input.message + " Success"}
+
+
+@app.post(
+    "/insert_profiles",
+    summary="Insert profiles",
+    description="This endpoint inserts profiles into the database if not already exist.",
+)
+def inserting_profiles():
+    db_api_host, db_api_port = is_running_in_docker()
+    try:
+        response = requests.get(f"http://{db_api_host}:{db_api_port}/get_profiles")
+        response.raise_for_status()
+        profiles = response.json()
+        # Check if profiles is an empty list
+        if len(profiles["profiles"]) == 0:
+            print("Database is empty -> Inserting profiles")
+            result = insert_profiles(db_api_host, db_api_port)
+            return {
+                f"message": f"{result['profiles_added']} profiles added to the database"
+            }
+        else:
+            print("Database already contains profiles -> Skipping insertion")
+            return {"message": "Database already contains profiles"}
+    except requests.exceptions.HTTPError as err:
+        print("HTTP error occurred:", err)
+
+
+@app.post(
+    "/truncate_table",
+    summary="Truncate table",
+    description="This endpoint truncates the table in the database.",
+)
+def truncate_table():
+    db_api_host, db_api_port = is_running_in_docker()
+    try:
+        response = requests.post(f"http://{db_api_host}:{db_api_port}/truncate_table")
+        response.raise_for_status()
+        print(response.json())
+    except requests.exceptions.HTTPError as err:
+        print("HTTP error occurred:", err)
 
 
 @app.post(

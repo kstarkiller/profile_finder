@@ -6,6 +6,7 @@ from modules.docker_check import is_running_in_docker
 
 db_api_host, db_api_port, rag_api_host, rag_api_port = is_running_in_docker()
 
+
 # Fonction pour s'enregistrer
 def signup(name, email, password):
     """
@@ -22,12 +23,13 @@ def signup(name, email, password):
 
     # Vérifier si le nom, l'email et le mot de passe sont fournis
     if name and email and password:
-        encrypted_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+        user_check = requests.post(
+            f"http://{db_api_host}:{db_api_port}/create_user",
+            json={"name": name, "email": email, "password": password},
+        ).json()
 
-        user_check = requests.post(f"http://{db_api_host}:{db_api_port}/create_user",
-                                   json={"name": name, "email": email, "password": encrypted_password}).json()
         if (
-            type(user_check) == tuple
+            type(user_check) == list
             and user_check[1] == email
             and user_check[0] == name
         ):
@@ -69,10 +71,10 @@ def login(email, password):
             ou str : "User not found" (si aucun user trouvé) ou "Invalid password" (si mot de passe incorrect)
     """
     try:
-        encrypted_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-
-        user = requests.get(f"http://{db_api_host}:{db_api_port}/get_user",
-                            json={"email": email, "password": encrypted_password}).json()
+        user = requests.get(
+            f"http://{db_api_host}:{db_api_port}/get_user",
+            json={"email": email, "password": password},
+        ).json()
 
         if user == "utilisateur non trouvé":
             status = None
