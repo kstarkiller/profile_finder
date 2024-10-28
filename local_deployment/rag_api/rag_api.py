@@ -104,8 +104,9 @@ def inserting_profiles():
         if len(profiles["profiles"]) == 0:
             print("Database is empty -> Inserting profiles")
             result = insert_profiles(db_api_host, db_api_port)
+            print(f"{result} profiles added to the database")
             return {
-                f"message": f"{result['profiles_added']} profiles added to the database"
+                f"message": f"{result} profiles added to the database"
             }
         else:
             print("Database already contains profiles -> Skipping insertion")

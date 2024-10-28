@@ -137,6 +137,16 @@ resultat_df["Combined"] = resultat_df["Combined"].str.replace('"', "")
 
 
 def insert_profiles(db_host, db_port):
+    """
+    Insert the profiles into the database.
+
+    Args:
+        db_host (str): The host of the database.
+        db_port (str): The port of the database.
+
+    Returns:
+        int: The number of profiles added to the database.   
+    """
     # Vider la table raw_profiles avant d'insérer les nouveaux profils
     try:
         # Insérer le résultat final dans la base de données grâce à une réquète à l'api bdd
@@ -161,7 +171,7 @@ def insert_profiles(db_host, db_port):
             except requests.exceptions.HTTPError as err:
                 print("HTTP error occurred:", err)
                 print("Response content:", response.content)
-
+        print(f"{len(profiles_added)} profiles added to the database")
         return len(profiles_added)
 
     except requests.exceptions.HTTPError as err:
