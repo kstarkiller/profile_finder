@@ -44,17 +44,49 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def get_profiles():
+    """
+    Get all profiles from the database.
+    
+    Returns:
+        dict: A dictionary containing the profiles.
+    """
+    try:
+        session = SessionLocal()
+        profiles = session.query(Profile).all()
+        if not profiles:
+            session.close()
+            return {"profiles": []}
+        else:
+            session.close()
+            return {"profiles": profiles}
+    except Exception as e:
+        raise f"Erreur lors de la récupération des profils: {str(e)}"
+
+def delete_profile(profile: dict):
+    """
+    Delete a profile from the database.
+
+    Args:
+        profile (dict): A dictionary containing the profile information with the following keys:
+            - id: The ID of the profile to delete.
+
+    Returns:
+        dict: A dictionary with a success message.
+    """
     session = SessionLocal()
-    profiles = session.query(Profile).all()
-    if not profiles:
-        session.close()
-        return {"profiles": []}
-    else:
-        session.close()
-        return {"profiles": profiles}
+    session.query(Profile).filter(Profile.id == profile["id"]).delete()
+    session.commit()
+    session.close()
+    return {"message": "Profil supprimé avec succès"}
 
 
 def truncate_table():
+    """
+    Truncate the raw_profiles table in the database.
+    
+    Returns:
+        dict: A dictionary with a success message.
+    """
     session = SessionLocal()
     session.query(Profile).delete()
     session.commit()
@@ -63,6 +95,20 @@ def truncate_table():
 
 
 def insert_profile(payload: dict):
+    """
+    Insert a new profile into the database.
+
+    Args:
+        payload (dict): A dictionary containing profile information with the following keys:
+            - membre: Information about the member.
+            - mission: Information about the mission.
+            - competence: Information about the competence.
+            - certification: Information about the certification.
+            - combined: Combined information.
+
+    Returns:
+        dict: A dictionary with a success message.
+    """
     session = SessionLocal()
     profile = Profile(
         membres=payload["membre"],
