@@ -2,6 +2,9 @@ import time
 import uvicorn
 import requests
 import json
+from pymongo import MongoClient
+from gridfs import GridFS
+from datetime import datetime
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -16,12 +19,15 @@ from llm_module.generate_response import (
 )
 from rag_module.embedding import embed_documents, retrieve_documents
 from data.pre_processing import insert_profiles
+from data.store_file import store_file, download_file
 from docker_check import is_running_in_docker
+from fastapi import UploadFile, File
 
 # Vérifiez les configurations dans rag_api.py
 base_path = os.path.dirname(__file__)
 doc_path = os.path.join(base_path, "data", "combined")
 logs_path = os.path.join(base_path, "log_module", "logs", "logs_api.log")
+temp_path = os.path.join(base_path, "data", "temp")
 
 # Logging module configuration
 logging.basicConfig(
@@ -41,20 +47,8 @@ MODEL_EMBEDDING = "nomic-embed-text:v1.5"
 
 app = FastAPI()
 
-# # Allow CORS
-# origins = ["*"]
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
-
-
 class TestInput(BaseModel):
     message: str
-
 
 class ChatRequest(BaseModel):
     question: str
@@ -62,16 +56,15 @@ class ChatRequest(BaseModel):
     chat_id: str
     model: str
 
-
 class IDrequest(BaseModel):
     model: str
     prompt: str
-
 
 class TitleRequest(BaseModel):
     question: str
     chat_id: str
 
+db_api_host, db_api_port, mongo_host, mongo_port, mongo_user, mongo_pwd, mongo_db = is_running_in_docker()
 
 @app.get(
     "/", summary="Root endpoint", description="This is the root endpoint of the API."
@@ -88,14 +81,63 @@ def test(input: TestInput):
     """
     return {"message": input.message + " Success"}
 
+@app.post(
+    "/store_file",
+    summary="Store file",
+    description="This endpoint stores a file in the database.",
+)
+def storing_file(file: UploadFile = File(...), file_type: str = "file"):
+    """Stores a file in the database.
+
+    Args:
+        file (upload): The file to store.
+        type (str): The type of the file.
+
+    Returns:
+        dict: A dictionary containing the success message.
+    """
+    try:
+        # Temporally store the file locally
+        file_path = os.path.join(temp_path, file.filename)
+        with open(file_path, "wb") as f:
+            f.write(file.file.read())
+
+        result = store_file(file_path, mongo_user, mongo_pwd, mongo_host, mongo_port, mongo_db, file_type)
+
+        # Remove the temporally stored file
+        os.remove(file_path)
+
+        return {"message": result}
+    except Exception as e:
+        return {"message": f"Error storing file: {str(e)}"}
+
+@app.get(
+    "/get_file",
+    summary="Get file",
+    description="This endpoint retrieves a file from the database.",
+)
+def getting_file(filename: str, file_type: str):
+    """Retrieves a file from the database.
+
+    Args:
+        filename (str): The name of the file to retrieve.
+        type (str): The type of the file.
+
+    Returns:
+        dict: A dictionary containing the success message.
+    """
+    try:
+        result = download_file(filename, mongo_user, mongo_pwd, mongo_host, mongo_port, mongo_db, file_type)
+        return {"message": result}
+    except Exception as e:
+        return {"message": f"Error retrieving file: {str(e)}"}
 
 @app.post(
-    "/insert_profiles",
+    "/store_profiles",
     summary="Insert profiles",
     description="This endpoint inserts profiles into the database if not already exist.",
 )
-def inserting_profiles():
-    db_api_host, db_api_port = is_running_in_docker()
+def storing_profiles():
     try:
         response = requests.get(f"http://{db_api_host}:{db_api_port}/get_profiles")
         response.raise_for_status()
@@ -121,7 +163,6 @@ def inserting_profiles():
     description="This endpoint truncates the table in the database.",
 )
 def truncate_table():
-    db_api_host, db_api_port = is_running_in_docker()
     try:
         response = requests.post(f"http://{db_api_host}:{db_api_port}/truncate_table")
         response.raise_for_status()

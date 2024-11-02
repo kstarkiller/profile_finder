@@ -34,11 +34,6 @@ COPY . /app
 # Exposer le port sur lequel l'application va tourner
 EXPOSE 8080
 
-# Définir les arguments
-# ARG MINAI_API_KEY
-# ARG DB_API_HOST
-# ARG DB_API_PORT
-
 # Définir les variables d'environnement
 ENV MINAI_API=${MINAI_API_KEY}
 ENV DB_API_HOST=${DB_API_HOST}

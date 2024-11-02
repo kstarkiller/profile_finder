@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 import sqlite3
 from bs4 import BeautifulSoup
+from pymongo import MongoClient
 import pyarrow.parquet as pq
 
 def extract_api_data(api_url):
@@ -43,12 +44,18 @@ def extract_db_data(db_file, query):
         print(f"Erreur lors de l'extraction des données depuis la base de données : {e}")
         return None
 
-def extract_big_data(big_data_file):
+def extract_big_data(mongo_uri, db_name, collection_name):
     try:
-        table = pq.read_table(big_data_file)
-        return table.to_pandas()  # Conversion en DataFrame pandas
+        client = MongoClient(mongo_uri)
+        db = client[db_name]
+        collection = db[collection_name]
+        
+        for doc in collection.find():
+            data = [doc for doc in collection.find()]
+            
+        return pd.DataFrame(data)  # Conversion en DataFrame pandas
     except Exception as e:
-        print(f"Erreur lors de l'extraction des données depuis le système big data : {e}")
+        print(f"Erreur lors de l'extraction des données depuis MongoDB : {e}")
         return None
 
 def create_db_from_file(db_file, csv_file):
@@ -64,16 +71,6 @@ def create_db_from_file(db_file, csv_file):
     conn.close()
 
     print(f"La base de données '{db_file}' a été créée et les données ont été importées dans la table 'certifications'.")
-
-def csv_to_parquet(csv_file, parquet_file):
-    # Lire le fichier CSV dans un DataFrame
-    data = pd.read_csv(csv_file)
-
-    # Enregistrer le DataFrame au format Parquet
-    data.to_parquet(parquet_file, index=False)
-
-    print(f"Le fichier Parquet '{parquet_file}' a été créé à partir du fichier CSV.")
-
 
 def main():
     # Sources de données
@@ -96,7 +93,6 @@ def main():
     scraped_data = extract_scraped_data(scraping_url, "article a")
     create_db_from_file(db_file, certs_file)
     db_data = extract_db_data(db_file, "SELECT * FROM certifications")
-    csv_to_parquet(psarm_file, big_data_file)
     big_data = extract_big_data(big_data_file)
 
     if api_data:

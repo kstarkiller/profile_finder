@@ -6,7 +6,7 @@ import pandas as pd
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from docker_check import is_running_in_docker
 
-db_host, api_host = is_running_in_docker()
+db_host, api_host, mongo_host, mongo_port, mongo_user, mongo_pwd, mongo_db = is_running_in_docker()
 
 def load_profile():
     """

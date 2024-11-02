@@ -141,3 +141,28 @@ This approach should give you a good starting point. You may need to adjust the 
 2024-10-27 22:30:09,553 - INFO - Response generated in 2.033389091491699 seconds.
 
 
+2024-10-31 12:32:43,961 - ERROR - Error storing file: 'SpooledTemporaryFile' object has no attribute 'filename'
+2024-10-31 13:32:37,581 - ERROR - Error storing file: name must be an instance of str
+2024-10-31 13:34:48,848 - ERROR - Error storing file: name must be an instance of str
+2024-10-31 13:35:52,941 - ERROR - Error storing file: name must be an instance of str
+2024-10-31 13:39:51,282 - ERROR - Error storing file: name must be an instance of str
+2024-10-31 13:45:43,759 - ERROR - Error storing file: name must be an instance of str
+2024-10-31 13:47:59,198 - ERROR - Error storing file: name must be an instance of str
+2024-10-31 13:50:17,922 - ERROR - Error storing file: name must be an instance of str
+2024-10-31 13:52:57,842 - ERROR - Filename: Coaff_V1.xlsx, Timestamp: 20241031135257
+2024-10-31 13:57:15,516 - ERROR - Filename: Coaff_V1.xlsx, Timestamp: 20241031135715
+2024-10-31 13:57:15,518 - ERROR - type of filemane: <class 'str'>
+2024-10-31 13:57:15,518 - ERROR - type of timestamp: <class 'str'>
+2024-10-31 13:57:15,550 - ERROR - Error storing file: name must be an instance of str
+2024-10-31 14:01:41,574 - ERROR - Filename: Coaff_V1.xlsx, Timestamp: 20241031140141
+2024-10-31 14:01:41,574 - ERROR - type of filemane: <class 'str'>
+2024-10-31 14:01:41,574 - ERROR - type of timestamp: <class 'str'>
+2024-10-31 14:01:41,592 - ERROR - Error storing file: name must be an instance of str
+2024-10-31 14:05:06,578 - ERROR - Filename: Coaff_V1.xlsx, Timestamp: 20241031140506
+2024-10-31 14:05:06,579 - ERROR - type of filemane: <class 'str'>
+2024-10-31 14:05:06,579 - ERROR - type of timestamp: <class 'str'>
+2024-10-31 14:05:06,628 - ERROR - Error storing file: name must be an instance of str
+2024-10-31 14:05:58,180 - ERROR - Filename: Coaff_V1.xlsx, Timestamp: 20241031140558
+2024-10-31 14:05:58,181 - ERROR - type of filemane: <class 'str'>
+2024-10-31 14:05:58,181 - ERROR - type of timestamp: <class 'str'>
+2024-10-31 14:05:58,211 - ERROR - Error storing file: name must be an instance of str

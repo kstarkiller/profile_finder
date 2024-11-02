@@ -52,6 +52,7 @@ def initialize_session_state():
         "themebutton": "light",
         "theme": "light",
         "model": None,
+        "settings": False,
     }
     for key, value in default_values.items():
         if key not in st.session_state:
@@ -59,14 +60,14 @@ def initialize_session_state():
 
 
 def main():
-    st.title("PROFILE FINDER")
-
     initialize_session_state()
 
     if (
         not st.session_state["show_signup_form"]
         and st.session_state["user_name"] is not None
+        and st.session_state["settings"] is False
     ):
+        st.title("PROFILE FINDER")
         # Display the user's name in the sidebar with a happy emoji
         st.sidebar.markdown(f"# 👋 Bonjour {st.session_state['user_name']} ! ")
 
@@ -87,7 +88,8 @@ def main():
                         key="settings_button",
                         use_container_width=True,
                     ):
-                        pass
+                        st.session_state.update(settings=True)
+                        st.rerun()
 
         # Display a separation line
         st.sidebar.markdown(
@@ -119,6 +121,7 @@ def main():
             ],
             index=None,
             placeholder="Choisissez un modèle...",
+            label_visibility="collapsed",
         )
 
         st.session_state.update(
@@ -211,8 +214,128 @@ def main():
 
     elif (
         not st.session_state["show_signup_form"]
+        and st.session_state["user_name"] is not None
+        and st.session_state["settings"] is True
+    ):
+        st.title("PARAMETRES")
+
+        # Display the user's name in the sidebar with a happy emoji
+        st.sidebar.markdown(f"# 👋 Bonjour {st.session_state['user_name']} ! ")
+
+        if st.session_state["authentication_status"]:
+            with st.sidebar.container():
+                col1, col2 = st.sidebar.columns(2)
+                with col1:
+                    if st.button(
+                        "Déconnexion",
+                        key="logout_button",
+                        on_click=lambda: logout(),
+                        use_container_width=True,
+                    ):
+                        pass
+                with col2:
+                    if st.button(
+                        "Chatbot",
+                        key="settings_button",
+                        use_container_width=True,
+                    ):
+                        st.session_state.update(settings=False)
+                        st.rerun()
+        # Display a separation line
+        st.sidebar.markdown(
+            "<div style='border-bottom: 1px solid white; margin: 20px 0;'></div>",
+            unsafe_allow_html=True,
+        )
+
+# Display a separation line
+        st.markdown(
+            "<div style='border-bottom: 1px solid white; margin: 3% 0 1% 0;'></div>",
+            unsafe_allow_html=True,
+        )
+
+        st.write("## Paramètres du compte")
+
+        with st.container():
+            col1, col2, col3 = st.columns(3, gap="small", vertical_alignment="center")
+            with col1:
+                st.write("###### Effacer mes données")
+            with col2:
+                st.write("............................................")
+            with col3:
+                if st.button("Effacer", key="delete_data", use_container_width=True):
+                    requests.post(
+                        f"http://{db_api_host}:{db_api_port}/delete_user_data",
+                        json={"user_email": st.session_state["username"]},
+                    )
+                    st.container.write("Données effacées avec succès.")
+
+        with st.container():
+            col1, col2, col3 = st.columns(3, gap="small", vertical_alignment="center")
+            with col1:
+                st.write("###### Supprimer mon compte", use_container_width=True)
+            with col2:
+                st.write("............................................")
+            with col3:
+                if st.button("Supprimer", key="delete_account", use_container_width=True):
+                    requests.post(
+                        f"http://{db_api_host}:{db_api_port}/delete_user_account",
+                        json={"user_email": st.session_state["username"]},
+                    )
+                    st.container.write("Compte supprimé avec succès.")
+
+        # Display a separation line
+        st.markdown(
+            "<div style='border-bottom: 1px solid white; margin: 3% 0 1% 0;'></div>",
+            unsafe_allow_html=True,
+        )
+
+        st.write("## Paramètres de l'application")
+
+        with st.container():
+            col1, col2, col3 = st.columns(3, gap="small", vertical_alignment="center")
+            with col1:
+                st.write("###### Changer de thème")
+            with col2:
+                st.write("............................................")
+            with col3:
+                column1, column2 = st.columns(2, gap="small", vertical_alignment="center")
+                with column1:
+                    if st.button("Clair", key="light_theme", use_container_width=True):
+                        st.session_state.update(theme="light")
+                with column2:
+                    if st.button("Sombre", key="dark_theme", use_container_width=True):
+                        st.session_state.update(theme="dark")
+        
+        # Display a separation line
+        st.markdown(
+            "<div style='border-bottom: 1px solid white; margin: 3% 0 1% 0;'></div>",
+            unsafe_allow_html=True,
+        )
+
+        st.write("## Documents pour le RAG")
+
+        with st.container():
+            col1, col2, col3 = st.columns(3, gap="small", vertical_alignment="center")
+            with col1:
+                st.write("###### Ajouter un document")
+            with col2:
+                st.selectbox("File",
+                        options=["Coaff", "PSA RM", "Certs"],
+                        index=None,
+                        placeholder="Quel fichier envoyer ?",
+                        label_visibility="collapsed"
+                    )
+            with col3:
+                if st.button("Envoyer", key="send_doc", use_container_width=True):
+                    pass
+
+
+        
+    elif (
+        not st.session_state["show_signup_form"]
         and st.session_state["user_name"] is None
     ):
+        st.title("PROFILE FINDER")
         with st.form("login_form"):
             st.subheader("Connexion")
             email = st.text_input("Email")
