@@ -4,16 +4,16 @@ import os
 # Paths
 base_path = os.path.dirname(__file__)
 psarm_path = os.path.join(
-    base_path, "sources", "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
+    base_path, "downloaded_files", "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
 )
-coaff_path = os.path.join(base_path, "sources", "Coaff_V1.xlsx")
-output_descriptions = os.path.join(base_path, "sources", "descriptions_uniques.txt")
-output_profiles = os.path.join(base_path, "sources", "profils_uniques.txt")
+coaff_path = os.path.join(base_path, "downloaded_files", "Coaff_V1.xlsx")
+output_descriptions = os.path.join(base_path, "downloaded_files", "descriptions_uniques.txt")
+output_profiles = os.path.join(base_path, "downloaded_files", "profils_uniques.txt")
 
 # Read the files into pandas DataFrames
 df_psarm = pd.read_excel(psarm_path)
 # Read existing data from the COAFF file
-df_coaff = pd.read_csv(coaff_path)
+df_coaff = pd.read_excel(coaff_path)
 df_coaff = df_coaff.rename(columns=df_coaff.iloc[2].to_dict()).drop(df_coaff.index[:3])
 
 # Extract the "Description" column and get unique values

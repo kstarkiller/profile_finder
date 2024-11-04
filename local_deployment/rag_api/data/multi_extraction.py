@@ -1,9 +1,16 @@
 import requests
 import pandas as pd
-import sqlite3
+from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.orm import declarative_base, sessionmaker
 from bs4 import BeautifulSoup
 from pymongo import MongoClient
-import pyarrow.parquet as pq
+import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+from docker_check import is_running_in_docker
+
+db_host, db_port, db_user, db_pwd, db_name, mongo_host, mongo_port, mongo_user, mongo_pwd, mongo_db = is_running_in_docker()
 
 def extract_api_data(api_url):
     try:
@@ -34,20 +41,47 @@ def extract_scraped_data(url, selector):
         print(f"Erreur lors du scraping des données depuis la page web : {e}")
         return None
 
-def extract_db_data(db_file, query):
-    try:
-        conn = sqlite3.connect(db_file)
-        data = pd.read_sql_query(query, conn)
-        conn.close()
-        return data
-    except Exception as e:
-        print(f"Erreur lors de l'extraction des données depuis la base de données : {e}")
-        return None
+def extract_db_data(db_host, db_port, db_name, db_user, db_pwd):
+    # Créer une connexion à la base de données
+    engine = create_engine(
+        f"postgresql://{db_user}:{db_pwd}@{db_host}:{db_port}/{db_name}"
+    )
+    Base = declarative_base()
 
-def extract_big_data(mongo_uri, db_name, collection_name):
+
+    # Définir le modèle de la table raw_profiles
+    class Profile(Base):
+        __tablename__ = "raw_profiles"
+        id = Column(Integer, primary_key=True, index=True)
+        membres = Column(String, nullable=False)
+        missions = Column(String, nullable=False)
+        competences = Column(String, nullable=False)
+        certifications = Column(String, nullable=False)
+        combined = Column(String, nullable=False)
+
+
+    # Créer les tables dans la base de données
+    Base.metadata.create_all(engine)
+
+    # Créer une session pour interagir avec la base de données
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
     try:
-        client = MongoClient(mongo_uri)
-        db = client[db_name]
+        session = SessionLocal()
+        profiles = session.query(Profile).all()
+        if not profiles:
+            session.close()
+            return {"profiles": []}
+        else:
+            session.close()
+            return {"profiles": profiles}
+    except Exception as e:
+        raise f"Erreur lors de la récupération des profils: {str(e)}"
+
+def extract_big_data(mongo_host, mongo_port, mongo_user, mongo_pwd, mongo_db, collection_name):
+    try:
+        client = MongoClient(f"mongodb://{mongo_user}:{mongo_pwd}@{mongo_host}:{mongo_port}")
+        db = client[mongo_db]
         collection = db[collection_name]
         
         for doc in collection.find():
@@ -58,42 +92,20 @@ def extract_big_data(mongo_uri, db_name, collection_name):
         print(f"Erreur lors de l'extraction des données depuis MongoDB : {e}")
         return None
 
-def create_db_from_file(db_file, csv_file):
-    # Chargement des données du fichier CSV dans un DataFrame
-    data = pd.read_csv(csv_file)
-
-    conn = sqlite3.connect(db_file)
-
-    # Enregistrement du DataFrame dans la base de données
-    data.to_sql('certifications', conn, if_exists='replace', index=False)
-
-    # Fermeture de la connexion à la base de données
-    conn.close()
-
-    print(f"La base de données '{db_file}' a été créée et les données ont été importées dans la table 'certifications'.")
-
 def main():
     # Sources de données
-    api_url = "https://intranet.cgi.com/annuaire/api/v1/membres"
     api_data_csv = r"C:\Users\musti\Projets\donnees_extraites\api_data.csv"
-    coaff_file = r"C:\Users\musti\Projets\profile-finder\local_deployment\rag_api\data\fixtures\fixtures_coaff.csv"
-    certs_file = r"C:\Users\musti\Projets\profile-finder\local_deployment\rag_api\data\fixtures\fixtures_certs.csv"
-    psarm_file = r"C:\Users\musti\Projets\profile-finder\local_deployment\rag_api\data\fixtures\fixtures_psarm.csv"
     csv_data_csv = r"C:\Users\musti\Projets\donnees_extraites\csv_data.csv"
-    scraping_url = "http://www.cgi.com/"
     scrapping_data_csv = r"C:\Users\musti\Projets\donnees_extraites\scraping_data.csv"
-    db_file = r"C:\Users\musti\Projets\donnees_sources\membres.db"
     db_data_csv = r"C:\Users\musti\Projets\donnees_extraites\db_data.csv"
-    big_data_file = r"C:\Users\musti\Projets\donnees_sources\membres.parquet"
     bigdata_data_csv = r"C:\Users\musti\Projets\donnees_extraites\bigdata_data.csv"
 
     # Extraction des données
-    api_data = extract_api_data(api_url)
-    csv_data = extract_csv_data(coaff_file)
-    scraped_data = extract_scraped_data(scraping_url, "article a")
-    create_db_from_file(db_file, certs_file)
-    db_data = extract_db_data(db_file, "SELECT * FROM certifications")
-    big_data = extract_big_data(big_data_file)
+    api_data = extract_api_data("https://intranet.cgi.com/annuaire/api/v1/membres")
+    csv_data = extract_csv_data(r"C:\Users\musti\Projets\profile-finder\local_deployment\rag_api\data\fixtures\fixtures_coaff.csv")
+    scraped_data = extract_scraped_data("http://www.cgi.com/", "article a")
+    db_data = extract_db_data(db_host, db_port, db_name, db_user, db_pwd)
+    big_data = extract_big_data(mongo_host, mongo_port, mongo_user, mongo_pwd, mongo_db, "files")
 
     if api_data:
         print("Données extraites de l'API:", api_data)

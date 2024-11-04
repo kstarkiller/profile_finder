@@ -1,12 +1,7 @@
 import time
 import uvicorn
 import requests
-import json
-from pymongo import MongoClient
-from gridfs import GridFS
-from datetime import datetime
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 import os
@@ -19,7 +14,7 @@ from llm_module.generate_response import (
 )
 from rag_module.embedding import embed_documents, retrieve_documents
 from data.pre_processing import insert_profiles
-from data.store_file import store_file, download_file
+from data.store_file import store_file, download_files
 from docker_check import is_running_in_docker
 from fastapi import UploadFile, File
 
@@ -86,7 +81,7 @@ def test(input: TestInput):
     summary="Store file",
     description="This endpoint stores a file in the database.",
 )
-def storing_file(file: UploadFile = File(...), file_type: str = "file"):
+def storing_file(file: UploadFile = File(...)):
     """Stores a file in the database.
 
     Args:
@@ -102,7 +97,7 @@ def storing_file(file: UploadFile = File(...), file_type: str = "file"):
         with open(file_path, "wb") as f:
             f.write(file.file.read())
 
-        result = store_file(file_path, mongo_user, mongo_pwd, mongo_host, mongo_port, mongo_db, file_type)
+        result = store_file(file_path, mongo_user, mongo_pwd, mongo_host, mongo_port, mongo_db)
 
         # Remove the temporally stored file
         os.remove(file_path)
@@ -116,7 +111,7 @@ def storing_file(file: UploadFile = File(...), file_type: str = "file"):
     summary="Get file",
     description="This endpoint retrieves a file from the database.",
 )
-def getting_file(filename: str, file_type: str):
+def getting_file():
     """Retrieves a file from the database.
 
     Args:
@@ -127,7 +122,7 @@ def getting_file(filename: str, file_type: str):
         dict: A dictionary containing the success message.
     """
     try:
-        result = download_file(filename, mongo_user, mongo_pwd, mongo_host, mongo_port, mongo_db, file_type)
+        result = download_files(mongo_user, mongo_pwd, mongo_host, mongo_port, mongo_db)
         return {"message": result}
     except Exception as e:
         return {"message": f"Error retrieving file: {str(e)}"}

@@ -166,3 +166,84 @@ This approach should give you a good starting point. You may need to adjust the 
 2024-10-31 14:05:58,181 - ERROR - type of filemane: <class 'str'>
 2024-10-31 14:05:58,181 - ERROR - type of timestamp: <class 'str'>
 2024-10-31 14:05:58,211 - ERROR - Error storing file: name must be an instance of str
+2024-11-04 09:50:22,139 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-11-04 09:50:22,183 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-11-04 09:50:22,562 - INFO - RAG performed in 2.994023323059082 seconds.
+
+2024-11-04 09:50:22,585 - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2024-11-04 09:58:12,952 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-11-04 09:58:12,953 - INFO - 
+2024-11-04 09:58:12,953 - INFO - Question asked: Qui est disponible en janvier 2025 ?
+2024-11-04 09:58:12,953 - INFO - 
+2024-11-04 09:58:12,953 - INFO - Generated response: ### Membres disponibles en Janvier 2025
+
+| Nom | Coefficient | Profil | Localisation | Équipe | Manager |
+| --- | --- | --- | --- | --- | --- |
+| Sharon Day | 170 | Confirmé(e) | Mtp | ODI | Micheal Guzman |
+| Robert Long | 150 | Junior | Tours | MSBI | Courtney Watson |
+| Yesenia Kim | 170 | Confirmé(e) | Paris | TALEND | Luis Johnson |
+
+### Détails de Disponibilité
+
+| Nom | Janvier 2025 |
+| --- | --- |
+| Sharon Day | Oui (disponible à 100%) |
+| Robert Long | Non (vacation) |
+| Yesenia Kim | Oui (disponible à 50% - 01/05 à 01/15 et 01/25 à 02/15) |
+
+### Membres Non Disponibles en Janvier 2025
+
+- Robert Long
+- Les membres non listés
+2024-11-04 09:58:12,954 - INFO - 
+2024-11-04 09:58:12,954 - INFO - Response generated in 470.39211344718933 seconds.
+
+
+2024-11-04 10:14:31,827 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-11-04 10:14:31,828 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-11-04 10:14:31,957 - INFO - RAG performed in 0.5834352970123291 seconds.
+
+2024-11-04 10:14:36,144 - INFO - 
+2024-11-04 10:14:36,146 - INFO - Question asked: Qui est disponble en janvier 2025 ?
+2024-11-04 10:14:36,146 - INFO - 
+2024-11-04 10:14:36,146 - INFO - Generated response: b'## Disponibilit\xc3\xa9 en janvier 2025\n\n| Nom | Localisation | \xc3\x89quipe | Disponibilit\xc3\xa9 |\n| --- | ------------ | ------ | ------------- |\n| Robert Long | Tours | MSBI | 50% |\n| Yesenia Kim | Paris | TALEND | 50% |\n| Christopher Walker | Tours | TALEND | 20% |\n\nLes membres suivants sont disponibles en janvier 2025 :\n\n- **Robert Long** (50%) - Mission Datastage \xc3\xa0 50% occupation chez COVEA du 2024-09-05 au 2024-11-09, et chez Engie du 2024-10-09 au 2025-01-17.\n- **Yesenia Kim** (50%) - Mission SSIS \xc3\xa0 50% occupation chez Engie du 2025-01-25 au 2025-02-15.\n- **Christopher Walker** (20%) - Mission DevOps \xc3\xa0 20% occupation chez COVEA du 2025-08-23 au 2025-11-30.'
+2024-11-04 10:14:36,146 - INFO - 
+2024-11-04 10:14:36,147 - INFO - Response generated in 4.1888322830200195 seconds.
+
+
+2024-11-04 10:41:53,938 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-11-04 10:41:53,939 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-11-04 10:41:54,066 - INFO - RAG performed in 0.8098664283752441 seconds.
+
+2024-11-04 10:41:56,058 - INFO - 
+2024-11-04 10:41:56,058 - INFO - Question asked: hello
+2024-11-04 10:41:56,059 - INFO - 
+2024-11-04 10:41:56,059 - INFO - Generated response: b"## Bonjour ! \n\nQue puis-je faire pour vous aujourd'hui ? \n"
+2024-11-04 10:41:56,059 - INFO - 
+2024-11-04 10:41:56,060 - INFO - Response generated in 1.9937145709991455 seconds.
+
+
+2024-11-04 11:04:01,072 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-11-04 11:04:01,073 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-11-04 11:04:01,211 - INFO - RAG performed in 0.9616732597351074 seconds.
+
+2024-11-04 11:04:03,960 - INFO - 
+2024-11-04 11:04:03,961 - INFO - Question asked: Hello
+2024-11-04 11:04:03,961 - INFO - 
+2024-11-04 11:04:03,961 - INFO - Generated response: b"### Bonjour ! Comment puis-je vous aider aujourd'hui ? \n\nSi vous cherchez des membres d'\xc3\xa9quipe en fonction de leur localisation, leur disponibilit\xc3\xa9 ou leurs comp\xc3\xa9tences, n'h\xc3\xa9sitez pas \xc3\xa0 me le faire savoir !"
+2024-11-04 11:04:03,961 - INFO - 
+2024-11-04 11:04:03,962 - INFO - Response generated in 2.750523805618286 seconds.
+
+
+2024-11-04 12:10:08,452 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-11-04 12:10:08,454 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-11-04 12:10:08,581 - INFO - RAG performed in 0.5524277687072754 seconds.
+
+2024-11-04 12:10:10,607 - INFO - 
+2024-11-04 12:10:10,607 - INFO - Question asked: hello
+2024-11-04 12:10:10,607 - INFO - 
+2024-11-04 12:10:10,608 - INFO - Generated response: b"**Bonjour ! Comment puis-je vous aider aujourd'hui ?**"
+2024-11-04 12:10:10,608 - INFO - 
+2024-11-04 12:10:10,608 - INFO - Response generated in 2.026946544647217 seconds.
+
+

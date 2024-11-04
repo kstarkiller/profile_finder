@@ -6,11 +6,11 @@ import os
 # Paths
 base_path = os.path.dirname(__file__)
 psa_rm_path = os.path.join(
-    base_path, "sources", "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
+    base_path, "downloaded_files", "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
 )
-coaff_path = os.path.join(base_path, "sources", "Coaff_V1.xlsx")
+coaff_path = os.path.join(base_path, "downloaded_files", "Coaff_V1.xlsx")
 certs_path = os.path.join(
-    base_path, "sources", "UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
+    base_path, "downloaded_files", "UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
 )
 fixtures_coaff = os.path.join(base_path, "fixtures", "fixtures_coaff.csv")
 fixtures_psarm = os.path.join(base_path, "fixtures", "fixtures_psarm.csv")

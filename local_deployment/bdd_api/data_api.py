@@ -4,12 +4,14 @@ import uvicorn
 from users_manager import (
     get_user,
     create_user,
+    delete_user,
     add_search_to_history,
     update_search_in_history,
     get_search_history,
     get_search_by_chat_id,
     add_message_to_chat,
     delete_search_from_history,
+    delete_all_searches_from_history
 )
 from sources_manager import get_profiles, truncate_table, insert_profile
 
@@ -78,6 +80,18 @@ async def truncate_table_api():
 async def get_user_api(user: dict):
     try:
         return get_user(user.get("email"), user.get("password"))
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post(
+        "/delete_user_account",
+        summary="Supprimer un utilisateur",
+        response_description="Utilisateur supprimé",
+)
+async def delete_user_account_api(user: dict):
+    try:
+        return delete_user(user.get("email"), user.get("password"))
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -171,6 +185,18 @@ async def add_message_to_chat_api(message: dict):
 async def delete_search_from_history_api(json: dict):
     try:
         delete_search_from_history(json.get("chat_id"))
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post(
+    "/delete_user_data",
+    summary="Supprimer toutes les recherches de l'historique",
+    response_description="Recherches supprimées avec succès",
+)
+async def delete_user_data_api(user: dict):
+    try:
+        delete_all_searches_from_history(user.get("email"))
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 

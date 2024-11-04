@@ -1,5 +1,4 @@
 import streamlit as st
-import bcrypt
 import requests
 
 from modules.docker_check import is_running_in_docker

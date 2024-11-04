@@ -160,6 +160,49 @@ def create_user(name, email, password):
         return registered_user
 
 
+# Fonction pour supprimer un compte utilisateur
+def delete_user(email, password):
+    """
+    Supprime un utilisateur de la base de données.
+
+    Args:
+        email (str): Email de l'utilisateur
+        password (str): Mot de passe de l'utilisateur crypté
+
+    Returns:
+        str: "Invalid password" si le mot de passe est incorrect,
+        str: "User deleted" si l'utilisateur est supprimé avec succès
+    """
+    try:
+        db = SessionLocal()
+
+        # Vérifier si l'utilisateur existe
+        user = db.query(User).filter(User.email == email).first()
+        if not user:
+            db.close()
+            return "User not found"
+
+        # Vérifier si le mot de passe est correct
+        valid_password = bcrypt.checkpw(
+            password.encode("utf-8"), user.password.encode("utf-8")
+        )
+        if not valid_password:
+            db.close()
+            return "Invalid password"
+
+        # Supprimer l'utilisateur et ses données
+        searches = get_search_history(email)
+        for search in searches:
+            db.query(ChatHistory).filter(ChatHistory.chat_id == search["chat_id"]).delete()
+            db.query(SearchHistory).filter(SearchHistory.chat_id == search["chat_id"]).delete()
+        db.delete(user)
+        db.commit()
+        db.close()
+        return "User deleted"
+    except Exception as e:
+        return f"Erreur lors de la suppression de l'utilisateur : {str(e)}"
+
+
 # Fonction pour ajouter une recherche à la base de données des recherches de l'utilisateur
 def add_search_to_history(chat_id, first_message, user_email):
     """
@@ -307,5 +350,31 @@ def delete_search_from_history(chat_id):
     except Exception as e:
         db.rollback()
         raise e
+    finally:
+        db.close()
+
+def delete_all_searches_from_history(user_email):
+    """
+    Supprime toutes les recherches de l'historique des recherches de l'utilisateur.
+
+    Args:
+        user_email (str): Email de l'utilisateur
+
+    Returns:
+        None
+    """
+    db = SessionLocal()
+    try:
+        # Récupérer tous les chat_id de l'utilisateur dans la table search_histories
+        searches = get_search_history(user_email)
+        # Supprimer les entrées correspondantes dans la table conversations
+        for search in searches:
+            db.query(ChatHistory).filter(ChatHistory.chat_id == search["chat_id"]).delete()
+            db.query(SearchHistory).filter(SearchHistory.chat_id == search["chat_id"]).delete()
+
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise f"Erreur lors de la suppression des recherches de l'utilisateur : {str(e)}"
     finally:
         db.close()
