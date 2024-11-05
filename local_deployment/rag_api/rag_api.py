@@ -1,7 +1,7 @@
 import time
 import uvicorn
 import requests
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from pydantic import BaseModel
 from typing import List
 import os
@@ -15,14 +15,37 @@ from llm_module.generate_response import (
 from rag_module.embedding import embed_documents, retrieve_documents
 from data.pre_processing import insert_profiles
 from data.store_file import store_file, download_files
+from data.get_skills import get_skills
+from data.create_fixtures import create_fixtures
 from docker_check import is_running_in_docker
-from fastapi import UploadFile, File
 
-# Vérifiez les configurations dans rag_api.py
+# Paths' definition
 base_path = os.path.dirname(__file__)
-doc_path = os.path.join(base_path, "data", "combined")
 logs_path = os.path.join(base_path, "log_module", "logs", "logs_api.log")
-temp_path = os.path.join(base_path, "data", "temp")
+temp_files = os.path.join(base_path, "data", "temp_files")
+temp_sources = os.path.join(base_path, "data", "downloaded_files")
+sources = os.path.join(base_path, "data", "source_files")
+fixtures_coaff = os.path.join(base_path, "fixtures", "fixtures_coaff.csv")
+fixtures_psarm = os.path.join(base_path, "fixtures", "fixtures_psarm.csv")
+fixtures_certs = os.path.join(base_path, "fixtures", "fixtures_certs.csv")
+temp_fixtures_coaff = os.path.join(base_path, "temp_fixtures", "fixtures_coaff.csv")
+temp_fixtures_psarm = os.path.join(base_path, "temp_fixtures", "fixtures_psarm.csv")
+temp_fixtures_certs = os.path.join(base_path, "temp_fixtures", "fixtures_certs.csv")
+combined = os.path.join(base_path, "data", "combined")
+temp_combined = os.path.join(base_path, "data", "temp_combined")
+temp_psarm = os.path.join(
+    base_path, temp_sources, "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
+)
+temp_coaff = os.path.join(base_path, temp_sources, "Coaff_V1.xlsx")
+temp_certs = os.path.join(
+    base_path, temp_sources, "UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
+)
+temp_descriptions_uniques = os.path.join(
+    base_path, temp_sources, "descriptions_uniques.txt"
+)
+temp_profiles_uniques = os.path.join(base_path, temp_sources, "profils_uniques.txt")
+collection= os.path.join(base_path, "data", "chroma")
+temp_collection = os.path.join(base_path, "data", "temp_chroma")
 
 # Logging module configuration
 logging.basicConfig(
@@ -102,20 +125,84 @@ def storing_file(file: UploadFile = File(...)):
     """
     try:
         # Temporally store the file locally
-        file_path = os.path.join(temp_path, file.filename)
+        file_path = os.path.join(temp_files, file.filename)
         with open(file_path, "wb") as f:
             f.write(file.file.read())
+        yield {"message": "File stored temporarily", "percentage": 10}
+    except Exception as e:
+        return {"message": f"Error temporary storing file: {str(e)}"}
 
+    try:
+        # Store the file in the database
         result = store_file(
             file_path, mongo_user, mongo_pwd, mongo_host, mongo_port, mongo_db
         )
-
-        # Remove the temporally stored file
-        os.remove(file_path)
-
-        return {"message": result}
+        yield {"message": result, "percentage": 20}
     except Exception as e:
         return {"message": f"Error storing file: {str(e)}"}
+
+    # Remove the temporally stored file
+    os.remove(file_path)
+
+    try:
+        # Download the files to add it to the rag
+        result = download_files(mongo_user, mongo_pwd, mongo_host, mongo_port, mongo_db)
+        yield {"message": result, "percentage": 30}
+    except Exception as e:
+        return {"message": f"Error downloading file: {str(e)}"}
+
+    try:
+        # Get the skills from the files
+        result = get_skills(temp_psarm, temp_coaff, temp_descriptions_uniques, temp_profiles_uniques)
+        yield {"message": f"{result}", "percentage": 40}
+    except Exception as e:
+        return {"message": f"Error getting skills: {str(e)}"}
+
+    try:
+        # Create the fixtures
+        result = create_fixtures(
+            temp_psarm,
+            temp_coaff,
+            temp_certs,
+            temp_fixtures_psarm,
+            temp_fixtures_coaff,
+            temp_fixtures_certs,
+        )
+        yield {"message": f"{result}", "percentage": 50}
+    except Exception as e:
+        return {"message": f"Error creating fixtures: {str(e)}"}
+    
+    try:
+        # Preprocess the data and insert the profiles into the database
+        result = insert_profiles(db_api_host, db_api_port, temp_fixtures_coaff, temp_fixtures_psarm, temp_fixtures_certs, temp_combined)
+        yield {"message": f"{result}", "percentage": 60}
+    except Exception as e:
+        return {"message": f"Error inserting profiles: {str(e)}"}
+    
+    try:
+        # Embed the documents
+        collection = embed_documents(temp_collection, MODEL_EMBEDDING)
+        yield {"message": f"{len(collection)} documents embedded", "percentage": 70}
+    except Exception as e:
+        return {"message": f"Error embedding documents: {str(e)}"}
+    
+    try:
+        # Replace the old collection with the new one as everything was successful
+        os.replace(temp_collection, collection)
+        os.replace(temp_combined, combined)
+        os.replace(temp_fixtures_coaff, fixtures_coaff)
+        os.replace(temp_fixtures_psarm, fixtures_psarm)
+        os.replace(temp_fixtures_certs, fixtures_certs)
+        os.replace(temp_sources, sources)
+        os.rename(temp_collection, collection)
+        os.rename(temp_combined, combined)
+        os.rename(temp_fixtures_coaff, fixtures_coaff)
+        os.rename(temp_fixtures_psarm, fixtures_psarm)
+        os.rename(temp_fixtures_certs, fixtures_certs)
+        os.rename(temp_sources, sources)
+        yield {"message": "Files replaced successfully", "percentage": 90}
+    except Exception as e:
+        return {"message": f"Error replacing files: {str(e)}"}
 
 
 @app.get(
@@ -152,12 +239,9 @@ def storing_profiles():
         profiles = response.json()
         # Check if profiles is an empty list
         if len(profiles["profiles"]) == 0:
-            print("Database is empty -> Inserting profiles")
             result = insert_profiles(db_api_host, db_api_port)
-            print(f"{result} profiles added to the database")
             return {f"message": f"{result} profiles added to the database"}
         else:
-            print("Database already contains profiles -> Skipping insertion")
             return {"message": "Database already contains profiles"}
     except requests.exceptions.HTTPError as err:
         print("HTTP error occurred:", err)
@@ -195,8 +279,7 @@ def embedding():
     # Embedding the documents
     start_time = time.time()
     try:
-        print(doc_path)
-        collection = embed_documents(doc_path, MODEL_EMBEDDING)
+        collection = embed_documents(collection, MODEL_EMBEDDING)
     except Exception as e:
         logging.error(f"Error embedding documents: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -224,7 +307,7 @@ def process_question_ollama(input: ChatRequest):
     # Embedding the question and retrieving the documents
     start_time = time.time()
     try:
-        data = retrieve_documents(input.question, MODEL_EMBEDDING)
+        data = retrieve_documents(collection, input.question, MODEL_EMBEDDING)
     except Exception as e:
         logging.error(f"Error retrieving documents: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -286,7 +369,7 @@ def process_question_minai(input: ChatRequest):
     # Embed the question and retrieve the documents
     embedding_start_time = time.time()
     try:
-        data = retrieve_documents(input.question, MODEL_EMBEDDING)
+        data = retrieve_documents(collection, input.question, MODEL_EMBEDDING)
     except Exception as e:
         logging.error(f"Error retrieving documents: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

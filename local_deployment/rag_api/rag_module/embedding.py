@@ -1,19 +1,15 @@
 import chromadb
 import ollama
 import os
-import sys
 import logging
 from chromadb.config import Settings
 
 from rag_module.load_documents import load_profile
 from llm_module.model_precision_improvements import structure_query
 
-# Path to the collection
-collection_path = os.path.join(os.path.dirname(__file__), "..", "data", "chroma")
 logs_path = os.path.join(
     os.path.dirname(__file__), "..", "log_module", "logs", "logs_api.log"
 )
-file_path = os.path.join(os.path.dirname(__file__), "..", "data", "combined")
 
 # Logging module configuration
 logging.basicConfig(
@@ -23,7 +19,7 @@ logging.basicConfig(
 )
 
 
-def embed_documents(file_path, model="nomic-embed-text:v1.5", batch_size=10):
+def embed_documents(collection_path, model="nomic-embed-text:v1.5", batch_size=10):
     """
     Embeds the documents using an embedding model in batches.
 
@@ -49,7 +45,7 @@ def embed_documents(file_path, model="nomic-embed-text:v1.5", batch_size=10):
     collection = client.get_or_create_collection(name="docs")
 
     # Load documents
-    documents = load_profile(file_path)
+    documents = load_profile()
 
     # Verify the type of documents
     if not isinstance(documents, list):
@@ -86,7 +82,7 @@ def embed_documents(file_path, model="nomic-embed-text:v1.5", batch_size=10):
 
 
 # Retrieve documents
-def retrieve_documents(question: str, model="nomic-embed-text:v1.5"):
+def retrieve_documents(collection_path, question: str, model="nomic-embed-text:v1.5"):
     """
     Embeds the question using an embedding model and queries the collection for the most similar document.
 
