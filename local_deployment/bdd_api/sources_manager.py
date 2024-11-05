@@ -109,15 +109,18 @@ def insert_profile(payload: dict):
     Returns:
         dict: A dictionary with a success message.
     """
-    session = SessionLocal()
-    profile = Profile(
-        membres=payload["membre"],
-        missions=payload["mission"],
-        competences=payload["competence"],
-        certifications=payload["certification"],
-        combined=payload["combined"],
-    )
-    session.add(profile)
-    session.commit()
-    session.close()
-    return {"message": "Profil ajouté avec succès"}
+    try:
+        session = SessionLocal()
+        profile = Profile(
+            membres=payload["membre"],
+            missions=payload["mission"],
+            competences=payload["competence"],
+            certifications=payload["certification"],
+            combined=payload["combined"],
+        )
+        session.add(profile)
+        session.commit()
+        session.close()
+        return {"message": "Profil ajouté avec succès"}
+    except Exception as e:
+        return {"message": f"Erreur lors de l'ajout du profil: {str(e)}"}
