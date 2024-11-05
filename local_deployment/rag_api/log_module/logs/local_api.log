@@ -247,3 +247,22 @@ This approach should give you a good starting point. You may need to adjust the 
 2024-11-04 12:10:10,608 - INFO - Response generated in 2.026946544647217 seconds.
 
 
+2024-11-05 10:48:29,993 - WARNING - I don't have a question to respond to. Please provide a valid question.
+2024-11-05 10:48:29,994 - WARNING - The question is too long. Please provide a question with less than 512 characters.
+2024-11-05 10:49:53,742 - WARNING - History is empty
+2024-11-05 10:49:53,742 - INFO - 
+2024-11-05 10:49:53,742 - INFO - Question asked: No history
+2024-11-05 10:49:53,742 - INFO - 
+2024-11-05 10:49:53,742 - INFO - Generated response: History is empty
+2024-11-05 10:49:53,742 - INFO - 
+2024-11-05 10:49:53,744 - WARNING - No model provided
+2024-11-05 10:49:53,744 - INFO - 
+2024-11-05 10:49:53,744 - INFO - Question asked: I don't know.
+2024-11-05 10:49:53,744 - INFO - 
+2024-11-05 10:49:53,744 - INFO - Generated response: No model provided
+2024-11-05 10:49:53,744 - INFO - 
+2024-11-05 10:49:53,747 - INFO - 
+2024-11-05 10:49:53,747 - INFO - Question asked: I don't know.
+2024-11-05 10:49:53,747 - INFO - 
+2024-11-05 10:49:53,748 - INFO - Generated response: <MagicMock name='post().content' id='1461122166480'>
+2024-11-05 10:49:53,748 - INFO - 

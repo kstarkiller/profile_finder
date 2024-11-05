@@ -46,7 +46,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 def get_profiles():
     """
     Get all profiles from the database.
-    
+
     Returns:
         dict: A dictionary containing the profiles.
     """
@@ -61,6 +61,7 @@ def get_profiles():
             return {"profiles": profiles}
     except Exception as e:
         raise f"Erreur lors de la récupération des profils: {str(e)}"
+
 
 def delete_profile(profile: dict):
     """
@@ -83,7 +84,7 @@ def delete_profile(profile: dict):
 def truncate_table():
     """
     Truncate the raw_profiles table in the database.
-    
+
     Returns:
         dict: A dictionary with a success message.
     """

@@ -10,7 +10,19 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from docker_check import is_running_in_docker
 
-db_host, db_port, db_user, db_pwd, db_name, mongo_host, mongo_port, mongo_user, mongo_pwd, mongo_db = is_running_in_docker()
+(
+    db_host,
+    db_port,
+    db_user,
+    db_pwd,
+    db_name,
+    mongo_host,
+    mongo_port,
+    mongo_user,
+    mongo_pwd,
+    mongo_db,
+) = is_running_in_docker()
+
 
 def extract_api_data(api_url):
     try:
@@ -21,6 +33,7 @@ def extract_api_data(api_url):
         print(f"Erreur lors de l'extraction des données depuis l'API : {e}")
         return None
 
+
 def extract_csv_data(csv_file):
     try:
         data = pd.read_csv(csv_file)
@@ -29,17 +42,19 @@ def extract_csv_data(csv_file):
         print(f"Erreur lors de l'extraction des données depuis le fichier CSV : {e}")
         return None
 
+
 def extract_scraped_data(url, selector):
     try:
         response = requests.get(url)
         response.raise_for_status()
-        soup = BeautifulSoup(response.content, 'html.parser')
-        
+        soup = BeautifulSoup(response.content, "html.parser")
+
         data = [element.text for element in soup.select(selector)]
         return data
     except Exception as e:
         print(f"Erreur lors du scraping des données depuis la page web : {e}")
         return None
+
 
 def extract_db_data(db_host, db_port, db_name, db_user, db_pwd):
     # Créer une connexion à la base de données
@@ -47,7 +62,6 @@ def extract_db_data(db_host, db_port, db_name, db_user, db_pwd):
         f"postgresql://{db_user}:{db_pwd}@{db_host}:{db_port}/{db_name}"
     )
     Base = declarative_base()
-
 
     # Définir le modèle de la table raw_profiles
     class Profile(Base):
@@ -58,7 +72,6 @@ def extract_db_data(db_host, db_port, db_name, db_user, db_pwd):
         competences = Column(String, nullable=False)
         certifications = Column(String, nullable=False)
         combined = Column(String, nullable=False)
-
 
     # Créer les tables dans la base de données
     Base.metadata.create_all(engine)
@@ -78,19 +91,25 @@ def extract_db_data(db_host, db_port, db_name, db_user, db_pwd):
     except Exception as e:
         raise f"Erreur lors de la récupération des profils: {str(e)}"
 
-def extract_big_data(mongo_host, mongo_port, mongo_user, mongo_pwd, mongo_db, collection_name):
+
+def extract_big_data(
+    mongo_host, mongo_port, mongo_user, mongo_pwd, mongo_db, collection_name
+):
     try:
-        client = MongoClient(f"mongodb://{mongo_user}:{mongo_pwd}@{mongo_host}:{mongo_port}")
+        client = MongoClient(
+            f"mongodb://{mongo_user}:{mongo_pwd}@{mongo_host}:{mongo_port}"
+        )
         db = client[mongo_db]
         collection = db[collection_name]
-        
+
         for doc in collection.find():
             data = [doc for doc in collection.find()]
-            
+
         return pd.DataFrame(data)  # Conversion en DataFrame pandas
     except Exception as e:
         print(f"Erreur lors de l'extraction des données depuis MongoDB : {e}")
         return None
+
 
 def main():
     # Sources de données
@@ -102,10 +121,14 @@ def main():
 
     # Extraction des données
     api_data = extract_api_data("https://intranet.cgi.com/annuaire/api/v1/membres")
-    csv_data = extract_csv_data(r"C:\Users\musti\Projets\profile-finder\local_deployment\rag_api\data\fixtures\fixtures_coaff.csv")
+    csv_data = extract_csv_data(
+        r"C:\Users\musti\Projets\profile-finder\local_deployment\rag_api\data\fixtures\fixtures_coaff.csv"
+    )
     scraped_data = extract_scraped_data("http://www.cgi.com/", "article a")
     db_data = extract_db_data(db_host, db_port, db_name, db_user, db_pwd)
-    big_data = extract_big_data(mongo_host, mongo_port, mongo_user, mongo_pwd, mongo_db, "files")
+    big_data = extract_big_data(
+        mongo_host, mongo_port, mongo_user, mongo_pwd, mongo_db, "files"
+    )
 
     if api_data:
         print("Données extraites de l'API:", api_data)
@@ -118,7 +141,9 @@ def main():
     if scraped_data:
         print("Données extraites du scraping:", scraped_data)
         # Stocker les données dans un fichier CSV
-        pd.DataFrame(scraped_data, columns=["Titres"]).to_csv(scrapping_data_csv, index=False)
+        pd.DataFrame(scraped_data, columns=["Titres"]).to_csv(
+            scrapping_data_csv, index=False
+        )
     if db_data is not None:
         print("Données extraites de la base de données:", db_data)
         # Stocker les données dans un fichier CSV

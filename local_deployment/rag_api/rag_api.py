@@ -42,8 +42,10 @@ MODEL_EMBEDDING = "nomic-embed-text:v1.5"
 
 app = FastAPI()
 
+
 class TestInput(BaseModel):
     message: str
+
 
 class ChatRequest(BaseModel):
     question: str
@@ -51,15 +53,21 @@ class ChatRequest(BaseModel):
     chat_id: str
     model: str
 
+
 class IDrequest(BaseModel):
     model: str
     prompt: str
+
 
 class TitleRequest(BaseModel):
     question: str
     chat_id: str
 
-db_api_host, db_api_port, mongo_host, mongo_port, mongo_user, mongo_pwd, mongo_db = is_running_in_docker()
+
+db_api_host, db_api_port, mongo_host, mongo_port, mongo_user, mongo_pwd, mongo_db = (
+    is_running_in_docker()
+)
+
 
 @app.get(
     "/", summary="Root endpoint", description="This is the root endpoint of the API."
@@ -75,6 +83,7 @@ def test(input: TestInput):
     This is a test endpoint to check if the API is working properly.
     """
     return {"message": input.message + " Success"}
+
 
 @app.post(
     "/store_file",
@@ -97,7 +106,9 @@ def storing_file(file: UploadFile = File(...)):
         with open(file_path, "wb") as f:
             f.write(file.file.read())
 
-        result = store_file(file_path, mongo_user, mongo_pwd, mongo_host, mongo_port, mongo_db)
+        result = store_file(
+            file_path, mongo_user, mongo_pwd, mongo_host, mongo_port, mongo_db
+        )
 
         # Remove the temporally stored file
         os.remove(file_path)
@@ -105,6 +116,7 @@ def storing_file(file: UploadFile = File(...)):
         return {"message": result}
     except Exception as e:
         return {"message": f"Error storing file: {str(e)}"}
+
 
 @app.get(
     "/get_file",
@@ -127,6 +139,7 @@ def getting_file():
     except Exception as e:
         return {"message": f"Error retrieving file: {str(e)}"}
 
+
 @app.post(
     "/store_profiles",
     summary="Insert profiles",
@@ -142,9 +155,7 @@ def storing_profiles():
             print("Database is empty -> Inserting profiles")
             result = insert_profiles(db_api_host, db_api_port)
             print(f"{result} profiles added to the database")
-            return {
-                f"message": f"{result} profiles added to the database"
-            }
+            return {f"message": f"{result} profiles added to the database"}
         else:
             print("Database already contains profiles -> Skipping insertion")
             return {"message": "Database already contains profiles"}

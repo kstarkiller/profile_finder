@@ -11,7 +11,7 @@ from users_manager import (
     get_search_by_chat_id,
     add_message_to_chat,
     delete_search_from_history,
-    delete_all_searches_from_history
+    delete_all_searches_from_history,
 )
 from sources_manager import get_profiles, truncate_table, insert_profile
 
@@ -85,9 +85,9 @@ async def get_user_api(user: dict):
 
 
 @app.post(
-        "/delete_user_account",
-        summary="Supprimer un utilisateur",
-        response_description="Utilisateur supprimé",
+    "/delete_user_account",
+    summary="Supprimer un utilisateur",
+    response_description="Utilisateur supprimé",
 )
 async def delete_user_account_api(user: dict):
     try:

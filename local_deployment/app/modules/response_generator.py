@@ -1,6 +1,7 @@
 import re
 import time
 
+
 def response_generator(response):
     response = "Assistant : \n " + response
     lines = response.splitlines(True)  # Preserve line breaks

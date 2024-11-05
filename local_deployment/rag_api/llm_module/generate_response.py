@@ -39,44 +39,7 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",  # Log format
 )
 
-
-# Personalized class to disable SSL verification
-# class SSLAdapter(HTTPAdapter):
-#     def init_poolmanager(self, *args, **kwargs):
-#         context = ssl.create_default_context()
-#         context.check_hostname = False
-#         context.verify_mode = ssl.CERT_NONE
-#         kwargs["ssl_context"] = context
-#         return super(SSLAdapter, self).init_poolmanager(*args, **kwargs)
-
-
-# Global application of the custom SSL adapter to the requests session
 session = requests.Session()
-# adapter = SSLAdapter()
-# session.mount("https://", adapter)
-
-
-# Authenticate the user
-def authenticate(username: str, password: str) -> bool:
-    """
-    Authenticate the user using the credentials in the config file.
-
-    Args:
-        username (str): The username of the user.
-        password (str): The password of the user.
-
-    Returns:
-        bool: True if the user is authenticated, False otherwise.
-    """
-
-    # Check the credentials
-    success = (username == USERNAME) and (password == PASSWORD)
-    if success:
-        log_access(username, success)  # Log the login attempt
-        return success
-    else:
-        log_access(username, success)  # Log the login attempt
-        return success
 
 
 def validate_input(
@@ -118,10 +81,10 @@ def validate_input(
 
 
 def generate_ollama_response(
-    data: list, history: list, model: str = "llama3.1:latest"
+    data: list, history: list, model: str = "llama3.1:8b"
 ) -> str:
     """
-    Generates a response using the model of your choice (llama3.1 8B here).
+    Generates a response using the model of your choice (it must be downloaded locally).
 
     Args:
         data (list, optional): The data to use for the response.

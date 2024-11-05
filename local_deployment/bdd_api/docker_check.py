@@ -1,5 +1,6 @@
 import os
 
+
 # Vérifier si l'application est en cours d'exécution dans un conteneur Docker
 # et définir l'hôte de la base de données en conséquence
 def is_running_in_docker():

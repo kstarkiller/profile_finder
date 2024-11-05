@@ -2,7 +2,8 @@ from pymongo import MongoClient
 from gridfs import GridFS, NoFile
 import os
 
-separator = '\\' if os.name == 'nt' else '/'
+separator = "\\" if os.name == "nt" else "/"
+
 
 def store_file(file, MONGO_USER, MONGO_PWD, MONGO_HOST, MONGO_PORT, MONGO_DB):
     """
@@ -21,17 +22,20 @@ def store_file(file, MONGO_USER, MONGO_PWD, MONGO_HOST, MONGO_PORT, MONGO_DB):
     """
     try:
         # Connexion à la base de données MongoDB
-        client = MongoClient(f'mongodb://{MONGO_USER}:{MONGO_PWD}@{MONGO_HOST}:{MONGO_PORT}/?authSource=admin')
+        client = MongoClient(
+            f"mongodb://{MONGO_USER}:{MONGO_PWD}@{MONGO_HOST}:{MONGO_PORT}/?authSource=admin"
+        )
         db = client[MONGO_DB]
         grid_fs = GridFS(db, collection="files")
 
         # Sauvegarde du fichier dans GridFS
-        with open(file, 'rb') as file_data:
+        with open(file, "rb") as file_data:
             grid_fs.put(file_data, filename=file.split(separator)[-1])
 
         return "Fichier traité avec succès !"
     except Exception as e:
         return f"Erreur lors du traitement de votre fichier : {str(e)}"
+
 
 def download_files(MONGO_USER, MONGO_PWD, MONGO_HOST, MONGO_PORT, MONGO_DB):
     """
@@ -49,7 +53,9 @@ def download_files(MONGO_USER, MONGO_PWD, MONGO_HOST, MONGO_PORT, MONGO_DB):
     """
     try:
         # Connexion à la base de données MongoDB
-        client = MongoClient(f'mongodb://{MONGO_USER}:{MONGO_PWD}@{MONGO_HOST}:{MONGO_PORT}/?authSource=admin')
+        client = MongoClient(
+            f"mongodb://{MONGO_USER}:{MONGO_PWD}@{MONGO_HOST}:{MONGO_PORT}/?authSource=admin"
+        )
         db = client[MONGO_DB]
         grid_fs = GridFS(db, collection="files")
 
@@ -63,14 +69,16 @@ def download_files(MONGO_USER, MONGO_PWD, MONGO_HOST, MONGO_PORT, MONGO_DB):
             for filename in files_names:
                 try:
                     file_data = grid_fs.get_last_version(filename)
-                    output_file_path = fr"data{separator}downloaded_files{separator}{filename}"
-                    with open(output_file_path, 'wb') as output_file:
+                    output_file_path = (
+                        rf"data{separator}downloaded_files{separator}{filename}"
+                    )
+                    with open(output_file_path, "wb") as output_file:
                         output_file.write(file_data.read())
                 except NoFile:
                     return f"Aucune version du fichier {filename} trouvée."
         except NoFile:
             return f"Aucun fichier trouvé dans la base de données."
-        
+
         return f"Fichiers téléchargés avec succès."
     except Exception as e:
         return f"Erreur lors du téléchargement du fichier depuis MongoDB : {str(e)}"

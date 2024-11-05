@@ -10,6 +10,7 @@ ERROR_MESSAGES = {
 
 db_api_host, db_api_port, rag_api_host, rag_api_port = is_running_in_docker()
 
+
 # These functions are used to process the user input and return the chatbot response via the generate_perplexity_response function.
 def process_input(user_input, chat_history, chat_id, model):
     """
@@ -47,7 +48,7 @@ def process_input(user_input, chat_history, chat_id, model):
             "chat_id": chat_id,
             "model": model,
         }
-        
+
         response = requests.post(url, json=payload)
         response_data = response.json()
 

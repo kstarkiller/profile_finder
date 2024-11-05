@@ -1,75 +1,66 @@
 # Command: python -m unittest test_unitaires.test_load_documents
 import unittest
-from unittest.mock import patch
-import pandas as pd
+from unittest.mock import patch, MagicMock
+import requests
 
-from rag_module.load_documents import load_documents as load_documents
+from rag_module.load_documents import load_profile as load_profile
+from docker_check import is_running_in_docker
+
+(
+    db_host,
+    db_port,
+    db_user,
+    db_pwd,
+    db_name,
+    mongo_host,
+    mongo_port,
+    mongo_user,
+    mongo_pwd,
+    mongo_db,
+) = is_running_in_docker()
 
 
-# The goal of this test is to verify that the load_documents function works as expected.
-class TestLoadDocuments(unittest.TestCase):
+class TestLoadProfile(unittest.TestCase):
 
     def setUp(self):
-        # Common setup for all tests
-        self.patcher_exists = patch("os.path.exists")
-        self.patcher_listdir = patch("os.listdir")
-        self.patcher_read_csv = patch("pandas.read_csv")
+        self.url = f"http://{db_host}:{db_port}/get_profiles"
 
-        self.mock_exists = self.patcher_exists.start()
-        self.mock_listdir = self.patcher_listdir.start()
-        self.mock_read_csv = self.patcher_read_csv.start()
+    def mock_response(self, status_code=200, json_data=None, raise_for_status=None):
+        mock_resp = MagicMock()
+        mock_resp.status_code = status_code
+        mock_resp.json.return_value = json_data or {}
+        if raise_for_status:
+            mock_resp.raise_for_status.side_effect = raise_for_status
+        return mock_resp
 
-        self.addCleanup(self.patcher_exists.stop)
-        self.addCleanup(self.patcher_listdir.stop)
-        self.addCleanup(self.patcher_read_csv.stop)
+    @patch("requests.get")
+    def test_load_profile_success(self, mock_get):
+        mock_get.return_value = self.mock_response(
+            json_data={
+                "profiles": [{"combined": "Profile 1"}, {"combined": "Profile 2"}]
+            }
+        )
 
-    def tearDown(self):
-        # Stop all patches
-        patch.stopall()
+        result = load_profile()
+        expected_result = ["Profile 1", "Profile 2"]
+        self.assertEqual(result, expected_result)
 
-    def test_load_documents_success(self):
-        # Setup mocks specific to this test
-        self.mock_exists.return_value = True
-        self.mock_listdir.return_value = ["test.csv"]
-        self.mock_read_csv.return_value = pd.DataFrame({"Combined": ["line1\nline2"]})
+    @patch("requests.get")
+    def test_load_profile_api_failure(self, mock_get):
+        mock_get.side_effect = requests.exceptions.HTTPError("API Error")
 
-        result = load_documents("dummy_path")
+        with self.assertRaises(ValueError) as context:
+            load_profile()
 
-        self.assertEqual(result, ["line1", "line2"])
+        self.assertEqual(str(context.exception), "Error loading profiles: API Error")
 
-    def test_load_documents_no_csv(self):
-        # Setup mocks specific to this test
-        self.mock_exists.return_value = True
-        self.mock_listdir.return_value = ["test.txt"]
+    @patch("requests.get")
+    def test_load_profile_no_profiles(self, mock_get):
+        mock_get.return_value = self.mock_response(json_data={"profiles": []})
 
-        with self.assertRaises(ValueError):
-            load_documents("dummy_path")
-
-    def test_load_documents_directory_not_exist(self):
-        # Setup mocks specific to this test
-        self.mock_exists.return_value = False
-
-        with self.assertRaises(ValueError):
-            load_documents("dummy_path")
-
-    def test_load_documents_error_reading_file(self):
-        # Setup mocks specific to this test
-        self.mock_exists.return_value = True
-        self.mock_listdir.return_value = ["test.csv"]
-        self.mock_read_csv.side_effect = ValueError("Error reading file")
-
-        with self.assertRaises(ValueError):
-            load_documents("dummy_path")
-
-    def test_load_documents_no_file_in_directory(self):
-        # Setup mocks specific to this test
-        self.mock_exists.return_value = True
-        self.mock_listdir.return_value = []
-
-        with self.assertRaises(ValueError):
-            load_documents("dummy_path")
+        result = load_profile()
+        self.assertEqual(result, [])
 
 
-# Run the tests
 if __name__ == "__main__":
     unittest.main()

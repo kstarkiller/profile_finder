@@ -7,7 +7,9 @@ psarm_path = os.path.join(
     base_path, "downloaded_files", "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
 )
 coaff_path = os.path.join(base_path, "downloaded_files", "Coaff_V1.xlsx")
-output_descriptions = os.path.join(base_path, "downloaded_files", "descriptions_uniques.txt")
+output_descriptions = os.path.join(
+    base_path, "downloaded_files", "descriptions_uniques.txt"
+)
 output_profiles = os.path.join(base_path, "downloaded_files", "profils_uniques.txt")
 
 # Read the files into pandas DataFrames

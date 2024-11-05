@@ -74,7 +74,7 @@ def embed_documents(file_path, model="nomic-embed-text:v1.5", batch_size=10):
                 # logging.info(f"Document {i + j} embedded.")
             except Exception as e:
                 logging.error(f"Error embedding document {i + j}: {e}")
-                raise (f"Error embedding document {i + j}: {e}")
+                raise ValueError(f"Error embedding document {i + j}: {e}")
 
         # Add the batch to the collection
         collection.add(

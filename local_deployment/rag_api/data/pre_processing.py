@@ -145,7 +145,7 @@ def insert_profiles(db_host, db_port):
         db_port (str): The port of the database.
 
     Returns:
-        int: The number of profiles added to the database.   
+        int: The number of profiles added to the database.
     """
     # Vider la table raw_profiles avant d'insérer les nouveaux profils
     try:

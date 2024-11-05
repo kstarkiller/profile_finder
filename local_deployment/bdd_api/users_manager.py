@@ -193,8 +193,12 @@ def delete_user(email, password):
         # Supprimer l'utilisateur et ses données
         searches = get_search_history(email)
         for search in searches:
-            db.query(ChatHistory).filter(ChatHistory.chat_id == search["chat_id"]).delete()
-            db.query(SearchHistory).filter(SearchHistory.chat_id == search["chat_id"]).delete()
+            db.query(ChatHistory).filter(
+                ChatHistory.chat_id == search["chat_id"]
+            ).delete()
+            db.query(SearchHistory).filter(
+                SearchHistory.chat_id == search["chat_id"]
+            ).delete()
         db.delete(user)
         db.commit()
         db.close()
@@ -353,6 +357,7 @@ def delete_search_from_history(chat_id):
     finally:
         db.close()
 
+
 def delete_all_searches_from_history(user_email):
     """
     Supprime toutes les recherches de l'historique des recherches de l'utilisateur.
@@ -369,8 +374,12 @@ def delete_all_searches_from_history(user_email):
         searches = get_search_history(user_email)
         # Supprimer les entrées correspondantes dans la table conversations
         for search in searches:
-            db.query(ChatHistory).filter(ChatHistory.chat_id == search["chat_id"]).delete()
-            db.query(SearchHistory).filter(SearchHistory.chat_id == search["chat_id"]).delete()
+            db.query(ChatHistory).filter(
+                ChatHistory.chat_id == search["chat_id"]
+            ).delete()
+            db.query(SearchHistory).filter(
+                SearchHistory.chat_id == search["chat_id"]
+            ).delete()
 
         db.commit()
     except Exception as e:
