@@ -34,22 +34,19 @@ def process_input(user_input, chat_history, chat_id, model):
     chat_history.append({"role": "user", "content": user_input})
 
     # Determine the URL based on the model
-    url = (
-        "http://localhost:8080/ollama_chat"
-        if model == "llama3.1:8b" or model == "llama3.1:latest"
-        else f"http://{rag_api_host}:{rag_api_port}/minai_chat"
-    )
+    url = f"http://{rag_api_host}:{rag_api_port}/chat"
 
     try:
         # Generate a response via the RAG API endpoint
         payload = {
+            "service_type": "ollama" if model == "llama3.1:8b" or model == "llama3.1:latest" else "minai",
             "question": user_input,
             "history": chat_history,
             "chat_id": chat_id,
             "model": model,
         }
 
-        response = requests.post(url, json=payload)
+        response = requests.get(url, json=payload)
         response_data = response.json()
 
         # Check if the response contains errors

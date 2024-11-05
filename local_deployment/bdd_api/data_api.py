@@ -37,7 +37,7 @@ async def test_api(input: dict):
 
 
 @app.post(
-    "/insert_profile",
+    "/profile",
     summary="Ajouter un profil dans la base de données",
     response_description="Profil ajouté avec succès",
 )
@@ -49,7 +49,7 @@ async def insert_profile_api(profile: dict):
 
 
 @app.get(
-    "/get_profiles",
+    "/profiles",
     summary="Récupérer tous les profils de la base de données",
     response_description="Liste des profils",
 )
@@ -60,9 +60,9 @@ async def get_profiles_api():
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@app.post(
-    "/truncate_table",
-    summary="Vider la table des profils",
+@app.delete(
+    "/profiles",
+    summary="Supprimer les profils",
     response_description="Table vidée avec succès",
 )
 async def truncate_table_api():
@@ -73,7 +73,7 @@ async def truncate_table_api():
 
 
 @app.get(
-    "/get_user",
+    "/user",
     summary="Récupérer un utilisateur",
     response_description="Utilisateur trouvé",
 )
@@ -84,8 +84,8 @@ async def get_user_api(user: dict):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@app.post(
-    "/delete_user_account",
+@app.delete(
+    "/user",
     summary="Supprimer un utilisateur",
     response_description="Utilisateur supprimé",
 )
@@ -96,8 +96,8 @@ async def delete_user_account_api(user: dict):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@app.post(
-    "/create_user",
+@app.put(
+    "/user",
     summary="Créer un utilisateur",
     response_description="Utilisateur créé",
 )
@@ -108,8 +108,8 @@ async def create_user_api(user: dict):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@app.post(
-    "/add_search_to_history",
+@app.put(
+    "/search",
     summary="Ajouter une recherche à l'historique",
     response_description="Recherche ajoutée avec succès",
 )
@@ -123,7 +123,7 @@ async def add_search_to_history_api(search: dict):
 
 
 @app.post(
-    "/update_search_in_history",
+    "/search",
     summary="Mettre à jour une recherche dans l'historique",
     response_description="Recherche mise à jour avec succès",
 )
@@ -135,7 +135,7 @@ async def update_search_in_history_api(chat_id):
 
 
 @app.get(
-    "/get_search_history",
+    "/searches",
     summary="Récupérer l'historique des recherches",
     response_description="Historique des recherches",
 )
@@ -147,7 +147,7 @@ async def get_search_history_api(user_email: str):
 
 
 @app.get(
-    "/get_search_by_chat_id",
+    "/search",
     summary="Récupérer une recherche par chat_id",
     response_description="Recherche trouvée",
 )
@@ -160,7 +160,7 @@ def get_search_by_chat_id_api(chat_id: str):
 
 
 @app.post(
-    "/add_message_to_chat",
+    "/message",
     summary="Ajouter un message à un chat",
     response_description="Message ajouté avec succès",
 )
@@ -177,8 +177,8 @@ async def add_message_to_chat_api(message: dict):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@app.post(
-    "/delete_search_from_history",
+@app.delete(
+    "/search",
     summary="Supprimer une recherche de l'historique",
     response_description="Recherche supprimée avec succès",
 )
@@ -189,8 +189,8 @@ async def delete_search_from_history_api(json: dict):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@app.post(
-    "/delete_user_data",
+@app.delete(
+    "/searches",
     summary="Supprimer toutes les recherches de l'historique",
     response_description="Recherches supprimées avec succès",
 )

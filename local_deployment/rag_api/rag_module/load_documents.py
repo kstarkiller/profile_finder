@@ -29,7 +29,7 @@ def load_profile():
     """
     try:
         # Load the profiles from the database
-        response = requests.get(f"http://{db_host}:{db_port}/get_profiles")
+        response = requests.get(f"http://{db_host}:{db_port}/profiles")
         response.raise_for_status()
 
         # Convert the response to a Dataframe

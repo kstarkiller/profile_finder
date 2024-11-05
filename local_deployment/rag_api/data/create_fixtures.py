@@ -4,6 +4,7 @@ import random
 
 fake = Faker()
 
+
 # Generate new fake COAFF data
 def generate_fake_coaff(names, fonctions, company_names):
     """
@@ -93,6 +94,7 @@ def generate_fake_coaff(names, fonctions, company_names):
                 occupancy_rate = round((1 - row["Tx_occup"]), 1)
             coaff_rows += 1
     return pd.DataFrame(fake_data), coaff_rows
+
 
 def generate_fake_psarm(names, unique_psarm_values, supervisors):
     """
@@ -233,19 +235,25 @@ def generate_fake_certs(names, unique_certs_dict):
     return pd.DataFrame(fake_data), certs_rows
 
 
-def create_fixtures(psarm_path, coaff_path, certs_path, fixtures_psarm, fixtures_coaff, fixtures_certs):
+def create_fixtures(
+    psarm_path, coaff_path, certs_path, fixtures_psarm, fixtures_coaff, fixtures_certs
+):
     # Retrieve data from the PSA RM file
     psa_rm_df = pd.read_excel(psarm_path)
 
     # Read existing data from the COAFF file
     coaff_df = pd.read_excel(coaff_path)
     # Set the 3rd row as the header and remove the first two rows
-    coaff_df = coaff_df.rename(columns=coaff_df.iloc[2].to_dict()).drop(coaff_df.index[:3])
+    coaff_df = coaff_df.rename(columns=coaff_df.iloc[2].to_dict()).drop(
+        coaff_df.index[:3]
+    )
 
     # Read existing data from the certifications file
     certs_df = pd.read_excel(certs_path)
     # Set the first row as the header to remove unnecessary information
-    certs_df = certs_df.rename(columns=certs_df.iloc[0].to_dict()).drop(certs_df.index[0])
+    certs_df = certs_df.rename(columns=certs_df.iloc[0].to_dict()).drop(
+        certs_df.index[0]
+    )
 
     # Rename the 'Membres' column to 'Nom'
     if "Membres" in coaff_df.columns:
@@ -306,7 +314,6 @@ def create_fixtures(psarm_path, coaff_path, certs_path, fixtures_psarm, fixtures
 
     # List of member names
     names = unique_psarm_values["Nom"]
-    print(f"Number of unique names: {len(names)}")
     supervisors = unique_psarm_values["Supervisor Name"]
 
     # List of ongoing missions
@@ -326,7 +333,6 @@ def create_fixtures(psarm_path, coaff_path, certs_path, fixtures_psarm, fixtures
         "DISPO ICE",
         "congés",
     ]
-
 
     new_coaff, coaff_rows = generate_fake_coaff(names, fonctions, company_names)
     new_psarm, psarm_rows = generate_fake_psarm(names, unique_psarm_values, supervisors)

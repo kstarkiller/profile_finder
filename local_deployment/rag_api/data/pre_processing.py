@@ -1,7 +1,10 @@
 import pandas as pd
 import requests
 
-def pre_processing(fixtures_coaff_path, fixtures_psarm_path, fixtures_certs_path, combined_path):
+
+def pre_processing(
+    fixtures_coaff_path, fixtures_psarm_path, fixtures_certs_path, combined_path
+):
     coaff_df = pd.read_csv(fixtures_coaff_path)
     psarm_df = pd.read_csv(fixtures_psarm_path)
     certs_df = pd.read_csv(fixtures_certs_path)
@@ -74,13 +77,21 @@ def pre_processing(fixtures_coaff_path, fixtures_psarm_path, fixtures_certs_path
             }
 
         # Iterate through each group and extract the occupation/availability information for each member
-        for (mission, competences, demarrage, fin, tx), availabilities in availabilities:
+        for (
+            mission,
+            competences,
+            demarrage,
+            fin,
+            tx,
+        ), availabilities in availabilities:
             if mission == "DISPO ICE":
                 key_value = (
                     f"Available at {int((float(tx))*100)}% from {demarrage} to {fin}"
                 )
             elif mission == "congés":
-                key_value = f"On leave at {int((float(tx))*100)}% from {demarrage} to {fin}"
+                key_value = (
+                    f"On leave at {int((float(tx))*100)}% from {demarrage} to {fin}"
+                )
             else:
                 key_value = f"Mission {competences} at {int((float(tx))*100)}% occupation at {mission} from {demarrage} to {fin}"
 
@@ -129,6 +140,9 @@ def pre_processing(fixtures_coaff_path, fixtures_psarm_path, fixtures_certs_path
     # Remove the character "\" from the 'Combined' column
     resultat_df["Combined"] = resultat_df["Combined"].str.replace('"', "")
 
+    # Supprimer les lignes en double
+    resultat_df = resultat_df.drop_duplicates()
+
     # Save the final result to a csv file
     resultat_df.to_csv(combined_path, index=False)
 
@@ -163,7 +177,7 @@ def insert_profiles(db_host, db_port, coaff, psarm, certs, combined):
 
             try:
                 response = requests.post(
-                    f"http://{db_host}:{db_port}/insert_profile", json=payload
+                    f"http://{db_host}:{db_port}/profile", json=payload
                 )
                 response.raise_for_status()
                 profiles_added.append(response.json())

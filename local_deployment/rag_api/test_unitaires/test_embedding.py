@@ -4,7 +4,6 @@ from unittest.mock import patch, MagicMock
 from chromadb.config import Settings
 
 from rag_module.embedding import embed_documents
-from rag_module.embedding import collection_path
 
 
 class TestEmbedDocuments(unittest.TestCase):
@@ -40,10 +39,10 @@ class TestEmbedDocuments(unittest.TestCase):
 
         # Assertions
         self.mock_PersistentClient.assert_called_once_with(
-            path=collection_path, settings=Settings(allow_reset=True)
+            path="dummy_path", settings=Settings(allow_reset=True)
         )
         self.mock_client.get_or_create_collection.assert_called_once_with(name="docs")
-        self.mock_load_profile.assert_called_once_with("dummy_path")
+        self.mock_load_profile.assert_called_once_with()
         self.assertEqual(self.mock_collection.add.call_count, 2)
 
     def test_embed_documents_load_profile_error(self):

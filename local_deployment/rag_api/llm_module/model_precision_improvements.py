@@ -5,7 +5,7 @@ import os
 from fuzzywuzzy import fuzz
 
 base_path = os.path.dirname(__file__)
-data_path = os.path.join(base_path, "..", "data", "downloaded_files")
+data_path = os.path.join(base_path, "..", "data", "sources_files")
 
 descriptions_file = os.path.join(data_path, "descriptions_uniques.txt")
 acronyms_file = os.path.join(data_path, "acronyms.txt")

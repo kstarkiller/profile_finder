@@ -125,7 +125,7 @@ def render_search_history():
     st.sidebar.markdown("### Historique de recherche :")
     if "search_history" in st.session_state:
         st.session_state["search_history"] = requests.get(
-            f"http://{db_api_host}:{db_api_port}/get_search_history",
+            f"http://{db_api_host}:{db_api_port}/searches",
             params={"user_email": st.session_state["username"]},
         ).json()
         displayed_chat_ids = set()
@@ -154,7 +154,7 @@ def render_search_history():
                                 use_container_width=True,
                             ):
                                 search_data = requests.get(
-                                    f"http://{db_api_host}:{db_api_port}/get_search_by_chat_id",
+                                    f"http://{db_api_host}:{db_api_port}/search",
                                     params={"chat_id": str(search["chat_id"])},
                                 ).json()
                                 st.session_state.update(
@@ -168,8 +168,8 @@ def render_search_history():
                                 key=f"delete_{search['chat_id']}",
                                 use_container_width=True,
                             ):
-                                requests.post(
-                                    f"http://{db_api_host}:{db_api_port}/delete_search_from_history",
+                                requests.delete(
+                                    f"http://{db_api_host}:{db_api_port}/search",
                                     json={"chat_id": str(search["chat_id"])},
                                 )
                                 st.session_state.update(chat_id="")
@@ -206,14 +206,17 @@ def render_settings():
         with col3:
             if st.button("Effacer", key="delete_data", use_container_width=True):
                 print(st.session_state["username"])
-                requests.post(
-                    f"http://{db_api_host}:{db_api_port}/delete_user_data",
+                requests.delete(
+                    f"http://{db_api_host}:{db_api_port}/searches",
                     json={"email": st.session_state["username"]},
                 )
                 st.markdown(
                     "<span style='color: green;'>Données effacées avec succès.</span>",
                     unsafe_allow_html=True,
                 )
+                st.session_state.update(search_history=[], chat_id="", chat=[])
+                time.sleep(2.0)
+                st.rerun()
     with st.container():
         col1, col2, col3 = st.columns(3, gap="small", vertical_alignment="center")
         with col1:
@@ -239,8 +242,8 @@ def render_settings():
                         key="confirm_delete_button",
                         use_container_width=True,
                     ):
-                        response = requests.post(
-                            f"http://{db_api_host}:{db_api_port}/delete_user_account",
+                        response = requests.delete(
+                            f"http://{db_api_host}:{db_api_port}/user",
                             json={
                                 "email": st.session_state["username"],
                                 "password": password,
@@ -303,11 +306,12 @@ def render_settings():
         with col3:
             if st.button("Envoyer", key="send_doc", use_container_width=True):
                 response = requests.post(
-                    f"http://{rag_api_host}:{rag_api_port}/store_file",
+                    f"http://{rag_api_host}:{rag_api_port}/file",
                     files={"file": file},
                 ).json()
-                st.toast(response.get("message", "Erreur lors de l'envoi du fichier"))
-                time.sleep(2.0)
+                for resp in response:
+                    print(resp)
+                    # st.progress(resp.percentage + 1, text=resp.message)
                 st.rerun()
 
 

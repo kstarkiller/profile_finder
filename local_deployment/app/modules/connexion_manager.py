@@ -22,8 +22,8 @@ def signup(name, email, password):
 
     # Vérifier si le nom, l'email et le mot de passe sont fournis
     if name and email and password:
-        user_check = requests.post(
-            f"http://{db_api_host}:{db_api_port}/create_user",
+        user_check = requests.put(
+            f"http://{db_api_host}:{db_api_port}/user",
             json={"name": name, "email": email, "password": password},
         ).json()
 
@@ -71,7 +71,7 @@ def login(email, password):
     """
     try:
         user = requests.get(
-            f"http://{db_api_host}:{db_api_port}/get_user",
+            f"http://{db_api_host}:{db_api_port}/user",
             json={"email": email, "password": password},
         ).json()
 

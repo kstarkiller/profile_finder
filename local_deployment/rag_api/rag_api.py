@@ -17,6 +17,10 @@ from data.pre_processing import insert_profiles
 from data.store_file import store_file, download_files
 from data.get_skills import get_skills
 from data.create_fixtures import create_fixtures
+import test_unitaires.test_embedding as test_embedding
+import test_unitaires.test_load_documents as test_load_documents
+import test_unitaires.test_ollama as test_ollama
+from perf_validation import run_validation
 from docker_check import is_running_in_docker
 
 # Paths' definition
@@ -25,6 +29,8 @@ logs_path = os.path.join(base_path, "log_module", "logs", "logs_api.log")
 temp_files = os.path.join(base_path, "data", "temp_files")
 temp_sources = os.path.join(base_path, "data", "downloaded_files")
 sources = os.path.join(base_path, "data", "source_files")
+temp_fixtures = os.path.join(base_path, "data", "temp_fixtures")
+fixtures = os.path.join(base_path, "data", "fixtures")
 fixtures_coaff = os.path.join(base_path, "fixtures", "fixtures_coaff.csv")
 fixtures_psarm = os.path.join(base_path, "fixtures", "fixtures_psarm.csv")
 fixtures_certs = os.path.join(base_path, "fixtures", "fixtures_certs.csv")
@@ -44,7 +50,7 @@ temp_descriptions_uniques = os.path.join(
     base_path, temp_sources, "descriptions_uniques.txt"
 )
 temp_profiles_uniques = os.path.join(base_path, temp_sources, "profils_uniques.txt")
-collection= os.path.join(base_path, "data", "chroma")
+collection = os.path.join(base_path, "data", "chroma")
 temp_collection = os.path.join(base_path, "data", "temp_chroma")
 
 # Logging module configuration
@@ -71,6 +77,7 @@ class TestInput(BaseModel):
 
 
 class ChatRequest(BaseModel):
+    service_type: str
     question: str
     history: List[dict]
     chat_id: str
@@ -87,9 +94,18 @@ class TitleRequest(BaseModel):
     chat_id: str
 
 
-db_api_host, db_api_port, mongo_host, mongo_port, mongo_user, mongo_pwd, mongo_db = (
-    is_running_in_docker()
-)
+(
+    db_api_host,
+    db_api_port,
+    db_api_user,
+    db_api_pwd,
+    db_api_name,
+    mongo_host,
+    mongo_port,
+    mongo_user,
+    mongo_pwd,
+    mongo_db,
+) = is_running_in_docker()
 
 
 @app.get(
@@ -109,7 +125,7 @@ def test(input: TestInput):
 
 
 @app.post(
-    "/store_file",
+    "/file",
     summary="Store file",
     description="This endpoint stores a file in the database.",
 )
@@ -123,40 +139,65 @@ def storing_file(file: UploadFile = File(...)):
     Returns:
         dict: A dictionary containing the success message.
     """
+    print(f"File received: {file.filename}")
+    try:
+        # Create temp files directory if it does not exist
+        if not os.path.exists(temp_files):
+            os.makedirs(temp_files)
+        if not os.path.exists(temp_sources):
+            os.makedirs(temp_sources)
+        if not os.path.exists(temp_fixtures):
+            os.makedirs(temp_fixtures)
+        if not os.path.exists(temp_combined):
+            os.makedirs(temp_combined)
+        if not os.path.exists(temp_collection):
+            os.makedirs(temp_collection)
+        print(f"Temp files directory created if not already exist.")
+    except Exception as e:
+        print(f"Error creating temp files directory: {str(e)}")
+        return {
+            "message": f"Error creating temp files directory: {str(e)}",
+            "percentage": 0,
+        }
+
     try:
         # Temporally store the file locally
         file_path = os.path.join(temp_files, file.filename)
         with open(file_path, "wb") as f:
             f.write(file.file.read())
+        print(f"File stored in {file_path}")
         yield {"message": "File stored temporarily", "percentage": 10}
     except Exception as e:
-        return {"message": f"Error temporary storing file: {str(e)}"}
+        print(f"Error temporary storing file: {str(e)}")
+        return {"message": f"Error temporary storing file: {str(e)}", "percentage": 0}
 
     try:
         # Store the file in the database
         result = store_file(
             file_path, mongo_user, mongo_pwd, mongo_host, mongo_port, mongo_db
         )
+        print(f"File stored in the database.")
         yield {"message": result, "percentage": 20}
     except Exception as e:
-        return {"message": f"Error storing file: {str(e)}"}
-
-    # Remove the temporally stored file
-    os.remove(file_path)
+        return {"message": f"Error storing file: {str(e)}", "percentage": 0}
 
     try:
         # Download the files to add it to the rag
         result = download_files(mongo_user, mongo_pwd, mongo_host, mongo_port, mongo_db)
+        print(f"Files downloaded.")
         yield {"message": result, "percentage": 30}
     except Exception as e:
-        return {"message": f"Error downloading file: {str(e)}"}
+        return {"message": f"Error downloading file: {str(e)}", "percentage": 0}
 
     try:
         # Get the skills from the files
-        result = get_skills(temp_psarm, temp_coaff, temp_descriptions_uniques, temp_profiles_uniques)
+        result = get_skills(
+            temp_psarm, temp_coaff, temp_descriptions_uniques, temp_profiles_uniques
+        )
+        print(f"Skills extracted.")
         yield {"message": f"{result}", "percentage": 40}
     except Exception as e:
-        return {"message": f"Error getting skills: {str(e)}"}
+        return {"message": f"Error getting skills: {str(e)}", "percentage": 0}
 
     try:
         # Create the fixtures
@@ -168,45 +209,77 @@ def storing_file(file: UploadFile = File(...)):
             temp_fixtures_coaff,
             temp_fixtures_certs,
         )
+        print(f"Fixtures created.")
         yield {"message": f"{result}", "percentage": 50}
     except Exception as e:
-        return {"message": f"Error creating fixtures: {str(e)}"}
-    
+        logging.error(f"Error creating fixtures: {str(e)}")
+        return {"message": f"Error creating fixtures: {str(e)}", "percentage": 10}
+
     try:
         # Preprocess the data and insert the profiles into the database
-        result = insert_profiles(db_api_host, db_api_port, temp_fixtures_coaff, temp_fixtures_psarm, temp_fixtures_certs, temp_combined)
+        result = insert_profiles(
+            db_api_host,
+            db_api_port,
+            temp_fixtures_coaff,
+            temp_fixtures_psarm,
+            temp_fixtures_certs,
+            temp_combined,
+        )
+        print(f"Profiles inserted.")
         yield {"message": f"{result}", "percentage": 60}
     except Exception as e:
-        return {"message": f"Error inserting profiles: {str(e)}"}
-    
+        return {"message": f"Error inserting profiles: {str(e)}", "percentage": 0}
+
     try:
         # Embed the documents
         collection = embed_documents(temp_collection, MODEL_EMBEDDING)
+        print(f"Documents embedded.")
         yield {"message": f"{len(collection)} documents embedded", "percentage": 70}
     except Exception as e:
-        return {"message": f"Error embedding documents: {str(e)}"}
-    
+        return {"message": f"Error embedding documents: {str(e)}", "percentage": 0}
+
+    try:
+        # Passer les tests unitaires
+        test_embedding.test_embedding()
+        test_load_documents.test_load_profile_success()
+        test_ollama.test_ollama()
+        print(f"Unit tests passed.")
+        yield {"message": "Unit tests passed", "percentage": 80}
+    except Exception as e:
+        return {"message": f"Error running unit tests: {str(e)}", "percentage": 0}
+
+    try:
+        # Test the RAG performance et consistency
+        result_df, false_rate = run_validation(
+            temp_collection, temp_combined, MODEL_EMBEDDING, OLLAMA_LLM_MODEL
+        )
+        if false_rate > 10:
+            raise Exception(f"Validation tests failed: {result_df}")
+        print(f"Validation tests passed. false_rate: {false_rate}")
+        yield {"message": f"Validation results: {result_df}", "percentage": 90}
+    except Exception as e:
+        return {"message": f"Error running validation tests: {str(e)}", "percentage": 0}
+
     try:
         # Replace the old collection with the new one as everything was successful
         os.replace(temp_collection, collection)
         os.replace(temp_combined, combined)
-        os.replace(temp_fixtures_coaff, fixtures_coaff)
-        os.replace(temp_fixtures_psarm, fixtures_psarm)
-        os.replace(temp_fixtures_certs, fixtures_certs)
+        os.replace(temp_fixtures, fixtures)
         os.replace(temp_sources, sources)
         os.rename(temp_collection, collection)
         os.rename(temp_combined, combined)
-        os.rename(temp_fixtures_coaff, fixtures_coaff)
-        os.rename(temp_fixtures_psarm, fixtures_psarm)
-        os.rename(temp_fixtures_certs, fixtures_certs)
+        os.rename(temp_fixtures, fixtures)
         os.rename(temp_sources, sources)
-        yield {"message": "Files replaced successfully", "percentage": 90}
+        os.remove(file_path)
+        os.remove(temp_files)
+        print(f"Files replaced successfully.")
+        yield {"message": "Files replaced successfully", "percentage": 100}
     except Exception as e:
-        return {"message": f"Error replacing files: {str(e)}"}
+        return {"message": f"Error replacing files: {str(e)}", "percentage": 0}
 
 
 @app.get(
-    "/get_file",
+    "/file",
     summary="Get file",
     description="This endpoint retrieves a file from the database.",
 )
@@ -227,14 +300,14 @@ def getting_file():
         return {"message": f"Error retrieving file: {str(e)}"}
 
 
-@app.post(
-    "/store_profiles",
+@app.get(
+    "/profiles",
     summary="Insert profiles",
     description="This endpoint inserts profiles into the database if not already exist.",
 )
 def storing_profiles():
     try:
-        response = requests.get(f"http://{db_api_host}:{db_api_port}/get_profiles")
+        response = requests.get(f"http://{db_api_host}:{db_api_port}/profiles")
         response.raise_for_status()
         profiles = response.json()
         # Check if profiles is an empty list
@@ -247,14 +320,14 @@ def storing_profiles():
         print("HTTP error occurred:", err)
 
 
-@app.post(
-    "/truncate_table",
-    summary="Truncate table",
+@app.delete(
+    "/profiles",
+    summary="Delete profiles",
     description="This endpoint truncates the table in the database.",
 )
 def truncate_table():
     try:
-        response = requests.post(f"http://{db_api_host}:{db_api_port}/truncate_table")
+        response = requests.delete(f"http://{db_api_host}:{db_api_port}/profiles")
         response.raise_for_status()
         print(response.json())
     except requests.exceptions.HTTPError as err:
@@ -262,7 +335,7 @@ def truncate_table():
 
 
 @app.post(
-    "/embedding",
+    "/embed",
     summary="Embedding endpoint",
     description="This is the question endpoint.",
 )
@@ -289,12 +362,12 @@ def embedding():
     return {"collection": collection}
 
 
-@app.post(
-    "/ollama_chat",
-    summary="Process question",
+@app.get(
+    "/chat",
+    summary="Process question and return response",
     description="This endpoint processes a question and returns a response with ollama.",
 )
-def process_question_ollama(input: ChatRequest):
+def process_question(input: ChatRequest):
     """
     Process a question and return a response.
 
@@ -320,7 +393,14 @@ def process_question_ollama(input: ChatRequest):
         if data is None:
             logging.error("No document found")
             raise HTTPException(status_code=500, detail="No document found")
-        response = generate_ollama_response(data, input.history, input.model)
+        if input.service_type == "ollama":
+            response = generate_ollama_response(data, input.history, input.model)
+        elif input.service_type == "minai":
+            response = generate_minai_response(
+                data[0], input.chat_id, input.history, input.model
+            )
+        else:
+            raise HTTPException(status_code=500, detail="Incorrect service type")
     except Exception as e:
         logging.error(f"Error generating response: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -330,8 +410,8 @@ def process_question_ollama(input: ChatRequest):
     return {"response": response, "duration": end_time - start_time}
 
 
-@app.post(
-    "/new_chat_id",
+@app.get(
+    "/chat/id",
     summary="New chat ID",
     description="This endpoint generates a new chat ID.",
 )
@@ -349,51 +429,6 @@ def new_chat_id(input: IDrequest):
     new_id = generate_conversation_id(input.model, input.prompt)
 
     return {"new_id": new_id}
-
-
-@app.post(
-    "/minai_chat",
-    summary="Process question",
-    description="This endpoint processes a question and returns a response with perplexity.",
-)
-def process_question_minai(input: ChatRequest):
-    """
-    Process a question and return a response.
-
-    Args:
-        question (str): The question to process.
-
-    Returns:
-        dict: A dictionary containing the response generated.
-    """
-    # Embed the question and retrieve the documents
-    embedding_start_time = time.time()
-    try:
-        data = retrieve_documents(collection, input.question, MODEL_EMBEDDING)
-    except Exception as e:
-        logging.error(f"Error retrieving documents: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-    embedding_end_time = time.time()
-    logging.info(
-        f"RAG performed in {embedding_end_time - embedding_start_time} seconds.\n"
-    )
-    # Add question and retrieved data then generate a response
-    llm_start_time = time.time()
-    try:
-        if data is None:
-            logging.error("No document found")
-            raise HTTPException(status_code=500, detail="No document found")
-        response = generate_minai_response(
-            data[0], input.chat_id, input.history, input.model
-        )
-    except Exception as e:
-        logging.error(f"Error generating response: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-    llm_end_time = time.time()
-    logging.info(f"Response generated in {llm_end_time - llm_start_time} seconds.\n\n")
-
-    duration = round(llm_end_time - llm_start_time, 2)
-    return {"response": response, "duration": duration}
 
 
 if __name__ == "__main__":

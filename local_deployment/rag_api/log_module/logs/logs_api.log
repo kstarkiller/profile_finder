@@ -10,3 +10,51 @@
 2024-11-05 10:06:49,757 - INFO - Found 2 documents.
 2024-11-05 10:06:49,757 - INFO - Batch 0 added to the collection.
 2024-11-05 10:06:49,757 - INFO - Batch 1 added to the collection.
+2024-11-05 16:05:41,019 - ERROR - Documents must be a list of strings.
+2024-11-05 16:05:41,024 - INFO - Found 1 documents.
+2024-11-05 16:05:41,024 - ERROR - Error embedding document 0: Ollama error
+2024-11-05 16:05:41,026 - INFO - Found 2 documents.
+2024-11-05 16:05:41,027 - INFO - Batch 0 added to the collection.
+2024-11-05 16:05:41,027 - INFO - Batch 1 added to the collection.
+2024-11-05 16:10:03,643 - ERROR - Documents must be a list of strings.
+2024-11-05 16:10:03,648 - INFO - Found 1 documents.
+2024-11-05 16:10:03,648 - ERROR - Error embedding document 0: Ollama error
+2024-11-05 16:10:03,650 - INFO - Found 2 documents.
+2024-11-05 16:10:03,650 - INFO - Batch 0 added to the collection.
+2024-11-05 16:10:03,650 - INFO - Batch 1 added to the collection.
+2024-11-05 16:11:19,610 - ERROR - Documents must be a list of strings.
+2024-11-05 16:11:19,615 - INFO - Found 1 documents.
+2024-11-05 16:11:19,616 - ERROR - Error embedding document 0: Ollama error
+2024-11-05 16:11:19,618 - INFO - Found 2 documents.
+2024-11-05 16:11:19,618 - INFO - Batch 0 added to the collection.
+2024-11-05 16:11:19,618 - INFO - Batch 1 added to the collection.
+2024-11-05 16:12:23,734 - ERROR - Documents must be a list of strings.
+2024-11-05 16:12:23,738 - INFO - Found 1 documents.
+2024-11-05 16:12:23,739 - ERROR - Error embedding document 0: Ollama error
+2024-11-05 16:12:23,741 - INFO - Found 2 documents.
+2024-11-05 16:12:23,741 - INFO - Batch 0 added to the collection.
+2024-11-05 16:12:23,741 - INFO - Batch 1 added to the collection.
+2024-11-05 16:14:01,591 - ERROR - Documents must be a list of strings.
+2024-11-05 16:14:01,596 - INFO - Found 1 documents.
+2024-11-05 16:14:01,596 - ERROR - Error embedding document 0: Ollama error
+2024-11-05 16:14:01,598 - INFO - Found 2 documents.
+2024-11-05 16:14:01,598 - INFO - Batch 0 added to the collection.
+2024-11-05 16:14:01,598 - INFO - Batch 1 added to the collection.
+2024-11-05 16:14:49,514 - ERROR - Documents must be a list of strings.
+2024-11-05 16:14:49,521 - INFO - Found 1 documents.
+2024-11-05 16:14:49,521 - ERROR - Error embedding document 0: Ollama error
+2024-11-05 16:14:49,523 - INFO - Found 2 documents.
+2024-11-05 16:14:49,524 - INFO - Batch 0 added to the collection.
+2024-11-05 16:14:49,524 - INFO - Batch 1 added to the collection.
+2024-11-05 16:16:00,047 - ERROR - Documents must be a list of strings.
+2024-11-05 16:16:00,052 - INFO - Found 1 documents.
+2024-11-05 16:16:00,052 - ERROR - Error embedding document 0: Ollama error
+2024-11-05 16:16:00,053 - INFO - Found 2 documents.
+2024-11-05 16:16:00,053 - INFO - Batch 0 added to the collection.
+2024-11-05 16:16:00,054 - INFO - Batch 1 added to the collection.
+2024-11-05 16:16:38,157 - ERROR - Documents must be a list of strings.
+2024-11-05 16:16:38,166 - INFO - Found 1 documents.
+2024-11-05 16:16:38,166 - ERROR - Error embedding document 0: Ollama error
+2024-11-05 16:16:38,170 - INFO - Found 2 documents.
+2024-11-05 16:16:38,172 - INFO - Batch 0 added to the collection.
+2024-11-05 16:16:38,172 - INFO - Batch 1 added to the collection.
