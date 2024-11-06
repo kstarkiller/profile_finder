@@ -7,7 +7,7 @@ import bcrypt
 
 from docker_check import is_running_in_docker
 
-db_host, api_host = is_running_in_docker()
+venv = is_running_in_docker()
 
 # Récupérer les informations de connexion à la base de données
 db_user = os.getenv("DB_USER")
@@ -23,7 +23,7 @@ if not db_user or not db_password:
 
 # Créer une connexion à la base de données
 engine = create_engine(
-    f"postgresql://{db_user}:{db_password}@{db_host}:{port}/{db_name}"
+    f"postgresql://{venv['db_user']}:{venv['db_pwd']}@{venv['db_host']}:{venv['db_port']}/{venv['db_name']}"
 )
 Base = declarative_base()
 

@@ -6,10 +6,28 @@ import os
 def is_running_in_docker():
     try:
         with open("/proc/1/cgroup", "rt") as f:
-            db_host = os.getenv("HOST")
-            api_host = os.getenv("API_HOST")
-            return db_host, api_host
+            db_user = os.getenv("DB_USER")
+            db_pwd = os.getenv("DB_PASSWORD")
+            db_name = os.getenv("DB_NAME")
+            db_host = os.getenv("DB_HOST")
+            db_port = os.getenv("DB_PORT")
+            return {
+                "db_user": db_user,
+                "db_pwd": db_pwd,
+                "db_name": db_name,
+                "db_host": db_host,
+                "db_port": db_port,
+            }
     except FileNotFoundError:
+        db_user = os.getenv("DB_USER")
+        db_pwd = os.getenv("DB_PASSWORD")
+        db_name = os.getenv("DB_NAME")
         db_host = "localhost"
-        api_host = "localhost"
-        return db_host, api_host
+        db_port = "5432"
+        return {
+            "db_user": db_user,
+            "db_pwd": db_pwd,
+            "db_name": db_name,
+            "db_host": db_host,
+            "db_port": db_port,
+        }

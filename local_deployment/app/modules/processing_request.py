@@ -8,7 +8,7 @@ ERROR_MESSAGES = {
     "no_question": "Please provide a question to answer.",
 }
 
-db_api_host, db_api_port, rag_api_host, rag_api_port = is_running_in_docker()
+venv = is_running_in_docker()
 
 
 # These functions are used to process the user input and return the chatbot response via the generate_perplexity_response function.
@@ -34,7 +34,7 @@ def process_input(user_input, chat_history, chat_id, model):
     chat_history.append({"role": "user", "content": user_input})
 
     # Determine the URL based on the model
-    url = f"http://{rag_api_host}:{rag_api_port}/chat"
+    url = f"http://{venv['rag_host']}:{venv['rag_port']}/chat"
 
     try:
         # Generate a response via the RAG API endpoint

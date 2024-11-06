@@ -1,1 +1,0 @@
-"Confirmé", "Junior", "Expert", "Sénior"

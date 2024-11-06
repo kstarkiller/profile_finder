@@ -238,6 +238,20 @@ def generate_fake_certs(names, unique_certs_dict):
 def create_fixtures(
     psarm_path, coaff_path, certs_path, fixtures_psarm, fixtures_coaff, fixtures_certs
 ):
+    """
+    Create fake but consistent data for the PSA RM, COAFF, and certifications files.
+
+    ARGS:
+    psarm_path (str): The path to the PSA RM file.
+    coaff_path (str): The path to the COAFF file.
+    certs_path (str): The path to the certifications file.
+    fixtures_psarm (str): The path to save the new PSA RM data.
+    fixtures_coaff (str): The path to save the new COAFF data.
+    fixtures_certs (str): The path to save the new certifications data.
+
+    RETURNS:
+    str: A message indicating the number of new rows created for each file.
+    """
     # Retrieve data from the PSA RM file
     psa_rm_df = pd.read_excel(psarm_path)
 
@@ -333,17 +347,21 @@ def create_fixtures(
         "DISPO ICE",
         "congés",
     ]
+    try:
+        new_coaff, coaff_rows = generate_fake_coaff(names, fonctions, company_names)
+        new_psarm, psarm_rows = generate_fake_psarm(
+            names, unique_psarm_values, supervisors
+        )
+        new_certs, certs_rows = generate_fake_certs(names, unique_certs_dict)
+    except Exception as e:
+        return f"Error: {str(e)}"
 
-    new_coaff, coaff_rows = generate_fake_coaff(names, fonctions, company_names)
-    new_psarm, psarm_rows = generate_fake_psarm(names, unique_psarm_values, supervisors)
-    new_certs, certs_rows = generate_fake_certs(names, unique_certs_dict)
-
-    # Save the result in a new CSV file
-    new_coaff.to_csv(fixtures_coaff, index=False)
-    print(f"Created a COAFF file with {coaff_rows} new rows of data.")
-    new_psarm.to_csv(fixtures_psarm, index=False)
-    print(f"Created a PSA RM file with {psarm_rows} new rows of data.")
-    new_certs.to_csv(fixtures_certs, index=False)
-    print(f"Created a certifications file with {certs_rows} new rows of data.")
+    try:
+        # Save the result in a new CSV file
+        new_coaff.to_csv(fixtures_coaff, index=False)
+        new_psarm.to_csv(fixtures_psarm, index=False)
+        new_certs.to_csv(fixtures_certs, index=False)
+    except Exception as e:
+        return f"Error: {str(e)}"
 
     return f"Created {coaff_rows} new rows of COAFF data, {psarm_rows} new rows of PSA RM data, and {certs_rows} new rows of certifications data."

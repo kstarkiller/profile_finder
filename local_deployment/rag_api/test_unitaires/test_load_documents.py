@@ -6,24 +6,13 @@ import requests
 from rag_module.load_documents import load_profile as load_profile
 from docker_check import is_running_in_docker
 
-(
-    db_host,
-    db_port,
-    db_user,
-    db_pwd,
-    db_name,
-    mongo_host,
-    mongo_port,
-    mongo_user,
-    mongo_pwd,
-    mongo_db,
-) = is_running_in_docker()
+venv = is_running_in_docker()
 
 
 class TestLoadProfile(unittest.TestCase):
 
     def setUp(self):
-        self.url = f"http://{db_host}:{db_port}/get_profiles"
+        self.url = f"http://{venv['db_api_host']}:{venv['db_api_port']}/get_profiles"
 
     def mock_response(self, status_code=200, json_data=None, raise_for_status=None):
         mock_resp = MagicMock()

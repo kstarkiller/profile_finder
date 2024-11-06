@@ -1,8 +1,9 @@
 import pandas as pd
-from datetime import date
 
 from rag_module.embedding import retrieve_documents
-from llm_module.generate_response import generate_ollama_response
+from llm_module.generate_response import generate_minai_response
+from llm_module.model_precision_improvements import structure_query
+import re
 
 
 def import_data(combined_path: str) -> pd.DataFrame:
@@ -25,7 +26,7 @@ def import_data(combined_path: str) -> pd.DataFrame:
     return data
 
 
-def validate_response(combined_path: str, question: str, llm_response: str) -> tuple:
+def validate_response(combined_path: str, question: str, llm_response: str) -> list:
     """
     Validates the response.
 
@@ -35,71 +36,106 @@ def validate_response(combined_path: str, question: str, llm_response: str) -> t
         llm_response (str): The response.
 
     Returns:
-        tuple: The validation result and message.
+        list: The validation results.
     """
     data = import_data(combined_path)
-
-    if "compétence" in question:
+    if "compétents" in question:
+        pattern = re.compile(r"\bweb\b", re.IGNORECASE)
         expected_names = [
-            membre["Nom"] for membre in data if "Python" in membre["Combined"]
+            membre.Nom
+            for membre in data.itertuples(index=False)
+            if pattern.search(membre.Combined)
         ]
     elif "certification" in question:
+        pattern = re.compile(r"\bScrum\b", re.IGNORECASE)
         expected_names = [
-            membre["Nom"] for membre in data if "Certificat A" in membre["Combined"]
+            membre.Nom
+            for membre in data.itertuples(index=False)
+            if pattern.search(membre.Combined)
         ]
     else:
         expected_names = []
 
-    # Vérification si les noms attendus sont présents dans la réponse
-    if expected_names:
-        for name in expected_names:
-            if name not in llm_response:
-                return False, f"Erreur : '{name}' n'est pas mentionné dans la réponse."
-        return True, "Réponse valide."
-    return False, "Aucune vérification nécessaire."
+    results = []
+    # Check if at least one expected name is in the response
+    found_names = []
+    for name in expected_names:
+        pattern = re.compile(rf"\b{name}\b", re.IGNORECASE)
+        if pattern.search(llm_response):
+            found_names.append(name)
+
+    if found_names:
+        for name in found_names:
+            results.append(
+                {
+                    "name": ", ".join(expected_names),
+                    "valid": True,
+                    "info": f"Found name in response: {name}",
+                }
+            )
+    else:
+        results.append(
+            {
+                "name": ", ".join(expected_names),
+                "valid": False,
+                "info": "None of the expected names are in the response.",
+            }
+        )
+
+    return results
 
 
 def run_validation(
-    collection: str, combined_path: str, embed_model: str, llm_model: str
-) -> str:
+    collection: str, type: str, combined_path: str, embed_model: str, llm_model: str
+) -> tuple:
     """
     Runs the validation process.
 
     Args:
-        data_path (str): The path to the CSV file.
-        model_path (str): The path to the model.
+        collection (str): The path to the collection ChromaDB.
+        combined_path (str): The path to the CSV file.
+        embed_model (str): The name of the embedding model.
+        llm_model (str): The name of the LLM model.
 
     Returns:
-        str: The validation result.
+        tuple: The validation results and false rate.
     """
     questions = [
-        "Liste les membres ayant la compétence 'Python'.",
-        "Quels membres ont obtenu la certification 'Scrum' ?",
+        "Liste les membres compétents en Web.",
+        "Quels membres ont obtenu une certification liée à Scrum ?",
     ]
 
-    results = {}
+    results = pd.DataFrame(
+        columns=["question", "response", "expected_name", "valid", "info"]
+    )
 
     for i, question in enumerate(questions):
+        question_structured = structure_query(question)
+        data = retrieve_documents(collection, type, question_structured, embed_model)
+
         history = [
             {
                 "role": "system",
-                "content": "You are a French chatbot assistant that helps the user find team members",
+                "content": f"""You are a French chatbot assistant that helps the user find team members.""",
             },
             {"role": "user", "content": question},
         ]
-        data = retrieve_documents(collection, question, embed_model)
-        llm_response = generate_ollama_response(data, history, llm_model)
+
+        llm_response = generate_minai_response(data, "", history, llm_model)
 
         # Validation de la réponse
-        valid, message = validate_response(combined_path, question, llm_response)
-        results[f"Question {i+1}"] = {
-            "question": question,
-            "response": llm_response,
-            "valid": valid,
-            "info": message,
-        }
+        responses = validate_response(combined_path, question, llm_response)
+        for response in responses:
+            # Ajout les résultats en tant que ligne dans le DataFrame
+            results.loc[len(results)] = [
+                question,
+                llm_response,
+                response["name"],
+                response["valid"],
+                response["info"],
+            ]
 
-    count_false = sum([1 for result in results.values() if not result["valid"]])
-    false_rate = (count_false / len(results)) * 100
+    # Calcul du taux de fausses réponses
+    false_rate = 100 * (1 - results["valid"].mean())
 
     return results, false_rate

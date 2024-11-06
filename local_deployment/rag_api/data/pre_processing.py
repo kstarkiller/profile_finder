@@ -140,8 +140,15 @@ def pre_processing(
     # Remove the character "\" from the 'Combined' column
     resultat_df["Combined"] = resultat_df["Combined"].str.replace('"', "")
 
-    # Supprimer les lignes en double
-    resultat_df = resultat_df.drop_duplicates()
+    # Extract the name of the member
+    resultat_df["Nom"] = resultat_df["Membres"].apply(
+        lambda x: x.split(",")[0].split(":")[1].strip()
+    )
+    resultat_df["Métier"] = resultat_df["Membres"].apply(
+        lambda x: x.split(",")[-1].split(":")[-1].strip() if "Métier" in x else "Autre"
+    )
+
+    resultat_df = resultat_df.drop_duplicates(subset="Nom", keep="last")
 
     # Save the final result to a csv file
     resultat_df.to_csv(combined_path, index=False)
@@ -149,13 +156,18 @@ def pre_processing(
     return resultat_df
 
 
-def insert_profiles(db_host, db_port, coaff, psarm, certs, combined):
+def insert_profiles(db_host, db_port, coaff, psarm, certs, combined, type):
     """
     Insert the profiles into the database.
 
     Args:
         db_host (str): The host of the database.
         db_port (str): The port of the database.
+        coaff (str): The path to the COAFF fixtures file.
+        psarm (str): The path to the PSARM fixtures file.
+        certs (str): The path to the certifications fixtures file.
+        combined (str): The path to the combined fixtures file.
+        type (str): The type of profiles to insert.
 
     Returns:
         int: The number of profiles added to the database.
@@ -171,23 +183,18 @@ def insert_profiles(db_host, db_port, coaff, psarm, certs, combined):
                 "competence": row["Compétences"],
                 "certification": row["Certifications"],
                 "combined": row["Combined"],
+                "type": type,
             }
-
-            profiles_added = []
 
             try:
                 response = requests.post(
                     f"http://{db_host}:{db_port}/profile", json=payload
                 )
                 response.raise_for_status()
-                profiles_added.append(response.json())
 
             except requests.exceptions.HTTPError as err:
-                print("HTTP error occurred:", err)
-                print("Response content:", response.content)
-        print(f"{len(profiles_added)} profiles added to the database")
-        return len(profiles_added)
+                raise f"HTTP error occurred: {err}"
+        return response.json().get("message")
 
     except requests.exceptions.HTTPError as err:
-        print("HTTP error occurred:", err)
-        print("Response content:", response.content)
+        raise f"HTTP error occurred: {err}"

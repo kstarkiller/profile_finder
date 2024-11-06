@@ -1,4 +1,5 @@
 import streamlit as st
+import random
 import os
 import platform
 import requests
@@ -9,31 +10,17 @@ st.set_page_config(initial_sidebar_state="expanded")
 
 from styles import apply_custom_styles
 from modules.chatbot import new_chat, existent_chat
-from modules.connexion_manager import (
-    login,
-    logout,
-    db_api_host,
-    db_api_port,
-    rag_api_host,
-    rag_api_port,
-)
+from modules.connexion_manager import login, logout
 from modules.signup_form import show_signup_form
+from modules.docker_check import is_running_in_docker
+
+venv = is_running_in_docker()
 
 apply_custom_styles()
 
 # Détecter le système d'exploitation
 is_windows = platform.system() == "Windows"
 is_unix = platform.system() in ["Linux", "Darwin"]
-
-
-# Vérifier si le code s'exécute dans un conteneur Docker
-def is_docker():
-    path = "/proc/self/cgroup"
-    return (
-        os.path.exists("/.dockerenv")
-        or os.path.isfile(path)
-        and any("docker" in line for line in open(path))
-    )
 
 
 def initialize_session_state():
@@ -125,7 +112,7 @@ def render_search_history():
     st.sidebar.markdown("### Historique de recherche :")
     if "search_history" in st.session_state:
         st.session_state["search_history"] = requests.get(
-            f"http://{db_api_host}:{db_api_port}/searches",
+            f"http://{venv['db_host']}:{venv['db_port']}/searches",
             params={"user_email": st.session_state["username"]},
         ).json()
         displayed_chat_ids = set()
@@ -154,7 +141,7 @@ def render_search_history():
                                 use_container_width=True,
                             ):
                                 search_data = requests.get(
-                                    f"http://{db_api_host}:{db_api_port}/search",
+                                    f"http://{venv['db_host']}:{venv['db_port']}/search",
                                     params={"chat_id": str(search["chat_id"])},
                                 ).json()
                                 st.session_state.update(
@@ -169,7 +156,7 @@ def render_search_history():
                                 use_container_width=True,
                             ):
                                 requests.delete(
-                                    f"http://{db_api_host}:{db_api_port}/search",
+                                    f"http://{venv['db_host']}:{venv['db_port']}/search",
                                     json={"chat_id": str(search["chat_id"])},
                                 )
                                 st.session_state.update(chat_id="")
@@ -207,7 +194,7 @@ def render_settings():
             if st.button("Effacer", key="delete_data", use_container_width=True):
                 print(st.session_state["username"])
                 requests.delete(
-                    f"http://{db_api_host}:{db_api_port}/searches",
+                    f"http://{venv['db_host']}:{venv['db_port']}/searches",
                     json={"email": st.session_state["username"]},
                 )
                 st.markdown(
@@ -243,7 +230,7 @@ def render_settings():
                         use_container_width=True,
                     ):
                         response = requests.delete(
-                            f"http://{db_api_host}:{db_api_port}/user",
+                            f"http://{venv['db_host']}:{venv['db_port']}/user",
                             json={
                                 "email": st.session_state["username"],
                                 "password": password,
@@ -304,15 +291,27 @@ def render_settings():
         )
         col1, col2, col3 = st.columns(3, gap="small", vertical_alignment="center")
         with col3:
-            if st.button("Envoyer", key="send_doc", use_container_width=True):
-                response = requests.post(
-                    f"http://{rag_api_host}:{rag_api_port}/file",
-                    files={"file": file},
-                ).json()
-                for resp in response:
-                    print(resp)
-                    # st.progress(resp.percentage + 1, text=resp.message)
-                st.rerun()
+            if st.button(
+                "Envoyer",
+                key="send_doc",
+                use_container_width=True,
+            ):
+                messages = [
+                    "Envoi du document...",
+                    "Traitement en cours...",
+                    "Veuillez patienter...",
+                    "Presque terminé...",
+                ]
+                with st.spinner("Envoi du document..."):
+                    for _ in range(4):
+                        time.sleep(4)
+                        st.spinner(random.choice(messages))
+                    result = requests.post(
+                        f"http://{venv['rag_host']}:{venv['rag_port']}/file",
+                        files={"file": file},
+                    )
+
+                st.success("Terminé !")
 
 
 def render_login():

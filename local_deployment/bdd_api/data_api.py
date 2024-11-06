@@ -53,9 +53,9 @@ async def insert_profile_api(profile: dict):
     summary="Récupérer tous les profils de la base de données",
     response_description="Liste des profils",
 )
-async def get_profiles_api():
+async def get_profiles_api(params: dict):
     try:
-        return get_profiles()
+        return get_profiles(params)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -65,9 +65,9 @@ async def get_profiles_api():
     summary="Supprimer les profils",
     response_description="Table vidée avec succès",
 )
-async def truncate_table_api():
+async def truncate_table_api(json: dict):
     try:
-        return truncate_table()
+        return truncate_table(json)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 

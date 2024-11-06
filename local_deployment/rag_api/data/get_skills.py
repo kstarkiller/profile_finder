@@ -48,4 +48,4 @@ def get_skills(temp_psarm, temp_coaff, temp_desc, temp_profiles):
     with open(temp_profiles, "w", encoding="utf-8") as f:
         f.write(formatted_profil)
 
-    return f"Descriptions and profiles have been written to {temp_desc} and {temp_profiles} respectively."
+    return f"Descriptions and profiles have been extracted."

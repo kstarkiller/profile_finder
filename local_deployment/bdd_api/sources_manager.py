@@ -4,7 +4,7 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 from docker_check import is_running_in_docker
 
-db_host, api_host = is_running_in_docker()
+venv = is_running_in_docker()
 
 # Récupérer les informations de connexion à la base de données
 db_user = os.getenv("DB_USER")
@@ -20,20 +20,31 @@ if not db_user or not db_password:
 
 # Créer une connexion à la base de données
 engine = create_engine(
-    f"postgresql://{db_user}:{db_password}@{db_host}:{port}/{db_name}"
+    f"postgresql://{venv['db_user']}:{venv['db_pwd']}@{venv['db_host']}:{venv['db_port']}/{venv['db_name']}"
 )
 Base = declarative_base()
 
 
 # Définir le modèle de la table raw_profiles
 class Profile(Base):
-    __tablename__ = "raw_profiles"
+    __tablename__ = "profiles"
     id = Column(Integer, primary_key=True, index=True)
     membres = Column(String, nullable=False)
     missions = Column(String, nullable=False)
     competences = Column(String, nullable=False)
     certifications = Column(String, nullable=False)
     combined = Column(String, nullable=False)
+
+
+class TempProfile(Base):
+    __tablename__ = "temp_profiles"
+    id = Column(Integer, primary_key=True)
+    membres = Column(String)
+    missions = Column(String)
+    competences = Column(String)
+    certifications = Column(String)
+    combined = Column(String)
+    type = Column(String)
 
 
 # Créer les tables dans la base de données
@@ -43,7 +54,7 @@ Base.metadata.create_all(engine)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-def get_profiles():
+def get_profiles(params: dict):
     """
     Get all profiles from the database.
 
@@ -52,7 +63,8 @@ def get_profiles():
     """
     try:
         session = SessionLocal()
-        profiles = session.query(Profile).all()
+        profiles = TempProfile if params["type"] == "temp" else Profile
+        profiles = session.query(profiles).all()
         if not profiles:
             session.close()
             return {"profiles": []}
@@ -81,7 +93,7 @@ def delete_profile(profile: dict):
     return {"message": "Profil supprimé avec succès"}
 
 
-def truncate_table():
+def truncate_table(params):
     """
     Truncate the raw_profiles table in the database.
 
@@ -89,7 +101,11 @@ def truncate_table():
         dict: A dictionary with a success message.
     """
     session = SessionLocal()
-    session.query(Profile).delete()
+    (
+        session.query(TempProfile).delete()
+        if params["type"] == "temp"
+        else session.query(Profile).delete()
+    )
     session.commit()
     session.close()
     return {"message": "Table vidée avec succès"}
@@ -112,16 +128,28 @@ def insert_profile(payload: dict):
     """
     try:
         session = SessionLocal()
-        profile = Profile(
-            membres=payload["membre"],
-            missions=payload["mission"],
-            competences=payload["competence"],
-            certifications=payload["certification"],
-            combined=payload["combined"],
+        profile = (
+            TempProfile(
+                membres=payload["membre"],
+                missions=payload["mission"],
+                competences=payload["competence"],
+                certifications=payload["certification"],
+                combined=payload["combined"],
+                type=payload["type"],
+            )
+            if payload["type"] == "temp"
+            else Profile(
+                membres=payload["membre"],
+                missions=payload["mission"],
+                competences=payload["competence"],
+                certifications=payload["certification"],
+                combined=payload["combined"],
+            )
         )
+
         session.add(profile)
         session.commit()
         session.close()
         return {"message": "Profil ajouté avec succès"}
     except Exception as e:
-        return {"message": f"Erreur lors de l'ajout du profil: {str(e)}"}
+        raise Exception(f"Erreur lors de l'ajout du profil: {str(e)}")

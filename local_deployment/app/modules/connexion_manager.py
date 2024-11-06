@@ -3,7 +3,7 @@ import requests
 
 from modules.docker_check import is_running_in_docker
 
-db_api_host, db_api_port, rag_api_host, rag_api_port = is_running_in_docker()
+venv = is_running_in_docker()
 
 
 # Fonction pour s'enregistrer
@@ -23,7 +23,7 @@ def signup(name, email, password):
     # Vérifier si le nom, l'email et le mot de passe sont fournis
     if name and email and password:
         user_check = requests.put(
-            f"http://{db_api_host}:{db_api_port}/user",
+            f"http://{venv['db_host']}:{venv['db_port']}/user",
             json={"name": name, "email": email, "password": password},
         ).json()
 
@@ -71,7 +71,7 @@ def login(email, password):
     """
     try:
         user = requests.get(
-            f"http://{db_api_host}:{db_api_port}/user",
+            f"http://{venv['db_host']}:{venv['db_port']}/user",
             json={"email": email, "password": password},
         ).json()
 
