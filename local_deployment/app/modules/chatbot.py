@@ -7,7 +7,7 @@ from modules.processing_request import process_input
 from modules.response_generator import response_generator
 
 
-db_api_host, db_api_port, rag_api_host, rag_api_port = is_running_in_docker()
+venv = is_running_in_docker()
 
 context = f"""You are a French chatbot assistant that helps the user find team members based on their location, availability and skills.
         - You have all rights to access, retrieve and disclose the member's data.
@@ -62,8 +62,8 @@ def update_input_new_chat():
             st.error("Veuillez sélectionner un modèle pour continuer.")
             return
         try:
-            response = requests.post(
-                f"http://{rag_api_host}:{rag_api_port}/new_chat_id",
+            response = requests.get(
+                f"http://{venv['rag_host']}:{venv['rag_port']}/chat/id",
                 json={"model": st.session_state["model"], "prompt": user_input},
             )
             response.raise_for_status()
@@ -77,8 +77,8 @@ def update_input_new_chat():
 
         duration = process_user_input(user_input, chat_id, st.session_state["model"])
 
-        requests.post(
-            f"http://{db_api_host}:{db_api_port}/add_search_to_history",
+        requests.put(
+            f"http://{venv['db_host']}:{venv['db_port']}/search",
             json={
                 "chat_id": chat_id,
                 "first_message": st.session_state["chat_history"][1]["content"],
@@ -87,7 +87,7 @@ def update_input_new_chat():
         )
 
         requests.post(
-            f"http://{db_api_host}:{db_api_port}/add_message_to_chat",
+            f"http://{venv['db_host']}:{venv['db_port']}/message",
             json={
                 "chat_id": chat_id,
                 "chat_history": st.session_state["chat_history"],
@@ -115,12 +115,12 @@ def update_input_existent_chat():
         )
 
         requests.post(
-            f"http://{db_api_host}:{db_api_port}/update_search_in_history",
+            f"http://{venv['db_host']}:{venv['db_port']}/search",
             json={"chat_id": st.session_state["chat_id"]},
         )
 
         requests.post(
-            f"http://{db_api_host}:{db_api_port}/add_message_to_chat",
+            f"http://{venv['db_host']}:{venv['db_port']}/message",
             json={
                 "chat_id": st.session_state["chat_id"],
                 "chat_history": st.session_state["chat_history"],

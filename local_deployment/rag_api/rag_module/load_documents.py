@@ -3,21 +3,10 @@ import pandas as pd
 
 from docker_check import is_running_in_docker
 
-(
-    db_host,
-    db_port,
-    db_user,
-    db_pwd,
-    db_name,
-    mongo_host,
-    mongo_port,
-    mongo_user,
-    mongo_pwd,
-    mongo_db,
-) = is_running_in_docker()
+venv = is_running_in_docker()
 
 
-def load_profile():
+def load_profile(type: str) -> list:
     """
     Loads profiles from database api.
 
@@ -29,7 +18,10 @@ def load_profile():
     """
     try:
         # Load the profiles from the database
-        response = requests.get(f"http://{db_host}:{db_port}/get_profiles")
+        response = requests.get(
+            f"http://{venv['db_api_host']}:{venv['db_api_port']}/profiles",
+            json={"type": type},
+        )
         response.raise_for_status()
 
         # Convert the response to a Dataframe

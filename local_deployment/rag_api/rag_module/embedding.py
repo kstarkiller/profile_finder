@@ -1,19 +1,15 @@
-import chromadb
 import ollama
 import os
-import sys
 import logging
+import chromadb
 from chromadb.config import Settings
 
 from rag_module.load_documents import load_profile
 from llm_module.model_precision_improvements import structure_query
 
-# Path to the collection
-collection_path = os.path.join(os.path.dirname(__file__), "..", "data", "chroma")
 logs_path = os.path.join(
     os.path.dirname(__file__), "..", "log_module", "logs", "logs_api.log"
 )
-file_path = os.path.join(os.path.dirname(__file__), "..", "data", "combined")
 
 # Logging module configuration
 logging.basicConfig(
@@ -23,7 +19,9 @@ logging.basicConfig(
 )
 
 
-def embed_documents(file_path, model="nomic-embed-text:v1.5", batch_size=10):
+def embed_documents(
+    collection_path, type, model="nomic-embed-text:v1.5", batch_size=10
+):
     """
     Embeds the documents using an embedding model in batches.
 
@@ -46,10 +44,12 @@ def embed_documents(file_path, model="nomic-embed-text:v1.5", batch_size=10):
         raise (f"Error connecting to the ChromaDB client: {e}")
 
     # Create a new collection or get existing one
-    collection = client.get_or_create_collection(name="docs")
+    collection = client.get_or_create_collection(
+        name="temp" if type == "temp" else "docs"
+    )
 
     # Load documents
-    documents = load_profile(file_path)
+    documents = load_profile(type)
 
     # Verify the type of documents
     if not isinstance(documents, list):
@@ -86,7 +86,9 @@ def embed_documents(file_path, model="nomic-embed-text:v1.5", batch_size=10):
 
 
 # Retrieve documents
-def retrieve_documents(question: str, model="nomic-embed-text:v1.5"):
+def retrieve_documents(
+    collection_path, type, question: str, model="nomic-embed-text:v1.5"
+):
     """
     Embeds the question using an embedding model and queries the collection for the most similar document.
 
@@ -110,12 +112,43 @@ def retrieve_documents(question: str, model="nomic-embed-text:v1.5"):
     )
 
     # Get the collection
-    collection = client.get_collection(name="docs")
+    collection = client.get_collection(name="temp" if type == "temp" else "docs")
 
     # Query the collection with the embedded question for the most similar documents
     results = collection.query(
-        query_embeddings=[embedded_question["embedding"]], n_results=5
+        query_embeddings=[embedded_question["embedding"]],
+        n_results=20,
     )
     data = results["documents"]
 
     return data
+
+
+# Delete the collection
+def delete_collection(collection_path, type):
+    """
+    Deletes the collection.
+
+    Args:
+        collection_path (str): The path to the collection ChromaDB.
+    """
+    try:
+        # Connect to the client
+        client = chromadb.PersistentClient(
+            path=collection_path,
+            settings=Settings(allow_reset=True),
+        )
+    except Exception as e:
+        logging.error(f"Error connecting to the ChromaDB client: {e}")
+        raise (f"Error connecting to the ChromaDB client: {e}")
+
+    # Delete the collection if it exists
+    collections = client.list_collections()
+
+    if collections:
+        for c in collections:
+            if c.name == "temp" if type == "temp" else "docs":
+                client.delete_collection(name=c.name)
+                logging.info(f"Collection {c.name} deleted.")
+    else:
+        logging.info("No collections found.")

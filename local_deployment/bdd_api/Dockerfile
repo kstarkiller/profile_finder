@@ -31,8 +31,8 @@ EXPOSE 5050
 ENV DB_USER=${DB_USER}
 ENV DB_PASSWORD=${DB_PASSWORD}
 ENV DB_NAME=${DB_NAME}
-ENV DB_API_HOST ${DB_API_HOST}
-ENV DB_API_HOST ${DB_API_HOST}
+ENV DB_HOST ${DB_HOST}
+ENV DB_HOST ${DB_PORT}
 
 # Lancer l'application FastAPI lorsque le conteneur démarre
 CMD ["python", "data_api.py"]

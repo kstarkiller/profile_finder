@@ -1,119 +1,12 @@
 import pandas as pd
 from faker import Faker
 import random
-import os
-
-# Paths
-base_path = os.path.dirname(__file__)
-psa_rm_path = os.path.join(
-    base_path, "downloaded_files", "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
-)
-coaff_path = os.path.join(base_path, "downloaded_files", "Coaff_V1.xlsx")
-certs_path = os.path.join(
-    base_path, "downloaded_files", "UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
-)
-fixtures_coaff = os.path.join(base_path, "fixtures", "fixtures_coaff.csv")
-fixtures_psarm = os.path.join(base_path, "fixtures", "fixtures_psarm.csv")
-fixtures_certs = os.path.join(base_path, "fixtures", "fixtures_certs.csv")
 
 fake = Faker()
 
-# Retrieve data from the PSA RM file
-psa_rm_df = pd.read_excel(psa_rm_path)
-
-# Read existing data from the COAFF file
-coaff_df = pd.read_excel(coaff_path)
-# Set the 3rd row as the header and remove the first two rows
-coaff_df = coaff_df.rename(columns=coaff_df.iloc[2].to_dict()).drop(coaff_df.index[:3])
-
-# Read existing data from the certifications file
-certs_df = pd.read_excel(certs_path)
-# Set the first row as the header to remove unnecessary information
-certs_df = certs_df.rename(columns=certs_df.iloc[0].to_dict()).drop(certs_df.index[0])
-
-# Rename the 'Membres' column to 'Nom'
-if "Membres" in coaff_df.columns:
-    coaff_df.rename(columns={"Membres": "Nom"}, inplace=True)
-
-# Rename the 'Licence/Certificat' column to 'Certification'
-if "Licence/Certificat" in certs_df.columns:
-    certs_df.rename(columns={"Licence/Certificat": "Certification"}, inplace=True)
-
-# Create a dictionary with certifications and their descriptions
-certs_dict = certs_df.set_index("Certification")["Description"].to_dict()
-# Remove the '*' character from the values
-certs_dict = {key: value.replace("*", "") for key, value in certs_dict.items()}
-# Retrieve unique pairs
-unique_certs_dict = set(certs_dict.items())
-
-# Retrieve PSA RM column names as a list
-# columns_psarm = psa_rm_df.columns.tolist()
-
-# Create a dictionary to store unique values for each PSA RM column
-unique_psarm_values = {}
-for column in psa_rm_df.columns:
-    # Add the key/value to the dictionary
-    unique_psarm_values[column] = psa_rm_df[column].unique().tolist()
-
-# Create a dictionary to store unique values for each Certifications column
-unique_certs_values = {}
-for column in certs_df.columns:
-    # Add the key/value to the dictionary
-    unique_certs_values[column] = certs_df[column].unique().tolist()
-
-# Replace values of the 'Nom' and 'Supervisor Name' keys with fake values using faker
-unique_psarm_values["Nom"] = [
-    fake.name() for _ in range(len(unique_psarm_values["Nom"]) - 500)
-]
-unique_psarm_values["Supervisor Name"] = [
-    fake.name() for _ in range(len(unique_psarm_values["Supervisor Name"]))
-]
-
-# List of specific IT skills
-fonctions = [
-    "DevOps",
-    "Direction de projet",
-    "SAS",
-    "SSIS",
-    "Cybersecurity",
-    "MsBI/BO",
-    "Pilotage BT",
-    "Talend, Talend BD",
-    "Talend BD",
-    "Power BI, Azure, BO, Qlik",
-    "Data Ing + Data S.",
-    "Informatica stambia, talend, datastage",
-    "Datastage",
-    "Azure",
-    "UX",
-]
-
-# List of member names
-names = unique_psarm_values["Nom"]
-print(f"Number of unique names: {len(names)}")
-supervisors = unique_psarm_values["Supervisor Name"]
-
-# List of ongoing missions
-company_names = [
-    "Orange",
-    "Bouygues",
-    "Enedis",
-    "Engie",
-    "LVMH",
-    "Fraikin",
-    "Dalkia",
-    "Club Med",
-    "BPCE",
-    "Société Générale",
-    "COVEA",
-    "La Poste",
-    "DISPO ICE",
-    "congés",
-]
-
 
 # Generate new fake COAFF data
-def generate_fake_coaff(names):
+def generate_fake_coaff(names, fonctions, company_names):
     """
     Generate fake but consistent COAFF data for the given names.
 
@@ -203,7 +96,7 @@ def generate_fake_coaff(names):
     return pd.DataFrame(fake_data), coaff_rows
 
 
-def generate_fake_psarm(names):
+def generate_fake_psarm(names, unique_psarm_values, supervisors):
     """
     Generate fake but consistent PSA RM data for the given names.
 
@@ -305,7 +198,7 @@ def generate_fake_psarm(names):
     return pd.DataFrame(fake_data), psarm_rows
 
 
-def generate_fake_certs(names):
+def generate_fake_certs(names, unique_certs_dict):
     """
     Generate fake but consistent certifications data for the given names.
 
@@ -342,14 +235,133 @@ def generate_fake_certs(names):
     return pd.DataFrame(fake_data), certs_rows
 
 
-new_coaff, coaff_rows = generate_fake_coaff(names)
-new_psarm, psarm_rows = generate_fake_psarm(names)
-new_certs, certs_rows = generate_fake_certs(names)
+def create_fixtures(
+    psarm_path, coaff_path, certs_path, fixtures_psarm, fixtures_coaff, fixtures_certs
+):
+    """
+    Create fake but consistent data for the PSA RM, COAFF, and certifications files.
 
-# Save the result in a new CSV file
-new_coaff.to_csv(fixtures_coaff, index=False)
-print(f"Created a COAFF file with {coaff_rows} new rows of data.")
-new_psarm.to_csv(fixtures_psarm, index=False)
-print(f"Created a PSA RM file with {psarm_rows} new rows of data.")
-new_certs.to_csv(fixtures_certs, index=False)
-print(f"Created a certifications file with {certs_rows} new rows of data.")
+    ARGS:
+    psarm_path (str): The path to the PSA RM file.
+    coaff_path (str): The path to the COAFF file.
+    certs_path (str): The path to the certifications file.
+    fixtures_psarm (str): The path to save the new PSA RM data.
+    fixtures_coaff (str): The path to save the new COAFF data.
+    fixtures_certs (str): The path to save the new certifications data.
+
+    RETURNS:
+    str: A message indicating the number of new rows created for each file.
+    """
+    # Retrieve data from the PSA RM file
+    psa_rm_df = pd.read_excel(psarm_path)
+
+    # Read existing data from the COAFF file
+    coaff_df = pd.read_excel(coaff_path)
+    # Set the 3rd row as the header and remove the first two rows
+    coaff_df = coaff_df.rename(columns=coaff_df.iloc[2].to_dict()).drop(
+        coaff_df.index[:3]
+    )
+
+    # Read existing data from the certifications file
+    certs_df = pd.read_excel(certs_path)
+    # Set the first row as the header to remove unnecessary information
+    certs_df = certs_df.rename(columns=certs_df.iloc[0].to_dict()).drop(
+        certs_df.index[0]
+    )
+
+    # Rename the 'Membres' column to 'Nom'
+    if "Membres" in coaff_df.columns:
+        coaff_df.rename(columns={"Membres": "Nom"}, inplace=True)
+
+    # Rename the 'Licence/Certificat' column to 'Certification'
+    if "Licence/Certificat" in certs_df.columns:
+        certs_df.rename(columns={"Licence/Certificat": "Certification"}, inplace=True)
+
+    # Create a dictionary with certifications and their descriptions
+    certs_dict = certs_df.set_index("Certification")["Description"].to_dict()
+    # Remove the '*' character from the values
+    certs_dict = {key: value.replace("*", "") for key, value in certs_dict.items()}
+    # Retrieve unique pairs
+    unique_certs_dict = set(certs_dict.items())
+
+    # Retrieve PSA RM column names as a list
+    # columns_psarm = psa_rm_df.columns.tolist()
+
+    # Create a dictionary to store unique values for each PSA RM column
+    unique_psarm_values = {}
+    for column in psa_rm_df.columns:
+        # Add the key/value to the dictionary
+        unique_psarm_values[column] = psa_rm_df[column].unique().tolist()
+
+    # Create a dictionary to store unique values for each Certifications column
+    unique_certs_values = {}
+    for column in certs_df.columns:
+        # Add the key/value to the dictionary
+        unique_certs_values[column] = certs_df[column].unique().tolist()
+
+    # Replace values of the 'Nom' and 'Supervisor Name' keys with fake values using faker
+    unique_psarm_values["Nom"] = [
+        fake.name() for _ in range(len(unique_psarm_values["Nom"]) - 500)
+    ]
+    unique_psarm_values["Supervisor Name"] = [
+        fake.name() for _ in range(len(unique_psarm_values["Supervisor Name"]))
+    ]
+
+    # List of specific IT skills
+    fonctions = [
+        "DevOps",
+        "Direction de projet",
+        "SAS",
+        "SSIS",
+        "Cybersecurity",
+        "MsBI/BO",
+        "Pilotage BT",
+        "Talend, Talend BD",
+        "Talend BD",
+        "Power BI, Azure, BO, Qlik",
+        "Data Ing + Data S.",
+        "Informatica stambia, talend, datastage",
+        "Datastage",
+        "Azure",
+        "UX",
+    ]
+
+    # List of member names
+    names = unique_psarm_values["Nom"]
+    supervisors = unique_psarm_values["Supervisor Name"]
+
+    # List of ongoing missions
+    company_names = [
+        "Orange",
+        "Bouygues",
+        "Enedis",
+        "Engie",
+        "LVMH",
+        "Fraikin",
+        "Dalkia",
+        "Club Med",
+        "BPCE",
+        "Société Générale",
+        "COVEA",
+        "La Poste",
+        "DISPO ICE",
+        "congés",
+    ]
+    try:
+        new_coaff, coaff_rows = generate_fake_coaff(names, fonctions, company_names)
+        new_psarm, psarm_rows = generate_fake_psarm(
+            names, unique_psarm_values, supervisors
+        )
+        new_certs, certs_rows = generate_fake_certs(names, unique_certs_dict)
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+    try:
+        # Save the result in a new CSV file
+        new_coaff.to_csv(fixtures_coaff, index=False)
+        new_psarm.to_csv(fixtures_psarm, index=False)
+        new_certs.to_csv(fixtures_certs, index=False)
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+    return f"Created {coaff_rows} new rows of COAFF data, {psarm_rows} new rows of PSA RM data, and {certs_rows} new rows of certifications data."

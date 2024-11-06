@@ -10,18 +10,7 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from docker_check import is_running_in_docker
 
-(
-    db_host,
-    db_port,
-    db_user,
-    db_pwd,
-    db_name,
-    mongo_host,
-    mongo_port,
-    mongo_user,
-    mongo_pwd,
-    mongo_db,
-) = is_running_in_docker()
+venv = is_running_in_docker()
 
 
 def extract_api_data(api_url):
@@ -125,9 +114,20 @@ def main():
         r"C:\Users\musti\Projets\profile-finder\local_deployment\rag_api\data\fixtures\fixtures_coaff.csv"
     )
     scraped_data = extract_scraped_data("http://www.cgi.com/", "article a")
-    db_data = extract_db_data(db_host, db_port, db_name, db_user, db_pwd)
+    db_data = extract_db_data(
+        venv["db_api_host"],
+        venv["db_api_port"],
+        venv["db_api_name"],
+        venv["db_api_user"],
+        venv["db_api_pwd"],
+    )
     big_data = extract_big_data(
-        mongo_host, mongo_port, mongo_user, mongo_pwd, mongo_db, "files"
+        venv["mongo_host"],
+        venv["mongo_port"],
+        venv["mongo_user"],
+        venv["mongo_pwd"],
+        venv["mongo_db"],
+        "files",
     )
 
     if api_data:

@@ -1,0 +1,3 @@
+# Ignorer tous les dossiers temporaires et leurs fichiers
+_temp*/
+_temp/*

@@ -30,14 +30,17 @@ def store_file(file, MONGO_USER, MONGO_PWD, MONGO_HOST, MONGO_PORT, MONGO_DB):
 
         # Sauvegarde du fichier dans GridFS
         with open(file, "rb") as file_data:
-            grid_fs.put(file_data, filename=file.split(separator)[-1])
+            filename = file.split(separator)[-1]
+            if not isinstance(filename, str):
+                raise ValueError("Le nom du fichier doit être une chaîne de caractères")
+            grid_fs.put(file_data, filename=str(filename))
 
         return "Fichier traité avec succès !"
     except Exception as e:
         return f"Erreur lors du traitement de votre fichier : {str(e)}"
 
 
-def download_files(MONGO_USER, MONGO_PWD, MONGO_HOST, MONGO_PORT, MONGO_DB):
+def download_files(MONGO_USER, MONGO_PWD, MONGO_HOST, MONGO_PORT, MONGO_DB, type):
     """
     Fonction permettant de télécharger tous les fichiers stockés dans une base de données MongoDB
 
@@ -62,15 +65,15 @@ def download_files(MONGO_USER, MONGO_PWD, MONGO_HOST, MONGO_PORT, MONGO_DB):
         # Chargement du dernier fichier stocké dans GridFS
         try:
             files_names = grid_fs.list()
-            print(files_names)
             # Ne garder que les filenames uniques
             files_names = list(set(files_names))
-            print(files_names)
             for filename in files_names:
                 try:
                     file_data = grid_fs.get_last_version(filename)
                     output_file_path = (
-                        rf"data{separator}downloaded_files{separator}{filename}"
+                        rf"data{separator}sources_files{separator}_temp{separator}{filename}"
+                        if type == "temp"
+                        else rf"data{separator}sources_files{separator}{filename}"
                     )
                     with open(output_file_path, "wb") as output_file:
                         output_file.write(file_data.read())
