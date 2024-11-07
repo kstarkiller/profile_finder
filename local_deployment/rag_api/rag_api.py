@@ -295,23 +295,54 @@ async def storing_file(file: UploadFile = File(...)):
         mlflow.end_run()
 
         delete_collection(paths["temp_collection"], "temp")
-        os.remove(os.path.join(paths["temp_files"], "Coaff_V1.xlsx"))
-        os.remove(
-            os.path.join(
-                paths["temp_files"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
+
+        if file.filename != "test_file.txt":
+            os.remove(os.path.join(paths["temp_files"], "Coaff_V1.xlsx"))
+            os.remove(
+                os.path.join(
+                    paths["temp_files"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
+                )
             )
-        )
-        os.remove(
-            os.path.join(
-                paths["temp_files"], "UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
+            os.remove(
+                os.path.join(
+                    paths["temp_files"], "UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
+                )
             )
-        )
-        os.remove(os.path.join(paths["temp_files"], "descriptions_uniques.txt"))
-        os.remove(os.path.join(paths["temp_files"], "profils_uniques.txt"))
-        os.remove(os.path.join(paths["temp_fixtures"], "fixtures_psarm.csv"))
-        os.remove(os.path.join(paths["temp_fixtures"], "fixtures_coaff.csv"))
-        os.remove(os.path.join(paths["temp_fixtures"], "fixtures_certs.csv"))
-        os.remove(os.path.join(paths["temp_combined"], "combined_result.csv"))
+        else:
+            os.replace(
+                os.path.join(paths["temp_files"], "Coaff_V1.xlsx"),
+                os.path.join(paths["sources"], "Coaff_V1.xlsx"),
+            )
+            os.replace(
+                os.path.join(
+                    paths["temp_files"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
+                ),
+                os.path.join(
+                    paths["sources"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
+                ),
+            )
+            os.replace(
+                os.path.join(
+                    paths["temp_files"], "UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
+                ),
+                os.path.join(
+                    paths["sources"], "UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
+                ),
+            )
+        if os.path.exists(
+            os.path.join(paths["temp_files"], "descriptions_uniques.txt")
+        ):
+            os.remove(os.path.join(paths["temp_files"], "descriptions_uniques.txt"))
+        if os.path.exists(os.path.join(paths["temp_files"], "profils_uniques.txt")):
+            os.remove(os.path.join(paths["temp_files"], "profils_uniques.txt"))
+        if os.path.exist(paths["temp_fixtures"], "fixtures_psarm.csv"):
+            os.remove(os.path.join(paths["temp_fixtures"], "fixtures_psarm.csv"))
+        if os.path.join(paths["temp_fixtures"], "fixtures_coaff.csv"):
+            os.remove(os.path.join(paths["temp_fixtures"], "fixtures_coaff.csv"))
+        if os.path.join(paths["temp_fixtures"], "fixtures_certs.csv"):
+            os.remove(os.path.join(paths["temp_fixtures"], "fixtures_certs.csv"))
+        if os.path.join(paths["temp_combined"], "combined_result.csv"):
+            os.remove(os.path.join(paths["temp_combined"], "combined_result.csv"))
 
     except Exception as e:
         progress["percentage"] = 0
