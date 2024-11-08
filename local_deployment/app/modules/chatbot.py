@@ -62,7 +62,7 @@ def update_input_new_chat():
             st.error("Veuillez sélectionner un modèle pour continuer.")
             return
         try:
-            response = requests.get(
+            response = requests.post(
                 f"http://{venv['rag_host']}:{venv['rag_port']}/chat/id",
                 json={"model": st.session_state["model"], "prompt": user_input},
             )

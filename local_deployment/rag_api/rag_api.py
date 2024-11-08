@@ -24,7 +24,7 @@ from perf_validation import run_validation
 from docker_check import is_running_in_docker
 import mlflow
 
-# Paths' definition
+# Paths definition
 base_path = os.path.dirname(__file__)
 paths = {
     "logs": os.path.join(base_path, "log_module", "logs", "logs_api.log"),
@@ -131,7 +131,7 @@ async def storing_file(file: UploadFile = File(...)):
         progress["percentage"] = 12
         time.sleep(1)
 
-        result = store_file(
+        result_storing = store_file(
             file_path,
             venv["mongo_user"],
             venv["mongo_pwd"],
@@ -142,7 +142,7 @@ async def storing_file(file: UploadFile = File(...)):
         progress["percentage"] = 19
         time.sleep(1)
 
-        result = download_files(
+        result_download = download_files(
             venv["mongo_user"],
             venv["mongo_pwd"],
             venv["mongo_host"],
@@ -153,7 +153,7 @@ async def storing_file(file: UploadFile = File(...)):
         progress["percentage"] = 28
         time.sleep(1)
 
-        result = get_skills(
+        result_skills = get_skills(
             os.path.join(
                 paths["temp_files"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
             ),
@@ -164,7 +164,7 @@ async def storing_file(file: UploadFile = File(...)):
         progress["percentage"] = 32
         time.sleep(1)
 
-        result = create_fixtures(
+        result_fixtures = create_fixtures(
             os.path.join(
                 paths["temp_files"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
             ),
@@ -185,7 +185,7 @@ async def storing_file(file: UploadFile = File(...)):
         )
         response.raise_for_status()
 
-        result = insert_profiles(
+        result_insert = insert_profiles(
             venv["db_api_host"],
             venv["db_api_port"],
             os.path.join(paths["temp_fixtures"], "fixtures_psarm.csv"),
@@ -196,17 +196,20 @@ async def storing_file(file: UploadFile = File(...)):
         )
         progress["percentage"] = 53
         delete_collection(paths["temp_collection"], "temp")
-        result = embed_documents(paths["temp_collection"], "temp", MODEL_EMBEDDING)
+        result_embed = embed_documents(
+            paths["temp_collection"], "temp", MODEL_EMBEDDING
+        )
         progress["percentage"] = 60
         time.sleep(1)
 
-        test_embedding
-        test_load_documents
-        test_ollama
-        progress["percentage"] = 62
-        time.sleep(1)
+        if file.filename != "test_file.txt":
+            test_embedding
+            test_load_documents
+            test_ollama
+            progress["percentage"] = 62
+            time.sleep(1)
 
-        result_df, false_rate = run_validation(
+        result_validation = run_validation(
             paths["temp_collection"],
             "temp",
             os.path.join(paths["temp_combined"], "combined_result.csv"),
@@ -217,7 +220,7 @@ async def storing_file(file: UploadFile = File(...)):
         progress["percentage"] = 71
         time.sleep(1)
 
-        result = download_files(
+        result_perm_dl = download_files(
             venv["mongo_user"],
             venv["mongo_pwd"],
             venv["mongo_host"],
@@ -228,7 +231,7 @@ async def storing_file(file: UploadFile = File(...)):
         progress["percentage"] = 78
         time.sleep(1)
 
-        skills = get_skills(
+        result_perm_skills = get_skills(
             os.path.join(
                 paths["temp_files"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
             ),
@@ -239,7 +242,7 @@ async def storing_file(file: UploadFile = File(...)):
         progress["percentage"] = 82
         time.sleep(1)
 
-        fixtures = create_fixtures(
+        result_perm_fixtures = create_fixtures(
             os.path.join(
                 paths["temp_files"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
             ),
@@ -260,7 +263,7 @@ async def storing_file(file: UploadFile = File(...)):
         )
         response.raise_for_status()
 
-        profiles = insert_profiles(
+        result_perm_profiles = insert_profiles(
             venv["db_api_host"],
             venv["db_api_port"],
             os.path.join(paths["fixtures"], "fixtures_psarm.csv"),
@@ -281,16 +284,21 @@ async def storing_file(file: UploadFile = File(...)):
         mlflow.set_experiment("Profile Finder RAG Metrics")
 
         with mlflow.start_run():
-            mlflow.log_param("file_name", file.filename)
-            mlflow.log_param("date", time.strftime("%Y-%m-%d %H:%M:%S"))
-            mlflow.log_artifact(
-                os.path.join(paths["temp_combined"], "combined_result.csv")
-            )
-            mlflow.log_metric("false_rate", false_rate)
+            if file.filename != "test_file.txt":
+                mlflow.log_param("file_name", file.filename)
+                mlflow.log_param("date", time.strftime("%Y-%m-%d %H:%M:%S"))
+                mlflow.log_artifact(
+                    os.path.join(paths["temp_combined"], "combined_result.csv")
+                )
+            
+                mlflow.log_metric("accuracy", f"{result_validation[1]:.2f%}")
+                mlflow.log_metric("false_rate", f"{result_validation[1]:.2f%}")
 
-            result_df_path = os.path.join(paths["temp_combined"], "result_df.csv")
-            result_df.to_csv(result_df_path, index=False)
-            mlflow.log_artifact(result_df_path)
+                result_validation_path = os.path.join(
+                    paths["temp_combined"], "result_validation.csv"
+                )
+                result_validation[0].to_csv(result_validation_path, index=False)
+                mlflow.log_artifact(result_validation_path)
 
         mlflow.end_run()
 
@@ -309,6 +317,7 @@ async def storing_file(file: UploadFile = File(...)):
                 )
             )
         else:
+            os.remove(os.path.join(paths["temp_files"], "test_file.txt"))
             os.replace(
                 os.path.join(paths["temp_files"], "Coaff_V1.xlsx"),
                 os.path.join(paths["sources"], "Coaff_V1.xlsx"),
@@ -335,13 +344,13 @@ async def storing_file(file: UploadFile = File(...)):
             os.remove(os.path.join(paths["temp_files"], "descriptions_uniques.txt"))
         if os.path.exists(os.path.join(paths["temp_files"], "profils_uniques.txt")):
             os.remove(os.path.join(paths["temp_files"], "profils_uniques.txt"))
-        if os.path.exist(paths["temp_fixtures"], "fixtures_psarm.csv"):
+        if os.path.exists(os.path.join(paths["temp_fixtures"], "fixtures_psarm.csv")):
             os.remove(os.path.join(paths["temp_fixtures"], "fixtures_psarm.csv"))
-        if os.path.join(paths["temp_fixtures"], "fixtures_coaff.csv"):
+        if os.path.exists(os.path.join(paths["temp_fixtures"], "fixtures_coaff.csv")):
             os.remove(os.path.join(paths["temp_fixtures"], "fixtures_coaff.csv"))
-        if os.path.join(paths["temp_fixtures"], "fixtures_certs.csv"):
+        if os.path.exists(os.path.join(paths["temp_fixtures"], "fixtures_certs.csv")):
             os.remove(os.path.join(paths["temp_fixtures"], "fixtures_certs.csv"))
-        if os.path.join(paths["temp_combined"], "combined_result.csv"):
+        if os.path.exists(os.path.join(paths["temp_combined"], "combined_result.csv")):
             os.remove(os.path.join(paths["temp_combined"], "combined_result.csv"))
 
     except Exception as e:
@@ -421,7 +430,6 @@ def truncate_table():
             params={"type": "perm"},
         )
         response.raise_for_status()
-        print(response.json())
     except requests.exceptions.HTTPError as err:
         print("HTTP error occurred:", err)
 
@@ -441,7 +449,7 @@ def embedding():
     return {"collection": result}
 
 
-@app.get(
+@app.post(
     "/chat",
     summary="Process question and return response",
     description="This endpoint processes a question and returns a response with ollama.",
@@ -480,19 +488,20 @@ def process_question(input: ChatRequest):
     mlflow.set_tracking_uri(f"http://{venv['mf_host']}:{venv['mf_port']}")
     mlflow.set_experiment("Profile Finder Chat Metrics")
 
-    with mlflow.start_run():
+    run = mlflow.start_run()
+    try:
         mlflow.log_param("service_type", input.service_type)
         mlflow.log_param("date", time.strftime("%Y-%m-%d %H:%M:%S"))
         mlflow.log_param("chat_id", input.chat_id)
         mlflow.log_param("model", input.model)
         mlflow.log_metric("response_time", end_time - start_time)
-
-    mlflow.end_run()
+    finally:
+        mlflow.end_run()
 
     return {"response": response, "duration": end_time - start_time}
 
 
-@app.get(
+@app.post(
     "/chat/id",
     summary="New chat ID",
     description="This endpoint generates a new chat ID.",

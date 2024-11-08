@@ -29,3 +29,5 @@ speech.mp3
 path/
 __pycache__
 openlit/
+mlruns/
+test_*.txt

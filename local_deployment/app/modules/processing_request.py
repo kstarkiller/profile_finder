@@ -46,7 +46,7 @@ def process_input(user_input, chat_history, chat_id, model):
             "model": model,
         }
 
-        response = requests.get(url, json=payload)
+        response = requests.post(url, json=payload)
         response_data = response.json()
 
         # Check if the response contains errors
