@@ -3,10 +3,13 @@ import time
 import logging
 import requests
 import uvicorn
-from fastapi import FastAPI, HTTPException, UploadFile, File
+import mlflow
+from datetime import timedelta
+from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from pydantic import BaseModel
 from typing import List
 
+from auth import create_access_token, get_user, get_current_user
 from llm_module.generate_response import (
     generate_ollama_response,
     generate_minai_response,
@@ -22,7 +25,6 @@ import test_unitaires.test_load_documents as test_load_documents
 import test_unitaires.test_ollama as test_ollama
 from perf_validation import run_validation
 from docker_check import is_running_in_docker
-import mlflow
 
 # Paths definition
 base_path = os.path.dirname(__file__)
@@ -48,6 +50,7 @@ logging.basicConfig(
 # Constants
 GPT_4O_MINI = "gpt-4o-mini"
 MODEL_EMBEDDING = "nomic-embed-text:v1.5"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 app = FastAPI()
 
@@ -73,9 +76,11 @@ class TitleRequest(BaseModel):
     question: str
     chat_id: str
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str
 
 venv = is_running_in_docker()
-
 
 def create_directories():
     for path in paths.values():
@@ -108,9 +113,19 @@ def root():
 def test(input: TestInput):
     return {"message": input.message + " Success"}
 
-
-progress = {}
-
+@app.get("/token",
+    summary="Get token",
+    description="This endpoint retrieves a token for the user.",
+    response_model=Token)
+async def login(username: str):
+    email = get_user(username)
+    if not email:
+        raise HTTPException(
+            status_code=400, detail="Incorrect username"
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(data={"sub": email}, expires_delta=access_token_expires)
+    return {"access_token": access_token, "token_type": "bearer"}
 
 @app.post(
     "/file",
@@ -118,11 +133,7 @@ progress = {}
     description="This endpoint stores a file in the database.",
 )
 async def storing_file(file: UploadFile = File(...)):
-    global progress
-    progress.clear()  # Reset progress for the new request
-    total_steps = 15
     create_directories()
-    progress["percentage"] = 5
     time.sleep(1)
     try:
         file_path = os.path.join(paths["temp_files"], file.filename)
@@ -454,7 +465,7 @@ def embedding():
     summary="Process question and return response",
     description="This endpoint processes a question and returns a response with ollama.",
 )
-def process_question(input: ChatRequest):
+def process_question(input: ChatRequest, current_user: dict = Depends(get_current_user)):
     start_time = time.time()
     try:
         data = retrieve_documents(
@@ -506,7 +517,7 @@ def process_question(input: ChatRequest):
     summary="New chat ID",
     description="This endpoint generates a new chat ID.",
 )
-def new_chat_id(input: IDrequest):
+def new_chat_id(input: IDrequest, current_user: dict = Depends(get_current_user)):
     new_id = generate_conversation_id(input.model, input.prompt)
     return {"new_id": new_id}
 

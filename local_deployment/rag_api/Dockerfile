@@ -48,6 +48,7 @@ ENV MONGO_PWD=${MONGO_PWD}
 ENV MONGO_DB=${MONGO_DB}
 ENV MF_HOST=${MF_HOST}
 ENV MF_PORT=${MF_PORT}
+ENV SECRET_KEY=${SECRET_KEY}
 
 # Définir le point d'entrée pour lancer l'application
 ENTRYPOINT ["/entrypoint.sh"]

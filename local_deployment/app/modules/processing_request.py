@@ -12,7 +12,7 @@ venv = is_running_in_docker()
 
 
 # These functions are used to process the user input and return the chatbot response via the generate_perplexity_response function.
-def process_input(user_input, chat_history, chat_id, model):
+def process_input(user_input, chat_history, chat_id, model, token):
     """
     Process the user input and return the chatbot response and updated chat history.
 
@@ -33,6 +33,11 @@ def process_input(user_input, chat_history, chat_id, model):
     # Add user input to chat history
     chat_history.append({"role": "user", "content": user_input})
 
+    headers = {
+    "Authorization": f"Bearer {token}",
+    "Content-Type": "application/json"
+    }
+
     # Determine the URL based on the model
     url = f"http://{venv['rag_host']}:{venv['rag_port']}/chat"
 
@@ -46,7 +51,7 @@ def process_input(user_input, chat_history, chat_id, model):
             "model": model,
         }
 
-        response = requests.post(url, json=payload)
+        response = requests.post(url, json=payload, headers=headers)
         response_data = response.json()
 
         # Check if the response contains errors

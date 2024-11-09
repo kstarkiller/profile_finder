@@ -38,8 +38,15 @@ services:
         . /opt/venv/bin/activate &&
         pip install --upgrade pip &&
         pip install psycopg2 &&
+        pip install mlflow &&
         mlflow server --backend-store-uri postgresql+psycopg2://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME} -h 0.0.0.0
       "
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+      start_period: 20s
     depends_on:
       postgres:
         condition: service_healthy
@@ -112,6 +119,7 @@ services:
       MONGO_DB: ${MONGO_DB}
       MF_HOST: mlflow
       MF_PORT: 5000
+      SECRET_KEY: ${SECRET_KEY}
     ports:
       - "8080:8080"
     depends_on:

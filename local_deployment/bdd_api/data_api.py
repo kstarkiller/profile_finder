@@ -3,6 +3,7 @@ import uvicorn
 
 from users_manager import (
     get_user,
+    check_user,
     create_user,
     delete_user,
     add_search_to_history,
@@ -71,6 +72,16 @@ async def truncate_table_api(json: dict):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+@app.post(
+    "/user",
+    summary="Vérifier si un utilisateur existe",
+    response_description="Utilisateur trouvé",
+)
+async def check_user_api(user: dict):
+    try:
+        return check_user(user.get("email"))
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.get(
     "/user",

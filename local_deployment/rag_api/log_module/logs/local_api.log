@@ -1,0 +1,34 @@
+2024-11-08 15:29:00,643 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-11-08 15:29:00,664 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-11-08 15:29:00,986 - INFO - RAG performed in 1.1293981075286865 seconds.
+
+2024-11-08 15:29:03,987 - INFO - 
+2024-11-08 15:29:03,987 - INFO - Question asked: hello
+2024-11-08 15:29:03,988 - INFO - 
+2024-11-08 15:29:03,988 - INFO - Generated response: b"## Bonjour ! Comment puis-je vous aider aujourd'hui ? \n\nSi vous avez besoin d'aide pour trouver des membres d'\xc3\xa9quipe en fonction de leur localisation, disponibilit\xc3\xa9 ou comp\xc3\xa9tences, n'h\xc3\xa9sitez pas \xc3\xa0 me le faire savoir !"
+2024-11-08 15:29:03,988 - INFO - 
+2024-11-08 15:29:03,989 - INFO - Response generated in 3.003567695617676 seconds.
+
+
+2024-11-08 15:29:08,197 - WARNING - Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000021DE8B922D0>: Failed to establish a new connection: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Profile+Finder+Chat+Metrics
+2024-11-08 15:29:16,687 - WARNING - Retrying (Retry(total=3, connect=3, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000021DE8BC58D0>: Failed to establish a new connection: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Profile+Finder+Chat+Metrics
+2024-11-08 15:29:29,010 - WARNING - Retrying (Retry(total=2, connect=2, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000021DE8BC51D0>: Failed to establish a new connection: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Profile+Finder+Chat+Metrics
+2024-11-08 15:29:49,536 - WARNING - Retrying (Retry(total=1, connect=1, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000021DE6A5F910>: Failed to establish a new connection: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Profile+Finder+Chat+Metrics
+2024-11-08 15:30:25,957 - WARNING - Retrying (Retry(total=0, connect=0, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000021DE6A5E190>: Failed to establish a new connection: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Profile+Finder+Chat+Metrics
+2024-11-08 16:16:16,505 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-11-08 16:16:16,547 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-11-08 16:16:16,816 - INFO - RAG performed in 1.0560636520385742 seconds.
+
+2024-11-08 16:16:23,546 - INFO - 
+2024-11-08 16:16:23,547 - INFO - Question asked: Hello
+2024-11-08 16:16:23,547 - INFO - 
+2024-11-08 16:16:23,547 - INFO - Generated response: b"## Bonjour ! Comment puis-je vous aider aujourd'hui ? \n\nSi vous avez besoin de trouver des membres de l'\xc3\xa9quipe en fonction de leur localisation, disponibilit\xc3\xa9 et comp\xc3\xa9tences, n'h\xc3\xa9sitez pas \xc3\xa0 sp\xc3\xa9cifier vos crit\xc3\xa8res !"
+2024-11-08 16:16:23,547 - INFO - 
+2024-11-08 16:16:23,548 - INFO - Response generated in 6.73199200630188 seconds.
+
+
+2024-11-08 16:16:27,728 - WARNING - Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001AE2D043E50>: Failed to establish a new connection: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Profile+Finder+Chat+Metrics
+2024-11-08 16:16:36,410 - WARNING - Retrying (Retry(total=3, connect=3, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001AE2BF6D390>: Failed to establish a new connection: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Profile+Finder+Chat+Metrics
+2024-11-08 16:16:49,261 - WARNING - Retrying (Retry(total=2, connect=2, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001AE2BF6F610>: Failed to establish a new connection: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Profile+Finder+Chat+Metrics
+2024-11-08 16:17:09,998 - WARNING - Retrying (Retry(total=1, connect=1, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001AE2BF6DFD0>: Failed to establish a new connection: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Profile+Finder+Chat+Metrics
+2024-11-08 16:17:47,017 - WARNING - Retrying (Retry(total=0, connect=0, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001AE78B698D0>: Failed to establish a new connection: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Profile+Finder+Chat+Metrics

@@ -83,6 +83,25 @@ Base.metadata.create_all(engine)
 # Créer une session pour interagir avec la base de données
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+def check_user(email):
+    """
+    Vérifie si l'utilisateur existe dans la base de données.
+
+    Args:
+        email (str): Email de l'utilisateur
+
+    Returns:
+        User: Objet utilisateur si l'utilisateur est trouvé, sinon None
+    """
+    db = SessionLocal()
+    user = db.query(User).filter(User.email == email).first()
+    db.close()
+
+    if user:
+        return user.email
+    else:
+        return None
+
 
 # Fonction pour récupérer un utilisateur par son username + password
 def get_user(email, password):
