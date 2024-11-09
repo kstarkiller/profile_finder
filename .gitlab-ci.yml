@@ -3,6 +3,7 @@ include:
 
 stages:
   - test
+  - security
   - build
   - deploy
 
@@ -40,6 +41,14 @@ test_azure_deployment:
     - cd azure_deployment
     - pip install -r requirements.txt
     - python -m unittest discover -s tests
+
+pip_audit:
+  stage: security
+  image: python:3.11.9
+  script:
+    - pip install pip-audit
+    - pip-audit
+  allow_failure: true
 
 build_docker_image:
   stage: build

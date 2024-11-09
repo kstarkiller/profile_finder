@@ -23,7 +23,6 @@ model_mapping = {
     "meta/meta-llama-3-70b-instruct": "Llama 3 70b de Meta",
     "llama3.1:8b": "Llama 3.1 8b de Meta",
     "claude-3-haiku-20240307": "Claude 3 Haiku d'Anthropic",
-    "command": "Command R de Cohere",
     "gemini-1.5-flash": "Gemini 1.5 Flash de Google",
     "gpt-4o-mini": "GPT 4o Mini d'OpenAI",
     "o1-mini": "GPT o1 Mini d'OpenAI",

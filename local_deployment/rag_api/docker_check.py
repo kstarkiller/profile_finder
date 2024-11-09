@@ -18,6 +18,7 @@ def is_running_in_docker():
             mongo_db = os.getenv("MONGO_DB")
             mf_host = os.getenv("MF_HOST")
             mf_port = os.getenv("MF_PORT")
+            openlit_host = os.getenv("OPENLIT_HOST")
             return {
                 "db_api_host": db_api_host,
                 "db_api_port": db_api_port,
@@ -31,6 +32,7 @@ def is_running_in_docker():
                 "mongo_db": mongo_db,
                 "mf_host": mf_host,
                 "mf_port": mf_port,
+                "openlit_host": openlit_host,
             }
     except FileNotFoundError:
         db_api_host = "localhost"
@@ -45,6 +47,7 @@ def is_running_in_docker():
         mongo_db = os.getenv("MONGO_DB")
         mf_host = "localhost"
         mf_port = 5000
+        openlit_host = "localhost"
         return {
             "db_api_host": db_api_host,
             "db_api_port": db_api_port,
@@ -58,4 +61,5 @@ def is_running_in_docker():
             "mongo_db": mongo_db,
             "mf_host": mf_host,
             "mf_port": mf_port,
+            "openlit_host": openlit_host,
         }

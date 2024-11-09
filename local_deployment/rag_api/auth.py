@@ -16,16 +16,21 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 venv = is_running_in_docker()
 
+
 def get_user(username: str):
     try:
-        user = requests.post(f"http://{venv['db_api_host']}:{venv['db_api_port']}/user", json={'email': username})
+        user = requests.post(
+            f"http://{venv['db_api_host']}:{venv['db_api_port']}/user",
+            json={"email": username},
+        )
         if user.status_code == 200:
             return user.json()
         else:
             return None
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-    
+
+
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
     if expires_delta:
@@ -35,6 +40,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(

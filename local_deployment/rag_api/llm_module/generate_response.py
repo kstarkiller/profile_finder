@@ -1,13 +1,10 @@
 import os
 import sys
 import json
-import getpass
 import ollama
 import requests
-from requests.adapters import HTTPAdapter
-import ssl
+import openlit
 from typing import Optional
-from datetime import date
 import logging
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))

@@ -4,8 +4,10 @@ import logging
 import requests
 import uvicorn
 import mlflow
+import openlit
 from datetime import timedelta
 from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
+from starlette.middleware.base import BaseHTTPMiddleware
 from pydantic import BaseModel
 from typing import List
 
@@ -25,6 +27,12 @@ import test_unitaires.test_load_documents as test_load_documents
 import test_unitaires.test_ollama as test_ollama
 from perf_validation import run_validation
 from docker_check import is_running_in_docker
+
+venv = is_running_in_docker()
+
+openlit.init(
+    otlp_endpoint=f"http://{venv['openlit_host']}:4318",
+)
 
 # Paths definition
 base_path = os.path.dirname(__file__)
@@ -55,6 +63,17 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 app = FastAPI()
 
 
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Content-Security-Policy"] = "default-src 'self'"
+        return response
+
+
+app.add_middleware(SecurityHeadersMiddleware)
+
+
 class TestInput(BaseModel):
     message: str
 
@@ -76,11 +95,11 @@ class TitleRequest(BaseModel):
     question: str
     chat_id: str
 
+
 class Token(BaseModel):
     access_token: str
     token_type: str
 
-venv = is_running_in_docker()
 
 def create_directories():
     for path in paths.values():
@@ -113,34 +132,38 @@ def root():
 def test(input: TestInput):
     return {"message": input.message + " Success"}
 
-@app.get("/token",
+
+@app.get(
+    "/token",
     summary="Get token",
     description="This endpoint retrieves a token for the user.",
-    response_model=Token)
+    response_model=Token,
+)
 async def login(username: str):
     email = get_user(username)
     if not email:
-        raise HTTPException(
-            status_code=400, detail="Incorrect username"
-        )
+        raise HTTPException(status_code=400, detail="Incorrect username")
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={"sub": email}, expires_delta=access_token_expires)
+    access_token = create_access_token(
+        data={"sub": email}, expires_delta=access_token_expires
+    )
     return {"access_token": access_token, "token_type": "bearer"}
+
 
 @app.post(
     "/file",
     summary="Store file",
     description="This endpoint stores a file in the database.",
 )
-async def storing_file(file: UploadFile = File(...)):
+async def storing_file(
+    file: UploadFile = File(...), current_user: dict = Depends(get_current_user)
+):
     create_directories()
     time.sleep(1)
     try:
         file_path = os.path.join(paths["temp_files"], file.filename)
         with open(file_path, "wb") as f:
             f.write(file.file.read())
-        progress["percentage"] = 12
-        time.sleep(1)
 
         result_storing = store_file(
             file_path,
@@ -150,8 +173,6 @@ async def storing_file(file: UploadFile = File(...)):
             venv["mongo_port"],
             venv["mongo_db"],
         )
-        progress["percentage"] = 19
-        time.sleep(1)
 
         result_download = download_files(
             venv["mongo_user"],
@@ -161,8 +182,6 @@ async def storing_file(file: UploadFile = File(...)):
             venv["mongo_db"],
             "temp",
         )
-        progress["percentage"] = 28
-        time.sleep(1)
 
         result_skills = get_skills(
             os.path.join(
@@ -172,8 +191,6 @@ async def storing_file(file: UploadFile = File(...)):
             os.path.join(paths["temp_files"], "descriptions_uniques.txt"),
             os.path.join(paths["temp_files"], "profils_uniques.txt"),
         )
-        progress["percentage"] = 32
-        time.sleep(1)
 
         result_fixtures = create_fixtures(
             os.path.join(
@@ -187,8 +204,6 @@ async def storing_file(file: UploadFile = File(...)):
             os.path.join(paths["temp_fixtures"], "fixtures_coaff.csv"),
             os.path.join(paths["temp_fixtures"], "fixtures_certs.csv"),
         )
-        progress["percentage"] = 41
-        time.sleep(1)
 
         response = requests.delete(
             f"http://{venv['db_api_host']}:{venv['db_api_port']}/profiles",
@@ -205,20 +220,15 @@ async def storing_file(file: UploadFile = File(...)):
             os.path.join(paths["temp_combined"], "combined_result.csv"),
             "temp",
         )
-        progress["percentage"] = 53
         delete_collection(paths["temp_collection"], "temp")
         result_embed = embed_documents(
             paths["temp_collection"], "temp", MODEL_EMBEDDING
         )
-        progress["percentage"] = 60
-        time.sleep(1)
 
         if file.filename != "test_file.txt":
             test_embedding
             test_load_documents
             test_ollama
-            progress["percentage"] = 62
-            time.sleep(1)
 
         result_validation = run_validation(
             paths["temp_collection"],
@@ -228,9 +238,6 @@ async def storing_file(file: UploadFile = File(...)):
             GPT_4O_MINI,
         )
 
-        progress["percentage"] = 71
-        time.sleep(1)
-
         result_perm_dl = download_files(
             venv["mongo_user"],
             venv["mongo_pwd"],
@@ -239,8 +246,6 @@ async def storing_file(file: UploadFile = File(...)):
             venv["mongo_db"],
             "perm",
         )
-        progress["percentage"] = 78
-        time.sleep(1)
 
         result_perm_skills = get_skills(
             os.path.join(
@@ -250,8 +255,6 @@ async def storing_file(file: UploadFile = File(...)):
             os.path.join(paths["sources"], "descriptions_uniques.txt"),
             os.path.join(paths["sources"], "profils_uniques.txt"),
         )
-        progress["percentage"] = 82
-        time.sleep(1)
 
         result_perm_fixtures = create_fixtures(
             os.path.join(
@@ -265,8 +268,6 @@ async def storing_file(file: UploadFile = File(...)):
             os.path.join(paths["fixtures"], "fixtures_coaff.csv"),
             os.path.join(paths["fixtures"], "fixtures_certs.csv"),
         )
-        progress["percentage"] = 89
-        time.sleep(1)
 
         response = requests.delete(
             f"http://{venv['db_api_host']}:{venv['db_api_port']}/profiles",
@@ -283,13 +284,9 @@ async def storing_file(file: UploadFile = File(...)):
             os.path.join(paths["combined"], "combined_result.csv"),
             "perm",
         )
-        progress["percentage"] = 96
-        time.sleep(1)
 
         delete_collection(paths["collection"], "perm")
         docs = embed_documents(paths["collection"], "perm", MODEL_EMBEDDING)
-        progress["percentage"] = 100
-        time.sleep(1)
 
         mlflow.set_tracking_uri(f"http://{venv['mf_host']}:{venv['mf_port']}")
         mlflow.set_experiment("Profile Finder RAG Metrics")
@@ -301,7 +298,7 @@ async def storing_file(file: UploadFile = File(...)):
                 mlflow.log_artifact(
                     os.path.join(paths["temp_combined"], "combined_result.csv")
                 )
-            
+
                 mlflow.log_metric("accuracy", f"{result_validation[1]:.2f%}")
                 mlflow.log_metric("false_rate", f"{result_validation[1]:.2f%}")
 
@@ -365,18 +362,7 @@ async def storing_file(file: UploadFile = File(...)):
             os.remove(os.path.join(paths["temp_combined"], "combined_result.csv"))
 
     except Exception as e:
-        progress["percentage"] = 0
         raise Exception(f"Error: {str(e)}")
-
-
-@app.get(
-    "/progress",
-    summary="Get progress",
-    description="This endpoint retrieves the progress of the current request.",
-)
-def get_progress():
-    global progress
-    return progress
 
 
 @app.get(
@@ -384,7 +370,7 @@ def get_progress():
     summary="Get file",
     description="This endpoint retrieves a file from the database.",
 )
-def getting_file():
+def getting_file(current_user: dict = Depends(get_current_user)):
     try:
         result = download_files(
             venv["mongo_user"],
@@ -404,7 +390,7 @@ def getting_file():
     summary="Insert profiles",
     description="This endpoint inserts profiles into the database if not already exist.",
 )
-def storing_profiles():
+def storing_profiles(current_user: dict = Depends(get_current_user)):
     try:
         response = requests.get(
             f"http://{venv['db_api_host']}:{venv['db_api_port']}/profiles",
@@ -434,7 +420,7 @@ def storing_profiles():
     summary="Delete profiles",
     description="This endpoint truncates the table in the database.",
 )
-def truncate_table():
+def truncate_table(current_user: dict = Depends(get_current_user)):
     try:
         response = requests.delete(
             f"http://{venv['db_api_host']}:{venv['db_api_port']}/profiles",
@@ -448,16 +434,20 @@ def truncate_table():
 @app.post(
     "/embed", summary="Embedding endpoint", description="This is the question endpoint."
 )
-def embedding():
+def embedding(info, current_user: dict = Depends(get_current_user)):
     start_time = time.time()
     try:
-        result = embed_documents(paths["collection"], "perm", MODEL_EMBEDDING)
+        if info.get("type") == "temp":
+            collection_path = paths["temp_collection"]
+        else:
+            collection_path = paths["collection"]
+        result = embed_documents(collection_path, info.get("type"), MODEL_EMBEDDING)
     except Exception as e:
         logging.error(f"Error embedding documents: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
     end_time = time.time()
     logging.info(f"Documents embedded in {end_time - start_time} seconds.\n")
-    return {"collection": result}
+    return {"collection": result.json().get("name")}
 
 
 @app.post(
@@ -465,7 +455,9 @@ def embedding():
     summary="Process question and return response",
     description="This endpoint processes a question and returns a response with ollama.",
 )
-def process_question(input: ChatRequest, current_user: dict = Depends(get_current_user)):
+def process_question(
+    input: ChatRequest, current_user: dict = Depends(get_current_user)
+):
     start_time = time.time()
     try:
         data = retrieve_documents(

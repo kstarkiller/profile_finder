@@ -9,7 +9,7 @@ from datetime import datetime
 st.set_page_config(initial_sidebar_state="expanded")
 
 from styles import apply_custom_styles
-from modules.chatbot import new_chat, existent_chat
+from modules.chatbot import new_chat, existent_chat, get_token
 from modules.connexion_manager import login, logout
 from modules.signup_form import show_signup_form
 from modules.docker_check import is_running_in_docker
@@ -79,9 +79,8 @@ def render_sidebar():
 
 def render_model_selection():
     model_mapping = {
-        ("[LOCAL] Llama 3.1 - Meta" if is_windows else "Llama 3 70b - Meta"): (
-            "llama3.1:8b" if is_windows else "meta/meta-llama-3-70b-instruct"
-        ),
+        "[LOCAL] Llama 3.1 - Meta": "llama3.1:8b",
+        "Llama 3 70b - Meta": "meta/meta-llama-3-70b-instruct",
         "Claude 3 Haiku - Anthropic": "claude-3-haiku-20240307",
         "Gemini 1.5 Flash - Google": "gemini-1.5-flash",
         "GPT 4o Mini - OpenAI": "gpt-4o-mini",
@@ -90,9 +89,9 @@ def render_model_selection():
     model = st.sidebar.selectbox(
         "Avec quel modèle souhaitez-vous interagir ?",
         options=[
-            "[LOCAL] Llama 3.1 - Meta" if is_windows else "Llama 3 70b - Meta",
+            "[LOCAL] Llama 3.1 - Meta",
+            "Llama 3 70b - Meta",
             "Claude 3 Haiku - Anthropic",
-            "Command R - Cohere",
             "Gemini 1.5 Flash - Google",
             "GPT 4o Mini - OpenAI",
             "GPT o1 Mini - OpenAI",
@@ -309,6 +308,9 @@ def render_settings():
                     result = requests.post(
                         f"http://{venv['rag_host']}:{venv['rag_port']}/file",
                         files={"file": file},
+                        headers={
+                            "Authorization": f"Bearer {get_token()}",
+                        },
                     )
 
                 st.success("Terminé !")

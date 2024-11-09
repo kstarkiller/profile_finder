@@ -42,9 +42,13 @@ def process_input(user_input, chat_history, chat_id, model, token):
     url = f"http://{venv['rag_host']}:{venv['rag_port']}/chat"
 
     try:
+        if model in ["llama3.1:8b", "gemma2:9b", "phi3.5:3.8b"]:
+            service_type = "ollama"
+        else:
+            service_type = "minai"
         # Generate a response via the RAG API endpoint
         payload = {
-            "service_type": "ollama" if model == "llama3.1:8b" or model == "llama3.1:latest" else "minai",
+            "service_type": service_type,
             "question": user_input,
             "history": chat_history,
             "chat_id": chat_id,

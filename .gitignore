@@ -30,4 +30,5 @@ path/
 __pycache__
 openlit/
 mlruns/
+mlflows/
 test_*.txt
