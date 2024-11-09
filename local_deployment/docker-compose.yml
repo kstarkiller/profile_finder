@@ -1,7 +1,6 @@
 services:
   postgres:
     image: postgres:latest
-    # restart: always
     container_name: pf_postgres
     environment:
       POSTGRES_USER: ${DB_USER}
@@ -34,8 +33,6 @@ services:
       /bin/bash -c "
         apt-get update && 
         apt-get install -y libpq-dev gcc python3-dev python3-venv &&
-        python3 -m venv /opt/venv &&
-        . /opt/venv/bin/activate &&
         pip install --upgrade pip &&
         pip install psycopg2 &&
         mlflow server --backend-store-uri postgresql+psycopg2://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME} -h 0.0.0.0
@@ -51,7 +48,6 @@ services:
 
   mongo:
     image: mongo:latest
-    # restart: always
     container_name: pf_mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
@@ -74,7 +70,6 @@ services:
     build:
       context: ./bdd_api
     image: pf_bdd_api
-    # restart: always
     container_name: pf_bdd_api
     environment:
       DB_USER: ${DB_USER}
@@ -96,7 +91,6 @@ services:
     build:
       context: ./rag_api
     image: pf_api
-    # restart: always
     container_name: pf_api
     environment:
       MINAI_API_KEY: ${MINAI_API_KEY}
@@ -136,7 +130,6 @@ services:
     build:
       context: ./app
     image: pf_front
-    # restart: always
     container_name: pf_front
     environment:
       DB_API_HOST: bdd_api
@@ -153,67 +146,13 @@ services:
     networks:
       - pf_network
 
-  grafana:
-    image: grafana/grafana:latest
-    restart: unless-stopped
-    container_name: grafana
-    environment:
-      GF_SMTP_USER: ${GF_SMTP_USER}
-      GF_SMTP_PASSWORD: ${GF_SMTP_PASSWORD}
-    ports:
-      - "3000:3000"
-    networks:
-      - metrics
-    volumes:
-      - grafana-storage:/var/lib/grafana
-      - ./grafana/config/grafana.ini:/etc/grafana/grafana.ini
-
-  prometheus:
-    image: prom/prometheus:latest
-    restart: unless-stopped
-    container_name: prometheus
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-    ports:
-      - "9090:9090"
-    networks:
-      - metrics
-    volumes:
-      - ./prometheus:/etc/prometheus
-      - prom_data:/prometheus
-
-  nodeexporter:
-    image: prom/node-exporter:v0.18.1
-    container_name: nodeexporter
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.rootfs=/rootfs'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
-    restart: unless-stopped
-    expose:
-      - 9100
-    networks:
-      - metrics
-    labels:
-      org.label-schema.group: "monitoring"
-
 networks:
   pf_network:
     driver: bridge
     name: pf_network
-  metrics:
-    driver: bridge
-    name: metrics
 
 volumes:
   postgres_data:
   ollama_models:
-  grafana-storage:
-  prom_data:
   mongo_data:
   mlflow-data:
