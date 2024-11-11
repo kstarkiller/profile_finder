@@ -13,11 +13,11 @@ output_descriptions = os.path.join(
 output_profiles = os.path.join(base_path, "downloaded_files", "profils_uniques.txt")
 
 
-def get_skills(temp_psarm, temp_coaff, temp_desc, temp_profiles):
+def get_skills(psarm, coaff, desc, profiles):
     # Read the files into pandas DataFrames
-    df_psarm = pd.read_excel(temp_psarm)
+    df_psarm = pd.read_excel(psarm)
     # Read existing data from the COAFF file
-    df_coaff = pd.read_excel(temp_coaff)
+    df_coaff = pd.read_excel(coaff)
     df_coaff = df_coaff.rename(columns=df_coaff.iloc[2].to_dict()).drop(
         df_coaff.index[:3]
     )
@@ -41,11 +41,11 @@ def get_skills(temp_psarm, temp_coaff, temp_desc, temp_profiles):
     )
 
     # Write the formatted descriptions to a text file
-    with open(temp_desc, "w", encoding="utf-8") as f:
+    with open(desc, "w", encoding="utf-8") as f:
         f.write(formatted_descriptions)
 
     # Write the profiles to a text file
-    with open(temp_profiles, "w", encoding="utf-8") as f:
+    with open(profiles, "w", encoding="utf-8") as f:
         f.write(formatted_profil)
 
     return f"Descriptions and profiles have been extracted."

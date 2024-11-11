@@ -1,0 +1,19 @@
+2024-11-11 19:27:04,152 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-11-11 19:27:04,160 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-11-11 19:27:21,503 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-11-11 19:27:21,510 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-11-11 21:30:23,628 - INFO - Found 2 documents.
+2024-11-11 21:30:23,628 - INFO - Batch 0 added to the collection.
+2024-11-11 21:30:23,628 - INFO - Batch 1 added to the collection.
+2024-11-11 21:31:15,229 - ERROR - Documents must be a list of strings.
+2024-11-11 21:31:15,232 - INFO - Found 1 documents.
+2024-11-11 21:31:15,232 - ERROR - Error embedding document 0: Ollama error
+2024-11-11 21:31:15,233 - INFO - Found 2 documents.
+2024-11-11 21:31:15,233 - INFO - Batch 0 added to the collection.
+2024-11-11 21:31:15,233 - INFO - Batch 1 added to the collection.
+2024-11-11 21:32:49,661 - ERROR - Documents must be a list of strings.
+2024-11-11 21:32:49,664 - INFO - Found 1 documents.
+2024-11-11 21:32:49,664 - ERROR - Error embedding document 0: Ollama error
+2024-11-11 21:32:49,665 - INFO - Found 2 documents.
+2024-11-11 21:32:49,665 - INFO - Batch 0 added to the collection.
+2024-11-11 21:32:49,665 - INFO - Batch 1 added to the collection.

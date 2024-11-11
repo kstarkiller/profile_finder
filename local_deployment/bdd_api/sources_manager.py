@@ -82,15 +82,20 @@ def delete_profile(profile: dict):
     Args:
         profile (dict): A dictionary containing the profile information with the following keys:
             - id: The ID of the profile to delete.
+    
+    The profile to delete is selected based on its ID thanks to a filter query before deleting it.
 
     Returns:
         dict: A dictionary with a success message.
     """
-    session = SessionLocal()
-    session.query(Profile).filter(Profile.id == profile["id"]).delete()
-    session.commit()
-    session.close()
-    return {"message": "Profil supprimé avec succès"}
+    try:
+        session = SessionLocal()
+        session.query(Profile).filter(Profile.id == profile["id"]).delete()
+        session.commit()
+        session.close()
+        return {"message": "Profil supprimé avec succès"}
+    except Exception as e:
+        raise f"Erreur lors de la suppression du profil: {str(e)}"
 
 
 def truncate_table(params):
@@ -122,6 +127,9 @@ def insert_profile(payload: dict):
             - competence: Information about the competence.
             - certification: Information about the certification.
             - combined: Combined information.
+            - type: The type of profile to insert.
+    
+    
 
     Returns:
         dict: A dictionary with a success message.
@@ -153,3 +161,29 @@ def insert_profile(payload: dict):
         return {"message": "Profil ajouté avec succès"}
     except Exception as e:
         raise Exception(f"Erreur lors de l'ajout du profil: {str(e)}")
+
+
+def replace_profiles():
+    """
+    Delete the profiles table and rename the temp_profiles table to profiles.
+    Then drop the temp_profiles table.
+
+    Returns:
+        dict: A dictionary with a success message.
+    """
+    session = SessionLocal()
+    session.query(Profile).delete()
+    session.commit()
+    session.close()
+
+    session = SessionLocal()
+    session.execute("ALTER TABLE temp_profiles RENAME TO profiles")
+    session.commit()
+    session.close()
+
+    session = SessionLocal()
+    session.execute("DROP TABLE temp_profiles")
+    session.commit()
+    session.close()
+
+    return {"message": "Profil remplacé avec succès"}

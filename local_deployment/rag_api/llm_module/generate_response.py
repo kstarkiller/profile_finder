@@ -3,12 +3,11 @@ import sys
 import json
 import ollama
 import requests
-import openlit
 from typing import Optional
 import logging
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-from log_module.custom_logging import log_access, log_response
+from log_module.custom_logging import log_response
 
 # Import environment variables
 USERNAME = os.getenv("RAG_LOCAL_USERNAME")

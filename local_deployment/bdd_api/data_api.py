@@ -14,7 +14,12 @@ from users_manager import (
     delete_search_from_history,
     delete_all_searches_from_history,
 )
-from sources_manager import get_profiles, truncate_table, insert_profile
+from sources_manager import (
+    get_profiles,
+    truncate_table,
+    insert_profile,
+    replace_profiles,
+)
 
 app = FastAPI()
 
@@ -49,6 +54,18 @@ async def insert_profile_api(profile: dict):
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@app.put(
+    "/profiles",
+    summary="Remplacer les profils dans la base de données",
+    response_description="Profils remplacés avec succès",
+)
+async def replace_profiles_api():
+    try:
+        return replace_profiles()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
 @app.get(
     "/profiles",
     summary="Récupérer tous les profils de la base de données",
@@ -72,6 +89,7 @@ async def truncate_table_api(json: dict):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
 @app.post(
     "/user",
     summary="Vérifier si un utilisateur existe",
@@ -82,6 +100,7 @@ async def check_user_api(user: dict):
         return check_user(user.get("email"))
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
 
 @app.get(
     "/user",
@@ -166,7 +185,6 @@ def get_search_by_chat_id_api(chat_id: str):
     try:
         return get_search_by_chat_id(chat_id)
     except Exception as e:
-        print(str(e))
         raise HTTPException(status_code=400, detail=str(e))
 
 

@@ -130,29 +130,5 @@ def main():
         "files",
     )
 
-    if api_data:
-        print("Données extraites de l'API:", api_data)
-        # Stocker les données dans un fichier CSV
-        pd.DataFrame(api_data).to_csv(api_data_csv, index=False)
-    if csv_data is not None:
-        print("Données extraites du CSV:", csv_data)
-        # Stocker les données dans un fichier CSV
-        pd.DataFrame(csv_data).to_csv(csv_data_csv, index=False)
-    if scraped_data:
-        print("Données extraites du scraping:", scraped_data)
-        # Stocker les données dans un fichier CSV
-        pd.DataFrame(scraped_data, columns=["Titres"]).to_csv(
-            scrapping_data_csv, index=False
-        )
-    if db_data is not None:
-        print("Données extraites de la base de données:", db_data)
-        # Stocker les données dans un fichier CSV
-        db_data.to_csv(db_data_csv, index=False)
-    if big_data is not None:
-        print("Données extraites du système big data:", big_data)
-        # Stocker les données dans un fichier CSV
-        big_data.to_csv(bigdata_data_csv, index=False)
-
-
 if __name__ == "__main__":
     main()

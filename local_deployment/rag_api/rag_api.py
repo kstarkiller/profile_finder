@@ -1,10 +1,10 @@
 import os
 import time
 import logging
-import requests
+
+# import requests
 import uvicorn
 import mlflow
-import openlit
 from datetime import timedelta
 from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -17,35 +17,18 @@ from llm_module.generate_response import (
     generate_minai_response,
     generate_conversation_id,
 )
-from rag_module.embedding import embed_documents, retrieve_documents, delete_collection
-from data.pre_processing import insert_profiles
-from data.store_file import store_file, download_files
-from data.get_skills import get_skills
-from data.create_fixtures import create_fixtures
-import test_unitaires.test_embedding as test_embedding
-import test_unitaires.test_load_documents as test_load_documents
-import test_unitaires.test_ollama as test_ollama
-from perf_validation import run_validation
+from rag_module.embedding import retrieve_documents
+from rag_ci import delete_temp_files, process_file
 from docker_check import is_running_in_docker
 
 venv = is_running_in_docker()
 
-openlit.init(
-    otlp_endpoint=f"http://{venv['openlit_host']}:4318",
-)
-
 # Paths definition
 base_path = os.path.dirname(__file__)
 paths = {
-    "logs": os.path.join(base_path, "log_module", "logs", "logs_api.log"),
-    "sources": os.path.join(base_path, "data", "sources_files"),
-    "fixtures": os.path.join(base_path, "data", "fixtures"),
-    "combined": os.path.join(base_path, "data", "combined"),
-    "collection": os.path.join(base_path, "data", "chroma"),
-    "temp_files": os.path.join(base_path, "data", "sources_files", "_temp"),
-    "temp_fixtures": os.path.join(base_path, "data", "fixtures", "_temp"),
+    "logs": os.path.join(base_path, "log_module", "logs", "api.log"),
     "temp_combined": os.path.join(base_path, "data", "combined", "_temp"),
-    "temp_collection": os.path.join(base_path, "data", "chroma", "_temp"),
+    "collection": os.path.join(base_path, "data", "chroma", "docs"),
 }
 
 # Logging module configuration
@@ -91,34 +74,9 @@ class IDrequest(BaseModel):
     prompt: str
 
 
-class TitleRequest(BaseModel):
-    question: str
-    chat_id: str
-
-
 class Token(BaseModel):
     access_token: str
     token_type: str
-
-
-def create_directories():
-    for path in paths.values():
-        if not os.path.exists(path):
-            os.makedirs(path)
-    os.replace(
-        os.path.join(paths["sources"], "Coaff_V1.xlsx"),
-        os.path.join(paths["temp_files"], "Coaff_V1.xlsx"),
-    )
-    os.replace(
-        os.path.join(paths["sources"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"),
-        os.path.join(
-            paths["temp_files"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
-        ),
-    )
-    os.replace(
-        os.path.join(paths["sources"], "UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"),
-        os.path.join(paths["temp_files"], "UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"),
-    )
 
 
 @app.get(
@@ -158,135 +116,10 @@ async def login(username: str):
 async def storing_file(
     file: UploadFile = File(...), current_user: dict = Depends(get_current_user)
 ):
-    create_directories()
-    time.sleep(1)
     try:
-        file_path = os.path.join(paths["temp_files"], file.filename)
-        with open(file_path, "wb") as f:
-            f.write(file.file.read())
-
-        result_storing = store_file(
-            file_path,
-            venv["mongo_user"],
-            venv["mongo_pwd"],
-            venv["mongo_host"],
-            venv["mongo_port"],
-            venv["mongo_db"],
-        )
-
-        result_download = download_files(
-            venv["mongo_user"],
-            venv["mongo_pwd"],
-            venv["mongo_host"],
-            venv["mongo_port"],
-            venv["mongo_db"],
-            "temp",
-        )
-
-        result_skills = get_skills(
-            os.path.join(
-                paths["temp_files"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
-            ),
-            os.path.join(paths["temp_files"], "Coaff_V1.xlsx"),
-            os.path.join(paths["temp_files"], "descriptions_uniques.txt"),
-            os.path.join(paths["temp_files"], "profils_uniques.txt"),
-        )
-
-        result_fixtures = create_fixtures(
-            os.path.join(
-                paths["temp_files"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
-            ),
-            os.path.join(paths["temp_files"], "Coaff_V1.xlsx"),
-            os.path.join(
-                paths["temp_files"], "UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
-            ),
-            os.path.join(paths["temp_fixtures"], "fixtures_psarm.csv"),
-            os.path.join(paths["temp_fixtures"], "fixtures_coaff.csv"),
-            os.path.join(paths["temp_fixtures"], "fixtures_certs.csv"),
-        )
-
-        response = requests.delete(
-            f"http://{venv['db_api_host']}:{venv['db_api_port']}/profiles",
-            json={"type": "temp"},
-        )
-        response.raise_for_status()
-
-        result_insert = insert_profiles(
-            venv["db_api_host"],
-            venv["db_api_port"],
-            os.path.join(paths["temp_fixtures"], "fixtures_psarm.csv"),
-            os.path.join(paths["temp_fixtures"], "fixtures_coaff.csv"),
-            os.path.join(paths["temp_fixtures"], "fixtures_certs.csv"),
-            os.path.join(paths["temp_combined"], "combined_result.csv"),
-            "temp",
-        )
-        delete_collection(paths["temp_collection"], "temp")
-        result_embed = embed_documents(
-            paths["temp_collection"], "temp", MODEL_EMBEDDING
-        )
-
-        if file.filename != "test_file.txt":
-            test_embedding
-            test_load_documents
-            test_ollama
-
-        result_validation = run_validation(
-            paths["temp_collection"],
-            "temp",
-            os.path.join(paths["temp_combined"], "combined_result.csv"),
-            MODEL_EMBEDDING,
-            GPT_4O_MINI,
-        )
-
-        result_perm_dl = download_files(
-            venv["mongo_user"],
-            venv["mongo_pwd"],
-            venv["mongo_host"],
-            venv["mongo_port"],
-            venv["mongo_db"],
-            "perm",
-        )
-
-        result_perm_skills = get_skills(
-            os.path.join(
-                paths["temp_files"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
-            ),
-            os.path.join(paths["temp_files"], "Coaff_V1.xlsx"),
-            os.path.join(paths["sources"], "descriptions_uniques.txt"),
-            os.path.join(paths["sources"], "profils_uniques.txt"),
-        )
-
-        result_perm_fixtures = create_fixtures(
-            os.path.join(
-                paths["temp_files"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
-            ),
-            os.path.join(paths["temp_files"], "Coaff_V1.xlsx"),
-            os.path.join(
-                paths["temp_files"], "UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
-            ),
-            os.path.join(paths["fixtures"], "fixtures_psarm.csv"),
-            os.path.join(paths["fixtures"], "fixtures_coaff.csv"),
-            os.path.join(paths["fixtures"], "fixtures_certs.csv"),
-        )
-
-        response = requests.delete(
-            f"http://{venv['db_api_host']}:{venv['db_api_port']}/profiles",
-            json={"type": "perm"},
-        )
-        response.raise_for_status()
-
-        result_perm_profiles = insert_profiles(
-            venv["db_api_host"],
-            venv["db_api_port"],
-            os.path.join(paths["fixtures"], "fixtures_psarm.csv"),
-            os.path.join(paths["fixtures"], "fixtures_coaff.csv"),
-            os.path.join(paths["fixtures"], "fixtures_certs.csv"),
-            os.path.join(paths["combined"], "combined_result.csv"),
-            "perm",
-        )
-
-        delete_collection(paths["collection"], "perm")
-        docs = embed_documents(paths["collection"], "perm", MODEL_EMBEDDING)
+        result_validation_temp = process_file(file, "temp")
+        if result_validation_temp[1] <= 7:
+            result_validation_perm = process_file(file, "perm")
 
         mlflow.set_tracking_uri(f"http://{venv['mf_host']}:{venv['mf_port']}")
         mlflow.set_experiment("Profile Finder RAG Metrics")
@@ -295,159 +128,21 @@ async def storing_file(
             if file.filename != "test_file.txt":
                 mlflow.log_param("file_name", file.filename)
                 mlflow.log_param("date", time.strftime("%Y-%m-%d %H:%M:%S"))
-                mlflow.log_artifact(
-                    os.path.join(paths["temp_combined"], "combined_result.csv")
-                )
 
-                mlflow.log_metric("accuracy", f"{result_validation[1]:.2f%}")
-                mlflow.log_metric("false_rate", f"{result_validation[1]:.2f%}")
+                mlflow.log_metric("False rate", result_validation_temp[1])
 
                 result_validation_path = os.path.join(
                     paths["temp_combined"], "result_validation.csv"
                 )
-                result_validation[0].to_csv(result_validation_path, index=False)
+                result_validation_perm[0].to_csv(result_validation_path, index=False)
                 mlflow.log_artifact(result_validation_path)
 
         mlflow.end_run()
 
-        delete_collection(paths["temp_collection"], "temp")
-
-        if file.filename != "test_file.txt":
-            os.remove(os.path.join(paths["temp_files"], "Coaff_V1.xlsx"))
-            os.remove(
-                os.path.join(
-                    paths["temp_files"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
-                )
-            )
-            os.remove(
-                os.path.join(
-                    paths["temp_files"], "UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
-                )
-            )
-        else:
-            os.remove(os.path.join(paths["temp_files"], "test_file.txt"))
-            os.replace(
-                os.path.join(paths["temp_files"], "Coaff_V1.xlsx"),
-                os.path.join(paths["sources"], "Coaff_V1.xlsx"),
-            )
-            os.replace(
-                os.path.join(
-                    paths["temp_files"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
-                ),
-                os.path.join(
-                    paths["sources"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
-                ),
-            )
-            os.replace(
-                os.path.join(
-                    paths["temp_files"], "UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
-                ),
-                os.path.join(
-                    paths["sources"], "UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
-                ),
-            )
-        if os.path.exists(
-            os.path.join(paths["temp_files"], "descriptions_uniques.txt")
-        ):
-            os.remove(os.path.join(paths["temp_files"], "descriptions_uniques.txt"))
-        if os.path.exists(os.path.join(paths["temp_files"], "profils_uniques.txt")):
-            os.remove(os.path.join(paths["temp_files"], "profils_uniques.txt"))
-        if os.path.exists(os.path.join(paths["temp_fixtures"], "fixtures_psarm.csv")):
-            os.remove(os.path.join(paths["temp_fixtures"], "fixtures_psarm.csv"))
-        if os.path.exists(os.path.join(paths["temp_fixtures"], "fixtures_coaff.csv")):
-            os.remove(os.path.join(paths["temp_fixtures"], "fixtures_coaff.csv"))
-        if os.path.exists(os.path.join(paths["temp_fixtures"], "fixtures_certs.csv")):
-            os.remove(os.path.join(paths["temp_fixtures"], "fixtures_certs.csv"))
-        if os.path.exists(os.path.join(paths["temp_combined"], "combined_result.csv")):
-            os.remove(os.path.join(paths["temp_combined"], "combined_result.csv"))
+        delete_temp_files(file)
 
     except Exception as e:
         raise Exception(f"Error: {str(e)}")
-
-
-@app.get(
-    "/file",
-    summary="Get file",
-    description="This endpoint retrieves a file from the database.",
-)
-def getting_file(current_user: dict = Depends(get_current_user)):
-    try:
-        result = download_files(
-            venv["mongo_user"],
-            venv["mongo_pwd"],
-            venv["mongo_host"],
-            venv["mongo_port"],
-            venv["mongo_db"],
-            "perm",
-        )
-        return {"message": result}
-    except Exception as e:
-        return {"message": f"Error retrieving file: {str(e)}"}
-
-
-@app.get(
-    "/profiles",
-    summary="Insert profiles",
-    description="This endpoint inserts profiles into the database if not already exist.",
-)
-def storing_profiles(current_user: dict = Depends(get_current_user)):
-    try:
-        response = requests.get(
-            f"http://{venv['db_api_host']}:{venv['db_api_port']}/profiles",
-            params={"type": "perm"},
-        )
-        response.raise_for_status()
-        profiles = response.json()
-        if len(profiles["profiles"]) == 0:
-            result = insert_profiles(
-                venv["db_api_host"],
-                venv["db_api_port"],
-                os.path.join(paths["fixtures"], "fixtures_coaff.csv"),
-                os.path.join(paths["fixtures"], "fixtures_psarm.csv"),
-                os.path.join(paths["fixtures"], "fixtures_certs.csv"),
-                os.path.join(paths["combined"], "combined_result.csv"),
-                "perm",
-            )
-            return {f"message": f"{result} profiles added to the database"}
-        else:
-            return {"message": "Database already contains profiles"}
-    except requests.exceptions.HTTPError as err:
-        print("HTTP error occurred:", err)
-
-
-@app.delete(
-    "/profiles",
-    summary="Delete profiles",
-    description="This endpoint truncates the table in the database.",
-)
-def truncate_table(current_user: dict = Depends(get_current_user)):
-    try:
-        response = requests.delete(
-            f"http://{venv['db_api_host']}:{venv['db_api_port']}/profiles",
-            params={"type": "perm"},
-        )
-        response.raise_for_status()
-    except requests.exceptions.HTTPError as err:
-        print("HTTP error occurred:", err)
-
-
-@app.post(
-    "/embed", summary="Embedding endpoint", description="This is the question endpoint."
-)
-def embedding(info, current_user: dict = Depends(get_current_user)):
-    start_time = time.time()
-    try:
-        if info.get("type") == "temp":
-            collection_path = paths["temp_collection"]
-        else:
-            collection_path = paths["collection"]
-        result = embed_documents(collection_path, info.get("type"), MODEL_EMBEDDING)
-    except Exception as e:
-        logging.error(f"Error embedding documents: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-    end_time = time.time()
-    logging.info(f"Documents embedded in {end_time - start_time} seconds.\n")
-    return {"collection": result.json().get("name")}
 
 
 @app.post(
@@ -488,18 +183,19 @@ def process_question(
     end_time = time.time()
     logging.info(f"Response generated in {end_time - start_time} seconds.\n\n")
 
-    mlflow.set_tracking_uri(f"http://{venv['mf_host']}:{venv['mf_port']}")
-    mlflow.set_experiment("Profile Finder Chat Metrics")
+    if input.chat_id != "chat_id123":
+        mlflow.set_tracking_uri(f"http://{venv['mf_host']}:{venv['mf_port']}")
+        mlflow.set_experiment("Profile Finder Chat Metrics")
 
-    run = mlflow.start_run()
-    try:
-        mlflow.log_param("service_type", input.service_type)
-        mlflow.log_param("date", time.strftime("%Y-%m-%d %H:%M:%S"))
-        mlflow.log_param("chat_id", input.chat_id)
-        mlflow.log_param("model", input.model)
-        mlflow.log_metric("response_time", end_time - start_time)
-    finally:
-        mlflow.end_run()
+        run = mlflow.start_run()
+        try:
+            mlflow.log_param("service_type", input.service_type)
+            mlflow.log_param("date", time.strftime("%Y-%m-%d %H:%M:%S"))
+            mlflow.log_param("chat_id", input.chat_id)
+            mlflow.log_param("model", input.model)
+            mlflow.log_metric("response_time", round(end_time - start_time, 2))
+        finally:
+            mlflow.end_run()
 
     return {"response": response, "duration": end_time - start_time}
 

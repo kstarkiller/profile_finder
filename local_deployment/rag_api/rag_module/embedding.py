@@ -8,7 +8,7 @@ from rag_module.load_documents import load_profile
 from llm_module.model_precision_improvements import structure_query
 
 logs_path = os.path.join(
-    os.path.dirname(__file__), "..", "log_module", "logs", "logs_api.log"
+    os.path.dirname(__file__), "..", "log_module", "logs", "embeddings.log"
 )
 
 # Logging module configuration
@@ -150,5 +150,9 @@ def delete_collection(collection_path, type):
             if c.name == "temp" if type == "temp" else "docs":
                 client.delete_collection(name=c.name)
                 logging.info(f"Collection {c.name} deleted.")
+            
+            # vider le dossier temporaire
+            if type == "temp":
+                os.removedirs(collection_path)
     else:
         logging.info("No collections found.")

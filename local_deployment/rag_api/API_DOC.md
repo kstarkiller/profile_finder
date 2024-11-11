@@ -129,36 +129,6 @@ paths:
                                 type: string
                                 format: binary
 
-    /profiles:
-        get:
-            summary: Insert profiles
-            responses:
-                200:
-                    description: Profiles inserted successfully
-        delete:
-            summary: Clear profiles table
-            responses:
-                200:
-                    description: Profiles table cleared successfully
-
-    /embed:
-        post:
-            summary: Perform embeddings on documents
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                        properties:
-                            documents:
-                            type: array
-                            items:
-                                type: string
-            responses:
-                200:
-                    description: Embeddings performed successfully
-
     /chat:
         post:
             summary: Process a question and return an answer

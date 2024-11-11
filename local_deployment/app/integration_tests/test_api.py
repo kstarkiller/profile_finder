@@ -9,6 +9,8 @@ base_path = os.path.dirname(__file__)
 class TestRAGAPIIntegration(unittest.TestCase):
     BASE_URL = "http://localhost:8080"
     TOKEN_URL = f"{BASE_URL}/token"
+    ROOT_URL = f"{BASE_URL}/"
+    CHAT_URL = f"{BASE_URL}/chat"
     USERNAME = "test"
 
     def get_token(self):
@@ -17,7 +19,7 @@ class TestRAGAPIIntegration(unittest.TestCase):
         return response.json()["access_token"]
 
     def test_root_endpoint(self):
-        response = requests.get(f"{self.BASE_URL}/")
+        response = requests.get(self.ROOT_URL)
         self.assertEqual(response.status_code, 200)
         self.assertIn("API is running", response.json()["message"])
 
@@ -25,17 +27,16 @@ class TestRAGAPIIntegration(unittest.TestCase):
         token = self.get_token()
         headers = {
             "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json",
         }
         payload = {
             "service_type": "minai",
             "question": "Hello",
-            "history": {"role": "user", "content": "Hello"},
+            "history": [{"role": "user", "content": "Hello"}],
             "chat_id": "chat_id123",
             "model": "gpt-4o-mini",
         }
 
-        response = requests.post(f"{self.BASE_URL}/chat", json=payload, headers=headers)
+        response = requests.post(self.CHAT_URL, json=payload, headers=headers)
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.json()["response"], str)
 

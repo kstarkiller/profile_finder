@@ -35,14 +35,14 @@ class TestEmbedDocuments(unittest.TestCase):
         self.mock_ollama_embeddings.return_value = {"embedding": [0.1, 0.2, 0.3]}
 
         # Call the function with batch_size=1
-        collection = embed_documents("dummy_path", batch_size=1)
+        collection = embed_documents("dummy_path", "temp", batch_size=1)
 
         # Assertions
         self.mock_PersistentClient.assert_called_once_with(
             path="dummy_path", settings=Settings(allow_reset=True)
         )
-        self.mock_client.get_or_create_collection.assert_called_once_with(name="docs")
-        self.mock_load_profile.assert_called_once_with()
+        self.mock_client.get_or_create_collection.assert_called_once_with(name="temp")
+        self.mock_load_profile.assert_called_once_with("temp")
         self.assertEqual(self.mock_collection.add.call_count, 2)
 
     def test_embed_documents_load_profile_error(self):
@@ -51,7 +51,9 @@ class TestEmbedDocuments(unittest.TestCase):
 
         # Call the function and check the exception
         with self.assertRaises(ValueError):
-            embed_documents("dummy_path")
+            embed_documents(
+                "dummy_path", "temp",
+            )
 
     def test_embed_documents_invalid_documents_type(self):
         # Test-specific setup
@@ -59,7 +61,9 @@ class TestEmbedDocuments(unittest.TestCase):
 
         # Call the function and check the exception
         with self.assertRaises(ValueError):
-            embed_documents("dummy_path")
+            embed_documents(
+                "dummy_path", "temp",
+            )
 
     def test_embed_documents_ollama_error(self):
         # Test-specific setup
@@ -68,7 +72,9 @@ class TestEmbedDocuments(unittest.TestCase):
 
         # Call the function and check the exception
         with self.assertRaises(ValueError):
-            embed_documents("dummy_path")
+            embed_documents(
+                "dummy_path", "temp",
+            )
 
 
 if __name__ == "__main__":

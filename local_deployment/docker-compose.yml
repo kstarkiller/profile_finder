@@ -93,6 +93,14 @@ services:
         condition: service_healthy
     networks:
       - pf_network
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 12G
+        reservations:
+          cpus: '4'
+          memory: 12G
 
   rag_api:
     build:
@@ -128,10 +136,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '8.0'
-          memory: 16G
+          cpus: '4'
+          memory: 12G
         reservations:
-          cpus: '8.0'
+          cpus: '4'
           memory: 12G
 
   rag_front:

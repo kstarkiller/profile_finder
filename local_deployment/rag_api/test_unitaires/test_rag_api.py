@@ -119,40 +119,40 @@ class TestAPI(unittest.TestCase):
         mock_start_run.assert_called_once()
         mock_end_run.assert_called_once()
 
-    def test_getting_file(self):
-        mock_download = self.mocks["rag_api.download_files"]
-        mock_download.return_value = "mock file content"
-        response = self.client.get("/file")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"message": "mock file content"})
+    # def test_getting_file(self):
+    #     mock_download = self.mocks["rag_api.download_files"]
+    #     mock_download.return_value = "mock file content"
+    #     response = self.client.get("/file")
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertEqual(response.json(), {"message": "mock file content"})
 
-    def test_storing_profiles(self):
-        mock_get = self.mocks["rag_api.requests.get"]
-        mock_insert_profiles = self.mocks["rag_api.insert_profiles"]
-        mock_response = Response()
-        mock_response.status_code = 200
-        mock_response._content = b'{"profiles": []}'
-        mock_get.return_value = mock_response
-        mock_insert_profiles.return_value = "Profiles inserted"
+    # def test_storing_profiles(self):
+    #     mock_get = self.mocks["rag_api.requests.get"]
+    #     mock_insert_profiles = self.mocks["rag_api.insert_profiles"]
+    #     mock_response = Response()
+    #     mock_response.status_code = 200
+    #     mock_response._content = b'{"profiles": []}'
+    #     mock_get.return_value = mock_response
+    #     mock_insert_profiles.return_value = "Profiles inserted"
 
-        response = self.client.get("/profiles", params={"type": "perm"})
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("message", response.json())
+    #     response = self.client.get("/profiles", params={"type": "perm"})
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertIn("message", response.json())
 
-    def test_truncate_table(self):
-        mock_delete = self.mocks["rag_api.requests.delete"]
-        mock_delete.return_value.status_code = 200
-        mock_delete.return_value.json.return_value = {}
+    # def test_truncate_table(self):
+    #     mock_delete = self.mocks["rag_api.requests.delete"]
+    #     mock_delete.return_value.status_code = 200
+    #     mock_delete.return_value.json.return_value = {}
 
-        response = self.client.delete("/profiles")
-        self.assertEqual(response.status_code, 200)
+    #     response = self.client.delete("/profiles")
+    #     self.assertEqual(response.status_code, 200)
 
-    def test_embedding(self):
-        mock_embed = self.mocks["rag_api.embed_documents"]
-        mock_embed.return_value = "Embedding complete"
-        response = self.client.post("/embed")
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("collection", response.json())
+    # def test_embedding(self):
+    #     mock_embed = self.mocks["rag_api.embed_documents"]
+    #     mock_embed.return_value = "Embedding complete"
+    #     response = self.client.post("/embed")
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertIn("collection", response.json())
 
     def test_process_question_success(self):
         mock_retrieve_documents = self.mocks["rag_api.retrieve_documents"]

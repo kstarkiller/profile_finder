@@ -26,11 +26,11 @@ class TestLoadProfile(unittest.TestCase):
     def test_load_profile_success(self, mock_get):
         mock_get.return_value = self.mock_response(
             json_data={
-                "profiles": [{"combined": "Profile 1"}, {"combined": "Profile 2"}]
+                "profiles": [{"combined": "Profile 1"}, {"combined": "Profile 2"}],
             }
         )
 
-        result = load_profile()
+        result = load_profile("temp")
         expected_result = ["Profile 1", "Profile 2"]
         self.assertEqual(result, expected_result)
 
@@ -39,7 +39,7 @@ class TestLoadProfile(unittest.TestCase):
         mock_get.side_effect = requests.exceptions.HTTPError("API Error")
 
         with self.assertRaises(ValueError) as context:
-            load_profile()
+            load_profile("temp")
 
         self.assertEqual(str(context.exception), "Error loading profiles: API Error")
 
@@ -47,7 +47,7 @@ class TestLoadProfile(unittest.TestCase):
     def test_load_profile_no_profiles(self, mock_get):
         mock_get.return_value = self.mock_response(json_data={"profiles": []})
 
-        result = load_profile()
+        result = load_profile("temp")
         self.assertEqual(result, [])
 
 

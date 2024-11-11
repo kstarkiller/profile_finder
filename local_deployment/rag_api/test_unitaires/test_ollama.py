@@ -25,9 +25,7 @@ class TestGenerateOllamaResponse(unittest.TestCase):
         self.patcher_input = patch(
             "llm_module.generate_response.input", return_value="test_user"
         )
-        self.patcher_getpass = patch(
-            "llm_module.generate_response.getpass.getpass", return_value="test_pass"
-        )
+        self.patcher_getpass = patch("getpass.getpass", return_value="test_pass")
         self.mock_input = self.patcher_input.start()
         self.mock_getpass = self.patcher_getpass.start()
 
