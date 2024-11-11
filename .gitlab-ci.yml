@@ -17,9 +17,9 @@ variables:
   before_script:
   - if [ -z "$AZURE_OPENAI_API_KEY" ] || [ -z "$AZURE_OPENAI_ENDPOINT" ] || [ -z "$AZURE_SEARCH_API_KEY" ] || [ -z "$AZURE_SEARCH_ENDPOINT" ] || [ -z "$AZURE_SP_ID" ] || [ -z "$AZURE_SP_SECRET" ] || [ -z "$AZURE_TENANT" ]; then echo "Une ou plusieurs variables d'environnement ne sont pas définies"; exit 1; fi
 
-.check_ppxt_variables:
+.check_minai_variables:
   before_script:
-  - if [ -z "$RAG_LOCAL_API_KEY" ]; then echo "Une ou plusieurs variables d'environnement ne sont pas définies"; exit 1; fi
+  - if [ -z "$MINAI_API_KEY" ]; then echo "Une ou plusieurs variables d'environnement ne sont pas définies"; exit 1; fi
 
 test_local_deployment:
   stage: test
