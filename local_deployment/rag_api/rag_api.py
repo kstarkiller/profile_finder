@@ -18,7 +18,7 @@ from llm_module.generate_response import (
     generate_conversation_id,
 )
 from rag_module.embedding import retrieve_documents
-from rag_ci import delete_temp_files, process_file
+from rag_cd import delete_temp_files, process_file
 from docker_check import is_running_in_docker
 
 venv = is_running_in_docker()

@@ -130,5 +130,8 @@ def main():
         "files",
     )
 
+    return api_data, csv_data, scraped_data, db_data, big_data
+
+
 if __name__ == "__main__":
     main()

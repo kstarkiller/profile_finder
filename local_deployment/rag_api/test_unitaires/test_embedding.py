@@ -52,7 +52,8 @@ class TestEmbedDocuments(unittest.TestCase):
         # Call the function and check the exception
         with self.assertRaises(ValueError):
             embed_documents(
-                "dummy_path", "temp",
+                "dummy_path",
+                "temp",
             )
 
     def test_embed_documents_invalid_documents_type(self):
@@ -62,7 +63,8 @@ class TestEmbedDocuments(unittest.TestCase):
         # Call the function and check the exception
         with self.assertRaises(ValueError):
             embed_documents(
-                "dummy_path", "temp",
+                "dummy_path",
+                "temp",
             )
 
     def test_embed_documents_ollama_error(self):
@@ -73,7 +75,8 @@ class TestEmbedDocuments(unittest.TestCase):
         # Call the function and check the exception
         with self.assertRaises(ValueError):
             embed_documents(
-                "dummy_path", "temp",
+                "dummy_path",
+                "temp",
             )
 
 
