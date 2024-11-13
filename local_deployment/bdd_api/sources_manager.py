@@ -105,15 +105,18 @@ def truncate_table(params):
     Returns:
         dict: A dictionary with a success message.
     """
-    session = SessionLocal()
-    (
-        session.query(TempProfile).delete()
-        if params["type"] == "temp"
-        else session.query(Profile).delete()
-    )
-    session.commit()
-    session.close()
-    return {"message": "Table vidée avec succès"}
+    try:
+        session = SessionLocal()
+        (
+            session.query(TempProfile).delete()
+            if params["type"] == "temp"
+            else session.query(Profile).delete()
+        )
+        session.commit()
+        session.close()
+        return {"message": "Table vidée avec succès"}
+    except Exception as e:
+        raise f"Erreur lors de la suppression des profils: {str(e)}"
 
 
 def insert_profile(payload: dict):
@@ -171,19 +174,22 @@ def replace_profiles():
     Returns:
         dict: A dictionary with a success message.
     """
-    session = SessionLocal()
-    session.query(Profile).delete()
-    session.commit()
-    session.close()
+    try:
+        session = SessionLocal()
+        session.query(Profile).delete()
+        session.commit()
+        session.close()
 
-    session = SessionLocal()
-    session.execute("ALTER TABLE temp_profiles RENAME TO profiles")
-    session.commit()
-    session.close()
+        session = SessionLocal()
+        session.execute("ALTER TABLE temp_profiles RENAME TO profiles")
+        session.commit()
+        session.close()
 
-    session = SessionLocal()
-    session.execute("DROP TABLE temp_profiles")
-    session.commit()
-    session.close()
+        session = SessionLocal()
+        session.execute("DROP TABLE temp_profiles")
+        session.commit()
+        session.close()
 
-    return {"message": "Profil remplacé avec succès"}
+        return {"message": "Profil remplacé avec succès"}
+    except Exception as e:
+        raise f"Erreur lors du remplacement des profils: {str(e)}"

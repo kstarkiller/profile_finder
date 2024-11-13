@@ -32,3 +32,4 @@ openlit/
 mlruns/
 mlflows/
 test_*.txt
+.coverage

@@ -38,18 +38,11 @@ class TestAPI(unittest.TestCase):
             "mlflow.set_tracking_uri",
             "rag_api.requests.delete",
             "rag_api.requests.get",
-            "rag_api.run_validation",
-            "rag_api.embed_documents",
-            "rag_api.delete_collection",
-            "rag_api.create_fixtures",
-            "rag_api.get_skills",
-            "rag_api.insert_profiles",
-            "rag_api.download_files",
-            "rag_api.store_file",
             "rag_api.generate_ollama_response",
             "rag_api.retrieve_documents",
             "rag_api.generate_conversation_id",
-            # Ajouter d'autres fonctions à patcher si nécessaire
+            "rag_api.delete_temp_files",
+            "rag_api.process_file",
         ]
 
         for target in patch_targets:
@@ -82,77 +75,40 @@ class TestAPI(unittest.TestCase):
         self.assertIn("access_token", response.json())
 
     def test_storing_file(self):
-        mock_run_validation = self.mocks["rag_api.run_validation"]
-        mock_store = self.mocks["rag_api.store_file"]
-        mock_download = self.mocks["rag_api.download_files"]
-        mock_get_skills = self.mocks["rag_api.get_skills"]
-        mock_insert_profiles = self.mocks["rag_api.insert_profiles"]
-        mock_create = self.mocks["rag_api.create_fixtures"]
-        mock_delete_collection = self.mocks["rag_api.delete_collection"]
-        mock_embed = self.mocks["rag_api.embed_documents"]
         mock_delete = self.mocks["rag_api.requests.delete"]
         mock_set_tracking_uri = self.mocks["mlflow.set_tracking_uri"]
         mock_set_experiment = self.mocks["mlflow.set_experiment"]
         mock_start_run = self.mocks["mlflow.start_run"]
         mock_end_run = self.mocks["mlflow.end_run"]
+        mock_delete_temp_files = self.mocks["rag_api.delete_temp_files"]
+        mock_process_file = self.mocks["rag_api.process_file"]
 
-        mock_run_validation.return_value = (MagicMock(), 0)
-        mock_store.return_value = "Successfully stored"
-        mock_download.return_value = "Files downloaded"
-        mock_get_skills.return_value = []
-        mock_insert_profiles.return_value = "Profiles inserted"
-        mock_create.return_value = "Fixtures created"
-        mock_delete_collection.return_value = "Collection deleted"
-        mock_embed.return_value = "Documents embedded"
+        mock_delete_temp_files.return_value = None
+        mock_process_file.return_value = (MagicMock(), 0)
+        mock_process_file.return_value = (MagicMock(), 0)
         mock_delete.return_value = MagicMock(
             status_code=200, json=lambda: {"message": "Profiles deleted"}
         )
+
+        token_resp = self.client.get("/token", params={"username": "test"})
+        token = token_resp.json()["access_token"]
+
         with open("test_file.txt", "w") as f:
             f.write("test")
         with open("test_file.txt", "rb") as file:
             response = self.client.post(
-                "/file", files={"file": ("test_file.txt", file)}
+                "/file",
+                files={"file": ("test_file.txt", file)},
+                headers={
+                    "Authorization": f"Bearer {token}"
+                },
             )
+
         self.assertEqual(response.status_code, 200)
         mock_set_tracking_uri.assert_called_once()
         mock_set_experiment.assert_called_once_with("Profile Finder RAG Metrics")
         mock_start_run.assert_called_once()
         mock_end_run.assert_called_once()
-
-    # def test_getting_file(self):
-    #     mock_download = self.mocks["rag_api.download_files"]
-    #     mock_download.return_value = "mock file content"
-    #     response = self.client.get("/file")
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertEqual(response.json(), {"message": "mock file content"})
-
-    # def test_storing_profiles(self):
-    #     mock_get = self.mocks["rag_api.requests.get"]
-    #     mock_insert_profiles = self.mocks["rag_api.insert_profiles"]
-    #     mock_response = Response()
-    #     mock_response.status_code = 200
-    #     mock_response._content = b'{"profiles": []}'
-    #     mock_get.return_value = mock_response
-    #     mock_insert_profiles.return_value = "Profiles inserted"
-
-    #     response = self.client.get("/profiles", params={"type": "perm"})
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertIn("message", response.json())
-
-    # def test_truncate_table(self):
-    #     mock_delete = self.mocks["rag_api.requests.delete"]
-    #     mock_delete.return_value.status_code = 200
-    #     mock_delete.return_value.json.return_value = {}
-
-    #     response = self.client.delete("/profiles")
-    #     self.assertEqual(response.status_code, 200)
-
-    # def test_embedding(self):
-    #     mock_embed = self.mocks["rag_api.embed_documents"]
-    #     mock_embed.return_value = "Embedding complete"
-    #     response = self.client.post("/embed")
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertIn("collection", response.json())
 
     def test_process_question_success(self):
         mock_retrieve_documents = self.mocks["rag_api.retrieve_documents"]
@@ -161,6 +117,9 @@ class TestAPI(unittest.TestCase):
         mock_set_experiment = self.mocks["mlflow.set_experiment"]
         mock_start_run = self.mocks["mlflow.start_run"]
         mock_end_run = self.mocks["mlflow.end_run"]
+
+        token_resp = self.client.get("/token", params={"username": "test"})
+        token = token_resp.json()["access_token"]
 
         payload = {
             "service_type": "ollama",
@@ -175,7 +134,14 @@ class TestAPI(unittest.TestCase):
         mock_retrieve_documents.return_value = (MagicMock(), 0)
         mock_generate_ollama_response.return_value = (MagicMock(), 0)
 
-        response = self.client.post("/chat", json=payload)
+        response = self.client.post(
+            "/chat",
+            json=payload,
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+            },
+        )
 
         self.assertEqual(response.status_code, 200)
         mock_set_tracking_uri.assert_called_once()
@@ -195,7 +161,17 @@ class TestAPI(unittest.TestCase):
 
         mock_retrieve_documents.return_value = None
 
-        response = self.client.post("/chat", json=input_data)
+        token_resp = self.client.get("/token", params={"username": "test"})
+        token = token_resp.json()["access_token"]
+
+        response = self.client.post(
+            "/chat",
+            json=input_data,
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+            },
+        )
 
         self.assertEqual(response.status_code, 500)
         self.assertIn("detail", response.json())
@@ -213,7 +189,17 @@ class TestAPI(unittest.TestCase):
 
         mock_retrieve_documents.return_value = ["document_data"]
 
-        response = self.client.post("/chat", json=input_data)
+        token_resp = self.client.get("/token", params={"username": "test"})
+        token = token_resp.json()["access_token"]
+
+        response = self.client.post(
+            "/chat",
+            json=input_data,
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+            },
+        )
 
         self.assertEqual(response.status_code, 500)
         self.assertIn("detail", response.json())
@@ -231,7 +217,17 @@ class TestAPI(unittest.TestCase):
 
         mock_retrieve_documents.side_effect = Exception("Database error")
 
-        response = self.client.post("/chat", json=input_data)
+        token_resp = self.client.get("/token", params={"username": "test"})
+        token = token_resp.json()["access_token"]
+
+        response = self.client.post(
+            "/chat",
+            json=input_data,
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+            },
+        )
 
         self.assertEqual(response.status_code, 500)
         self.assertIn("detail", response.json())
@@ -240,8 +236,19 @@ class TestAPI(unittest.TestCase):
     def test_new_chat_id(self):
         mock_generate_id = self.mocks["rag_api.generate_conversation_id"]
         mock_generate_id.return_value = "new_chat_123"
+
+        token_resp = self.client.get("/token", params={"username": "test"})
+        token = token_resp.json()["access_token"]
+
         input_data = {"model": "gpt-4o-mini", "prompt": "Tell me about AI"}
-        response = self.client.post("/chat/id", json=input_data)
+        response = self.client.post(
+            "/chat/id",
+            json=input_data,
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+            },
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"new_id": "new_chat_123"})
 

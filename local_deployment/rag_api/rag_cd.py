@@ -59,12 +59,22 @@ def create_directories():
     )
 
 
-def process_file(file, file_type):
+def process_file(file, process_type):
+    """
+    Process the file uploaded by the user
+    
+    Args:
+    file: File uploaded by the user
+    process_type: type of process ("temp" or "perm")
+    
+    Returns:
+    result_validation: Validation result
+    """
     file_path = os.path.join(paths["temp_files"], file.filename)
     with open(file_path, "wb") as f:
         f.write(file.file.read())
 
-    if file_type == "temp":
+    if process_type == "temp":
         create_directories()
         result_storing = store_file(
             file_path,
@@ -81,7 +91,7 @@ def process_file(file, file_type):
         venv["mongo_host"],
         venv["mongo_port"],
         venv["mongo_db"],
-        file_type,
+        process_type,
     )
 
     result_skills = get_skills(
@@ -89,24 +99,24 @@ def process_file(file, file_type):
             os.path.join(
                 paths["temp_files"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
             )
-            if file_type == "temp"
+            if process_type == "temp"
             else os.path.join(
                 paths["sources"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
             )
         ),
         (
             os.path.join(paths["temp_files"], "Coaff_V1.xlsx")
-            if file_type == "temp"
+            if process_type == "temp"
             else os.path.join(paths["sources"], "Coaff_V1.xlsx")
         ),
         (
             os.path.join(paths["temp_files"], "descriptions_uniques.txt")
-            if file_type == "temp"
+            if process_type == "temp"
             else os.path.join(paths["sources"], "profils_uniques.txt")
         ),
         (
             os.path.join(paths["temp_files"], "profils_uniques.txt")
-            if file_type == "temp"
+            if process_type == "temp"
             else os.path.join(paths["sources"], "profils_uniques.txt")
         ),
     )
@@ -116,45 +126,45 @@ def process_file(file, file_type):
             os.path.join(
                 paths["temp_files"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
             )
-            if file_type == "temp"
+            if process_type == "temp"
             else os.path.join(
                 paths["sources"], "UC_RS_LP_RES_SKILLS_DETLS_22_1440892995.xlsx"
             )
         ),
         (
             os.path.join(paths["temp_files"], "Coaff_V1.xlsx")
-            if file_type == "temp"
+            if process_type == "temp"
             else os.path.join(paths["sources"], "Coaff_V1.xlsx")
         ),
         (
             os.path.join(
                 paths["temp_files"], "UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
             )
-            if file_type == "temp"
+            if process_type == "temp"
             else os.path.join(
                 paths["sources"], "UC_RS_RESOURCE_LIC_CERT_22_564150616.xlsx"
             )
         ),
         (
             os.path.join(paths["temp_fixtures"], "fixtures_psarm.csv")
-            if file_type == "temp"
+            if process_type == "temp"
             else os.path.join(paths["fixtures"], "fixtures_psarm.csv")
         ),
         (
             os.path.join(paths["temp_fixtures"], "fixtures_coaff.csv")
-            if file_type == "temp"
+            if process_type == "temp"
             else os.path.join(paths["fixtures"], "fixtures_coaff.csv")
         ),
         (
             os.path.join(paths["temp_fixtures"], "fixtures_certs.csv")
-            if file_type == "temp"
+            if process_type == "temp"
             else os.path.join(paths["fixtures"], "fixtures_certs.csv")
         ),
     )
 
     response = requests.delete(
         f"http://{venv['db_api_host']}:{venv['db_api_port']}/profiles",
-        json={"type": file_type},
+        json={"type": process_type},
     )
     response.raise_for_status()
 
@@ -163,50 +173,50 @@ def process_file(file, file_type):
         venv["db_api_port"],
         (
             os.path.join(paths["temp_fixtures"], "fixtures_psarm.csv")
-            if file_type == "temp"
+            if process_type == "temp"
             else os.path.join(paths["fixtures"], "fixtures_psarm.csv")
         ),
         (
             os.path.join(paths["temp_fixtures"], "fixtures_coaff.csv")
-            if file_type == "temp"
+            if process_type == "temp"
             else os.path.join(paths["fixtures"], "fixtures_coaff.csv")
         ),
         (
             os.path.join(paths["temp_fixtures"], "fixtures_certs.csv")
-            if file_type == "temp"
+            if process_type == "temp"
             else os.path.join(paths["fixtures"], "fixtures_certs.csv")
         ),
         (
             os.path.join(paths["temp_combined"], "combined_result.csv")
-            if file_type == "temp"
+            if process_type == "temp"
             else os.path.join(paths["combined"], "combined_result.csv")
         ),
-        file_type,
+        process_type,
     )
 
-    # result_embed = embed_documents(
-    #     paths[f"temp_collection"] if file_type == "temp" else paths[f"collection"],
-    #     file_type,
-    #     MODEL_EMBEDDING,
-    # )
+    result_embed = embed_documents(
+        paths[f"temp_collection"] if process_type == "temp" else paths[f"collection"],
+        process_type,
+        MODEL_EMBEDDING,
+    )
 
     test_embedding
     test_load_documents
     test_ollama
 
     result_validation = run_validation(
-        paths[f"temp_collection"] if file_type == "temp" else paths[f"collection"],
-        file_type,
+        paths[f"temp_collection"] if process_type == "temp" else paths[f"collection"],
+        process_type,
         (
             os.path.join(paths["temp_combined"], "combined_result.csv")
-            if file_type == "temp"
+            if process_type == "temp"
             else os.path.join(paths["combined"], "combined_result.csv")
         ),
         MODEL_EMBEDDING,
         GPT_4O_MINI,
     )
 
-    if file_type == "temp":
+    if process_type == "temp":
         os.replace(
             os.path.join(paths["temp_files"], "Coaff_V1.xlsx"),
             os.path.join(paths["sources"], "Coaff_V1.xlsx"),

@@ -24,7 +24,7 @@ variables:
 test_local_deployment:
   stage: test
   image: python:3.11.9
-  extends: .check_ppxt_variables
+  extends: .check_minai_variables
   script:
     - cd local_deployment
     - pip install -r requirements.txt
