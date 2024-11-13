@@ -28,13 +28,17 @@ model_mapping = {
     "o1-mini": "GPT o1 Mini d'OpenAI",
 }
 
-def get_token():
-    username = st.session_state['username']  # Remplacez par l'email de l'utilisateur
 
-    response = requests.get(f"http://{venv['rag_host']}:{venv['rag_port']}/token", params={"username": username})
+def get_token():
+    username = st.session_state["username"]  # Remplacez par l'email de l'utilisateur
+
+    response = requests.get(
+        f"http://{venv['rag_host']}:{venv['rag_port']}/token",
+        params={"username": username},
+    )
 
     if response.status_code == 200:
-        token = response.json()['access_token']
+        token = response.json()["access_token"]
         return token
     else:
         return None
@@ -54,7 +58,9 @@ def initialize_session_state():
 
 
 def process_user_input(user_input, chat_id, model):
-    result = process_input(user_input, st.session_state["chat_history"], chat_id, model, token=get_token())
+    result = process_input(
+        user_input, st.session_state["chat_history"], chat_id, model, token=get_token()
+    )
     chatbot_response, updated_chat_history = result[:2]
     duration = result[2] if len(result) == 3 else None
 
@@ -75,7 +81,10 @@ def update_input_new_chat():
             response = requests.post(
                 f"http://{venv['rag_host']}:{venv['rag_port']}/chat/id",
                 json={"model": st.session_state["model"], "prompt": user_input},
-                headers={"Authorization": f"Bearer {get_token()}", "Content-Type": "application/json"},
+                headers={
+                    "Authorization": f"Bearer {get_token()}",
+                    "Content-Type": "application/json",
+                },
             )
             response.raise_for_status()
             chat_id = response.json()["new_id"]

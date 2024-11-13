@@ -82,7 +82,7 @@ def delete_profile(profile: dict):
     Args:
         profile (dict): A dictionary containing the profile information with the following keys:
             - id: The ID of the profile to delete.
-    
+
     The profile to delete is selected based on its ID thanks to a filter query before deleting it.
 
     Returns:
@@ -128,8 +128,8 @@ def insert_profile(payload: dict):
             - certification: Information about the certification.
             - combined: Combined information.
             - type: The type of profile to insert.
-    
-    
+
+
 
     Returns:
         dict: A dictionary with a success message.

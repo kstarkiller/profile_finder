@@ -83,6 +83,7 @@ Base.metadata.create_all(engine)
 # Créer une session pour interagir avec la base de données
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+
 def check_user(email):
     """
     Vérifie si l'utilisateur existe dans la base de données.

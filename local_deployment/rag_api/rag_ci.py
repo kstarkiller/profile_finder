@@ -161,10 +161,26 @@ def process_file(file, file_type):
     result_insert = insert_profiles(
         venv["db_api_host"],
         venv["db_api_port"],
-        os.path.join(paths["temp_fixtures"], "fixtures_psarm.csv") if file_type == "temp" else os.path.join(paths["fixtures"], "fixtures_psarm.csv"),
-        os.path.join(paths["temp_fixtures"], "fixtures_coaff.csv") if file_type == "temp" else os.path.join(paths["fixtures"], "fixtures_coaff.csv"),
-        os.path.join(paths["temp_fixtures"], "fixtures_certs.csv") if file_type == "temp" else os.path.join(paths["fixtures"], "fixtures_certs.csv"),
-        os.path.join(paths["temp_combined"], "combined_result.csv") if file_type == "temp" else os.path.join(paths["combined"], "combined_result.csv"),
+        (
+            os.path.join(paths["temp_fixtures"], "fixtures_psarm.csv")
+            if file_type == "temp"
+            else os.path.join(paths["fixtures"], "fixtures_psarm.csv")
+        ),
+        (
+            os.path.join(paths["temp_fixtures"], "fixtures_coaff.csv")
+            if file_type == "temp"
+            else os.path.join(paths["fixtures"], "fixtures_coaff.csv")
+        ),
+        (
+            os.path.join(paths["temp_fixtures"], "fixtures_certs.csv")
+            if file_type == "temp"
+            else os.path.join(paths["fixtures"], "fixtures_certs.csv")
+        ),
+        (
+            os.path.join(paths["temp_combined"], "combined_result.csv")
+            if file_type == "temp"
+            else os.path.join(paths["combined"], "combined_result.csv")
+        ),
         file_type,
     )
 
