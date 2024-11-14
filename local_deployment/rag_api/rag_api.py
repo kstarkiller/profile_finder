@@ -206,7 +206,21 @@ def process_question(
     description="This endpoint generates a new chat ID.",
 )
 def new_chat_id(input: IDrequest, current_user: dict = Depends(get_current_user)):
+    """
+    Generate a new conversation ID based on the model and prompt provided.
+    
+    Args:
+        input (IDrequest): Model and prompt for the conversation ID
+        current_user (dict): Current user information
+        
+    Returns:
+        dict: New conversation ID
+        
+    Raises:
+        HTTPException: Exception HTTP 401 Unauthorized if the token is invalid or the user does not exist
+    """
     new_id = generate_conversation_id(input.model, input.prompt)
+    
     return {"new_id": new_id}
 
 

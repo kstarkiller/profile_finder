@@ -150,7 +150,7 @@ def delete_collection(collection_path, type):
             if c.name == "temp" if type == "temp" else "docs":
                 client.delete_collection(name=c.name)
                 logging.info(f"Collection {c.name} deleted.")
-            
+
             # vider le dossier temporaire
             if type == "temp":
                 os.removedirs(collection_path)

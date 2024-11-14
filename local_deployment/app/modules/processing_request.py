@@ -33,10 +33,7 @@ def process_input(user_input, chat_history, chat_id, model, token):
     # Add user input to chat history
     chat_history.append({"role": "user", "content": user_input})
 
-    headers = {
-    "Authorization": f"Bearer {token}",
-    "Content-Type": "application/json"
-    }
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
 
     # Determine the URL based on the model
     url = f"http://{venv['rag_host']}:{venv['rag_port']}/chat"
