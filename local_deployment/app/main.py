@@ -158,7 +158,9 @@ def render_search_history():
                                     f"http://{venv['db_host']}:{venv['db_port']}/search",
                                     json={"chat_id": str(search["chat_id"])},
                                 )
-                                st.session_state.update(chat_id="")
+                                st.session_state.update(chat_id="",
+                                                        chat=[],
+                                                        chat_history=[])
                                 st.rerun()
                     else:
                         st.sidebar.markdown("Aucun historique de chat valide trouvé.")
