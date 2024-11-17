@@ -29,7 +29,10 @@ speech.mp3
 path/
 __pycache__
 openlit/
+grafana/
+prometheus/
 mlruns/
 mlflows/
+htmlcov/
 test_*.txt
 .coverage

@@ -130,6 +130,7 @@ async def storing_file(
                 mlflow.log_param("date", time.strftime("%Y-%m-%d %H:%M:%S"))
 
                 mlflow.log_metric("False rate", result_validation_temp[1])
+                mlflow.log_artifact("Result table", result_validation_temp[0])
 
                 result_validation_path = os.path.join(
                     paths["temp_combined"], "result_validation.csv"
