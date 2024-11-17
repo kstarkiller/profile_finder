@@ -8,37 +8,37 @@ stages:
   - deploy
 
 variables:
-  IMAGE_TAG: aiprofilesmatchingacr.azurecr.io/aiprofilesmatching:latest
+  IMAGE_TAG_API: aiprofilesmatchingacr.azurecr.io/pf_api:latest
+  IMAGE_TAG_BDD_API: aiprofilesmatchingacr.azurecr.io/pf_bdd_api:latest
+  IMAGE_TAG_FRONT: aiprofilesmatchingacr.azurecr.io/pf_front:latest
+  IMAGE_TAG_POSTGRES: aiprofilesmatchingacr.azurecr.io/pf_postgres:latest
+  IMAGE_TAG_MONGO: aiprofilesmatchingacr.azurecr.io/pf_mongo:latest
   AZURE_ACR: aiprofilesmatchingacr
   AZURE_WEBAPP: aiprofilesmatchingWebApp
   AZURE_RG: rg-cgi-weu-cloud-genAIshowcase-dev
 
 .check_deploy_variables:
   before_script:
-  - if [ -z "$AZURE_OPENAI_API_KEY" ] || [ -z "$AZURE_OPENAI_ENDPOINT" ] || [ -z "$AZURE_SEARCH_API_KEY" ] || [ -z "$AZURE_SEARCH_ENDPOINT" ] || [ -z "$AZURE_SP_ID" ] || [ -z "$AZURE_SP_SECRET" ] || [ -z "$AZURE_TENANT" ]; then echo "Une ou plusieurs variables d'environnement ne sont pas définies"; exit 1; fi
+    - if [ -z "$DB_USER" ] || [ -z "$DB_PASSWORD" ] || [ -z "$DB_NAME" ] || [ -z "$MONGO_USER" ] || [ -z "$MONGO_PWD" ] || [ -z "$MONGO_DB" ] || [ -z "$SECRET_KEY" ] || [ -z "$AZURE_SP_ID" ] || [ -z "$AZURE_SP_SECRET" ] || [ -z "$AZURE_TENANT" ]; then echo "Une ou plusieurs variables d'environnement ne sont pas définies"; exit 1; fi
 
 .check_minai_variables:
   before_script:
-  - if [ -z "$MINAI_API_KEY" ]; then echo "Une ou plusieurs variables d'environnement ne sont pas définies"; exit 1; fi
+    - if [ -z "$MINAI_API_KEY" ]; then echo "La variable MINAI_API_KEY n'est pas définie"; exit 1; fi
 
-test_local_deployment:
+test_rag_api:
   stage: test
   image: python:3.11.9
   extends: .check_minai_variables
   script:
-    - cd local_deployment
-    - pip install -r requirements.txt
     - cd rag_api
+    - pip install -r requirements.txt
     - python -m unittest discover -s test_unitaires
 
-test_azure_deployment:
+test_bdd_api:
   stage: test
   image: python:3.11.9
-  needs:
-    - test_local_deployment
-  extends: .check_deploy_variables
   script:
-    - cd azure_deployment
+    - cd bdd_api
     - pip install -r requirements.txt
     - python -m unittest discover -s tests
 
@@ -50,11 +50,12 @@ pip_audit:
     - pip-audit
   allow_failure: true
 
-build_docker_image:
+build_docker_compose:
   stage: build
-  image: ubuntu:20.04
+  image: docker:20.10.16
   needs:
-    - test_azure_deployment
+    - test_rag_api
+    - test_bdd_api
   services:
     - docker:20.10.16-dind
   variables:
@@ -62,31 +63,33 @@ build_docker_image:
     DOCKER_TLS_CERTDIR: ""
   extends: .check_deploy_variables
   before_script:
-    - apt-get update && apt-get install -y ca-certificates curl apt-transport-https lsb-release gnupg
-    - curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
-    - AZ_REPO=$(lsb_release -cs)
-    - echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list
-    - apt-get update
-    - apt-get install -y azure-cli
-    - curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
-    - sleep 10
-    - docker ps
-  script:
-    - cd azure_deployment
-    - docker build --build-arg AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY" --build-arg AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT" --build-arg AZURE_SEARCH_API_KEY="$AZURE_SEARCH_API_KEY" --build-arg AZURE_SEARCH_ENDPOINT="$AZURE_SEARCH_ENDPOINT" -t $IMAGE_TAG .
+    - apk add --no-cache curl
+    - curl -sL https://aka.ms/InstallAzureCLIDeb | bash
     - az login --service-principal -u "$AZURE_SP_ID" -p "$AZURE_SP_SECRET" --tenant "$AZURE_TENANT"
     - az acr login --name $AZURE_ACR
-    - docker push $IMAGE_TAG
+  script:
+    - docker-compose build
+    - docker tag pf_api $IMAGE_TAG_API
+    - docker tag pf_bdd_api $IMAGE_TAG_BDD_API
+    - docker tag pf_front $IMAGE_TAG_FRONT
+    - docker tag pf_postgres $IMAGE_TAG_POSTGRES
+    - docker tag pf_mongo $IMAGE_TAG_MONGO
+    - docker push $IMAGE_TAG_API
+    - docker push $IMAGE_TAG_BDD_API
+    - docker push $IMAGE_TAG_FRONT
+    - docker push $IMAGE_TAG_POSTGRES
+    - docker push $IMAGE_TAG_MONGO
 
 deploy_on_azure:
   stage: deploy
   image: mcr.microsoft.com/azure-cli
   needs:
-    - build_docker_image
+    - build_docker_compose
   extends: .check_deploy_variables
   script:
     - az login --service-principal -u "$AZURE_SP_ID" -p "$AZURE_SP_SECRET" --tenant "$AZURE_TENANT"
     - ACR_PASSWORD=$(az acr credential show --name $AZURE_ACR --query "passwords[0].value" -o tsv)
     - if [ -z "$ACR_PASSWORD" ]; then echo "Échec de la récupération du mot de passe ACR"; exit 1; fi
-    - az webapp config container set --name $AZURE_WEBAPP --resource-group $AZURE_RG --docker-custom-image-name $IMAGE_TAG --docker-registry-server-url https://$AZURE_ACR.azurecr.io --docker-registry-server-user $AZURE_ACR --docker-registry-server-password $ACR_PASSWORD
+    - az webapp config container set --name $AZURE_WEBAPP --resource-group $AZURE_RG --multicontainer-config-type compose --multicontainer-config-file docker-compose.yml
+    - az webapp config appsettings set --name $AZURE_WEBAPP --resource-group $AZURE_RG --settings DOCKER_REGISTRY_SERVER_URL=https://$AZURE_ACR.azurecr.io DOCKER_REGISTRY_SERVER_USERNAME=$AZURE_ACR DOCKER_REGISTRY_SERVER_PASSWORD=$ACR_PASSWORD
     - az webapp restart --name $AZURE_WEBAPP --resource-group $AZURE_RG

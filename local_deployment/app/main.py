@@ -158,7 +158,9 @@ def render_search_history():
                                     f"http://{venv['db_host']}:{venv['db_port']}/search",
                                     json={"chat_id": str(search["chat_id"])},
                                 )
-                                st.session_state.update(chat_id="")
+                                st.session_state.update(
+                                    chat_id="", chat_history=[], chat=[]
+                                )
                                 st.rerun()
                     else:
                         st.sidebar.markdown("Aucun historique de chat valide trouvé.")
@@ -284,7 +286,7 @@ def render_settings():
         st.write("###### Ajouter un document")
         file = st.file_uploader(
             "Ajouter un document",
-            type=["xlsx"],
+            type=["csv"],
             key="file_uploader",
             label_visibility="collapsed",
         )
