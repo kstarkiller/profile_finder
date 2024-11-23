@@ -160,6 +160,8 @@ def render_search_history():
                                 )
                                 st.session_state.update(
                                     chat_id="",
+                                    chat_history=[],
+                                    chat=[],
                                 )
                                 st.rerun()
                     else:
