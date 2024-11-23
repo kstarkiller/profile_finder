@@ -4,6 +4,7 @@ from fastapi import HTTPException, Depends, status
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from docker_check import is_running_in_docker
 
@@ -34,11 +35,11 @@ def get_user(username: str):
 def create_access_token(data: dict, expires_delta: timedelta = None):
     """
     Créez un token JWT pour l'utilisateur spécifié.
-    
+
     Args:
         data (dict): Dictionnaire contenant les informations de l'utilisateur
         expires_delta (timedelta): Durée de validité du token
-        
+
     Returns:
         str: Token JWT
     """
@@ -52,37 +53,37 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     return encoded_jwt
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+security = HTTPBearer()
+
+
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """
-    Vérifiez si le token fourni est valide et renvoie les informations correspondantes de l'utilisateur.
-    Cette fonction décode le token JWT pour extraire le nom d'utilisateur, puis récupère les informations de l'utilisateur depuis la base de données.
-    Si le token est invalide ou si l'utilisateur n'existe pas, une exception HTTP 401 Unauthorized est levée.
+    Récupère le token JWT de l'utilisateur.
 
     Args:
-        token (str): Token de l'utilisateur
+        credentials (HTTPAuthorizationCredentials): Informations d'authentification de l'utilisateur
 
     Returns:
-        dict: Dictionnaire contenant les informations de l'utilisateur
-
-    Raises:
-        HTTPException: Exception HTTP 401 Unauthorized si le token est invalide ou si l'utilisateur n'existe pas
+        str: Token JWT
     """
-    # Créez une exception HTTP 401 Unauthorized si les informations d'identification ne peuvent pas être validées
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
+    token = credentials.credentials
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials",
+        )
     try:
-        # Décodez le token JWT pour extraire le nom d'utilisateur
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
+        if payload is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid authentication credentials",
+            )
+        return token
     except JWTError:
-        raise credentials_exception
-    # Récupérez les informations de l'utilisateur depuis la base de données
-    user = get_user(username)
-    if user is None:
-        raise credentials_exception
-    return user
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials",
+        )
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
