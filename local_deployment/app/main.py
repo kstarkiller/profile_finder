@@ -159,7 +159,7 @@ def render_search_history():
                                     json={"chat_id": str(search["chat_id"])},
                                 )
                                 st.session_state.update(
-                                    chat_id="",
+                                    chat_id="", chat_history=[], chat=[]
                                 )
                                 st.rerun()
                     else:
