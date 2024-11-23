@@ -6,12 +6,12 @@ import logging
 import uvicorn
 import mlflow
 from datetime import timedelta
-from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
-from starlette.middleware.base import BaseHTTPMiddleware
+from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi.openapi.utils import get_openapi
 from pydantic import BaseModel
 from typing import List
 
-from auth import create_access_token, get_user, get_current_user
+from auth import create_access_token, get_user
 from llm_module.generate_response import (
     generate_ollama_response,
     generate_minai_response,
@@ -46,17 +46,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 app = FastAPI()
 
 
-class SecurityHeadersMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request, call_next):
-        response = await call_next(request)
-        response.headers["X-XSS-Protection"] = "1; mode=block"
-        response.headers["Content-Security-Policy"] = "default-src 'self'"
-        return response
-
-
-app.add_middleware(SecurityHeadersMiddleware)
-
-
 class TestInput(BaseModel):
     message: str
 
@@ -77,6 +66,30 @@ class IDrequest(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = get_openapi(
+        title="Profile Finder API",
+        version="1.0.0",
+        description="API for managing profiles and processing questions.",
+        routes=app.routes,
+    )
+    openapi_schema["components"]["securitySchemes"] = {
+        "bearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+        }
+    }
+    openapi_schema["security"] = [{"bearerAuth": []}]
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+
+app.openapi = custom_openapi
 
 
 @app.get(
@@ -113,9 +126,7 @@ async def login(username: str):
     summary="Store file",
     description="This endpoint stores a file in the database.",
 )
-async def storing_file(
-    file: UploadFile = File(...), current_user: dict = Depends(get_current_user)
-):
+async def storing_file(file: UploadFile = File(...)):
     try:
         result_validation_temp = process_file(file, "temp")
         if result_validation_temp[1] <= 7:
@@ -151,9 +162,7 @@ async def storing_file(
     summary="Process question and return response",
     description="This endpoint processes a question and returns a response with ollama.",
 )
-def process_question(
-    input: ChatRequest, current_user: dict = Depends(get_current_user)
-):
+def process_question(input: ChatRequest):
     start_time = time.time()
     try:
         data = retrieve_documents(
@@ -206,22 +215,22 @@ def process_question(
     summary="New chat ID",
     description="This endpoint generates a new chat ID.",
 )
-def new_chat_id(input: IDrequest, current_user: dict = Depends(get_current_user)):
+def new_chat_id(input: IDrequest):
     """
     Generate a new conversation ID based on the model and prompt provided.
-    
+
     Args:
         input (IDrequest): Model and prompt for the conversation ID
         current_user (dict): Current user information
-        
+
     Returns:
         dict: New conversation ID
-        
+
     Raises:
         HTTPException: Exception HTTP 401 Unauthorized if the token is invalid or the user does not exist
     """
     new_id = generate_conversation_id(input.model, input.prompt)
-    
+
     return {"new_id": new_id}
 
 

@@ -4,6 +4,7 @@ from fastapi import HTTPException, Depends, status
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from docker_check import is_running_in_docker
 
@@ -51,8 +52,11 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+security = HTTPBearer()
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+):
     """
     Vérifiez si le token fourni est valide et renvoie les informations correspondantes de l'utilisateur.
     Cette fonction décode le token JWT pour extraire le nom d'utilisateur, puis récupère les informations de l'utilisateur depuis la base de données.
@@ -67,6 +71,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     Raises:
         HTTPException: Exception HTTP 401 Unauthorized si le token est invalide ou si l'utilisateur n'existe pas
     """
+    token = credentials.credentials
+
     # Créez une exception HTTP 401 Unauthorized si les informations d'identification ne peuvent pas être validées
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -85,4 +91,10 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     user = get_user(username)
     if user is None:
         raise credentials_exception
-    return user
+    
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials",
+        )
+    return token
