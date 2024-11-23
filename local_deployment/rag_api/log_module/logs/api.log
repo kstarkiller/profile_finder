@@ -7033,3 +7033,20 @@
 2024-11-11 23:53:50,614 - INFO - Response generated in 3.5231406688690186 seconds.
 
 
+2024-11-24 00:33:50,580 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/embeddings "HTTP/1.1 200 OK"
+2024-11-24 00:33:50,592 - INFO - Anonymized telemetry enabled. See https://docs.trychroma.com/telemetry for more information.
+2024-11-24 00:33:50,743 - INFO - RAG performed in 2.9245781898498535 seconds.
+
+2024-11-24 00:33:53,073 - INFO - 
+2024-11-24 00:33:53,073 - INFO - Question asked: quelles sont les autres compétences de Ryan ?
+2024-11-24 00:33:53,073 - INFO - 
+2024-11-24 00:33:53,073 - INFO - Generated response: b'## Comp\xc3\xa9tences de Ryan Pham\n\n| Comp\xc3\xa9tences                                                                     | Niveau       |\n| :---------------------------------------------------------------------------- | :------------ |\n| Azure Data Lake                                                                | Tr\xc3\xa8s bon     |\n| Databricks                                                                    | Expert       |\n| Django                                                                       | Tr\xc3\xa8s bon     |\n| Gestion de la qualit\xc3\xa9                                                           | Tr\xc3\xa8s bon     |\n| Gestion \xc3\xa9lectronique de doc.                                                      | Tr\xc3\xa8s bon     |\n| Soutien \xc3\xa0 l\xe2\x80\x98innovation                                                         | Bon           | \n'
+2024-11-24 00:33:53,073 - INFO - 
+2024-11-24 00:33:53,073 - INFO - Response generated in 2.3304922580718994 seconds.
+
+
+2024-11-24 00:33:57,191 - WARNING - Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000027FF71B2C10>: Failed to establish a new connection: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Profile+Finder+Chat+Metrics
+2024-11-24 00:34:06,295 - WARNING - Retrying (Retry(total=3, connect=3, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000028002E21E50>: Failed to establish a new connection: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Profile+Finder+Chat+Metrics
+2024-11-24 00:34:18,443 - WARNING - Retrying (Retry(total=2, connect=2, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000028002E20F10>: Failed to establish a new connection: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Profile+Finder+Chat+Metrics
+2024-11-24 00:34:39,300 - WARNING - Retrying (Retry(total=1, connect=1, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000027FF70225D0>: Failed to establish a new connection: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Profile+Finder+Chat+Metrics
+2024-11-24 00:35:16,267 - WARNING - Retrying (Retry(total=0, connect=0, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000028001C40D10>: Failed to establish a new connection: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Profile+Finder+Chat+Metrics

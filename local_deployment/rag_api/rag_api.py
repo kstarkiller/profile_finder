@@ -6,12 +6,13 @@ import logging
 import uvicorn
 import mlflow
 from datetime import timedelta
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from fastapi.openapi.utils import get_openapi
+from fastapi.security import HTTPBearer
 from pydantic import BaseModel
 from typing import List
 
-from auth import create_access_token, get_user
+from auth import create_access_token, get_user, get_current_user
 from llm_module.generate_response import (
     generate_ollama_response,
     generate_minai_response,
@@ -68,6 +69,9 @@ class Token(BaseModel):
     token_type: str
 
 
+security = HTTPBearer()
+
+
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
@@ -78,13 +82,13 @@ def custom_openapi():
         routes=app.routes,
     )
     openapi_schema["components"]["securitySchemes"] = {
-        "bearerAuth": {
+        "HTTPBearer": {
             "type": "http",
             "scheme": "bearer",
             "bearerFormat": "JWT",
         }
     }
-    openapi_schema["security"] = [{"bearerAuth": []}]
+    openapi_schema["security"] = [{"HTTPBearer": []}]
     app.openapi_schema = openapi_schema
     return app.openapi_schema
 
@@ -100,7 +104,7 @@ def root():
 
 
 @app.post("/test", summary="Test endpoint", description="This is a test endpoint.")
-def test(input: TestInput):
+def test(input: TestInput, token: str = Depends(get_current_user)):
     return {"message": input.message + " Success"}
 
 
@@ -126,7 +130,9 @@ async def login(username: str):
     summary="Store file",
     description="This endpoint stores a file in the database.",
 )
-async def storing_file(file: UploadFile = File(...)):
+async def storing_file(
+    file: UploadFile = File(...), token: str = Depends(get_current_user)
+):
     try:
         result_validation_temp = process_file(file, "temp")
         if result_validation_temp[1] <= 7:
@@ -162,7 +168,7 @@ async def storing_file(file: UploadFile = File(...)):
     summary="Process question and return response",
     description="This endpoint processes a question and returns a response with ollama.",
 )
-def process_question(input: ChatRequest):
+def process_question(input: ChatRequest, token: str = Depends(get_current_user)):
     start_time = time.time()
     try:
         data = retrieve_documents(
@@ -215,7 +221,7 @@ def process_question(input: ChatRequest):
     summary="New chat ID",
     description="This endpoint generates a new chat ID.",
 )
-def new_chat_id(input: IDrequest):
+def new_chat_id(input: IDrequest, token: str = Depends(get_current_user)):
     """
     Generate a new conversation ID based on the model and prompt provided.
 
