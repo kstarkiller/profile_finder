@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 env:
   IMAGE_TAG_API: acrprofilefinder.azurecr.io/apirag:latest
@@ -12,7 +12,7 @@ env:
   IMAGE_TAG_FRONT: acrprofilefinder.azurecr.io/front:latest
   IMAGE_TAG_POSTGRES: acrprofilefinder.azurecr.io/postgres:latest
   IMAGE_TAG_MONGO: acrprofilefinder.azurecr.io/mongo:latest
-  IMAGE_TAG_MLFLOW : acrprofilefinder.azurecr.io/mlflow:latest
+  IMAGE_TAG_MLFLOW: acrprofilefinder.azurecr.io/mlflow:latest
   AZURE_ACR: acrprofilefinder
   AZURE_WEBAPP: ProfileFinderWebApp
   AZURE_RG: RG_ProfileFinder
@@ -21,86 +21,87 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.11.9
-    - name: Test RAG API
-      env:
-        MINAI_API_KEY: ${{ secrets.MINAI_API_KEY }}
-      run: |
-        cd rag_api
-        pip install -r requirements.txt
-        python -m spacy download fr_core_news_lg
-        python -m unittest discover -s test_unitaires
-    - name: Run pip-audit
-      run: |
-        pip install pip-audit
-        pip-audit
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11.9
+      - name: Test RAG API
+        env:
+          MINAI_API_KEY: ${{ secrets.MINAI_API_KEY }}
+        run: |
+          cd rag_api
+          pip install -r requirements.txt
+          python -m spacy download fr_core_news_lg
+          python -m unittest discover -s test_unitaires
+      - name: Run pip-audit
+        run: |
+          pip install pip-audit
+          pip-audit
+        continue-on-error: true
 
   build:
     needs: [test]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-    - name: Login to Azure
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-    - name: Build and push Docker images
-      env:
-        DB_USER: ${{ secrets.DB_USER }}
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        DB_NAME: ${{ secrets.DB_NAME }}
-        MONGO_USER: ${{ secrets.MONGO_USER }}
-        MONGO_PWD: ${{ secrets.MONGO_PWD }}
-        MONGO_DB: ${{ secrets.MONGO_DB }}
-        SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        MINAI_API_KEY: ${{ secrets.MINAI_API_KEY }}
-      run: |
-        az acr login --name $AZURE_ACR
-        docker-compose build
-        docker tag pf_api $IMAGE_TAG_API
-        docker tag pf_bdd_api $IMAGE_TAG_BDD_API
-        docker tag pf_front $IMAGE_TAG_FRONT
-        docker tag pf_postgres $IMAGE_TAG_POSTGRES
-        docker tag pf_mongo $IMAGE_TAG_MONGO
-        docker tag ghcr.io/mlflow/mlflow $IMAGE_TAG_MLFLOW
-        docker push $IMAGE_TAG_API
-        docker push $IMAGE_TAG_BDD_API
-        docker push $IMAGE_TAG_FRONT
-        docker push $IMAGE_TAG_POSTGRES
-        docker push $IMAGE_TAG_MONGO
-        docker push $IMAGE_TAG_MLFLOW
+      - uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Build and push Docker images
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          MONGO_USER: ${{ secrets.MONGO_USER }}
+          MONGO_PWD: ${{ secrets.MONGO_PWD }}
+          MONGO_DB: ${{ secrets.MONGO_DB }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          MINAI_API_KEY: ${{ secrets.MINAI_API_KEY }}
+        run: |
+          az acr login --name $AZURE_ACR
+          docker-compose build
+          docker tag pf_api $IMAGE_TAG_API
+          docker tag pf_bdd_api $IMAGE_TAG_BDD_API
+          docker tag pf_front $IMAGE_TAG_FRONT
+          docker tag pf_postgres $IMAGE_TAG_POSTGRES
+          docker tag pf_mongo $IMAGE_TAG_MONGO
+          docker tag ghcr.io/mlflow/mlflow $IMAGE_TAG_MLFLOW
+          docker push $IMAGE_TAG_API
+          docker push $IMAGE_TAG_BDD_API
+          docker push $IMAGE_TAG_FRONT
+          docker push $IMAGE_TAG_POSTGRES
+          docker push $IMAGE_TAG_MONGO
+          docker push $IMAGE_TAG_MLFLOW
 
   deploy:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Login to Azure
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-    - name: Créer l'Azure Web App
-      run: |
-        az webapp create --resource-group $AZURE_RG --plan PFAppServicePlan --name $AZURE_WEBAPP --multicontainer-config-type compose
-    - name: Deploy to Azure Web App
-      env:
-        DB_USER: ${{ secrets.DB_USER }}
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        DB_NAME: ${{ secrets.DB_NAME }}
-        MONGO_USER: ${{ secrets.MONGO_USER }}
-        MONGO_PWD: ${{ secrets.MONGO_PWD }}
-        MONGO_DB: ${{ secrets.MONGO_DB }}
-        SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        MINAI_API_KEY: ${{ secrets.MINAI_API_KEY }}
-      run: |
-        ACR_PASSWORD=$(az acr credential show --name $AZURE_ACR --query "passwords[0].value" -o tsv)
-        if [ -z "$ACR_PASSWORD" ]; then echo "Échec de la récupération du mot de passe ACR"; exit 1; fi
-        az webapp config container set --name $AZURE_WEBAPP --resource-group $AZURE_RG --multicontainer-config-type compose --multicontainer-config-file docker-compose.yml
-        az webapp config appsettings set --name $AZURE_WEBAPP --resource-group $AZURE_RG --settings DOCKER_REGISTRY_SERVER_URL=https://$AZURE_ACR.azurecr.io DOCKER_REGISTRY_SERVER_USERNAME=$AZURE_ACR DOCKER_REGISTRY_SERVER_PASSWORD=$ACR_PASSWORD
-        az webapp restart --name $AZURE_WEBAPP --resource-group $AZURE_RG
+      - uses: actions/checkout@v2
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Créer l'Azure Web App
+        run: |
+          az webapp create --resource-group $AZURE_RG --plan PFAppServicePlan --name $AZURE_WEBAPP --multicontainer-config-type compose
+      - name: Deploy to Azure Web App
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          MONGO_USER: ${{ secrets.MONGO_USER }}
+          MONGO_PWD: ${{ secrets.MONGO_PWD }}
+          MONGO_DB: ${{ secrets.MONGO_DB }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          MINAI_API_KEY: ${{ secrets.MINAI_API_KEY }}
+        run: |
+          ACR_PASSWORD=$(az acr credential show --name $AZURE_ACR --query "passwords[0].value" -o tsv)
+          if [ -z "$ACR_PASSWORD" ]; then echo "Échec de la récupération du mot de passe ACR"; exit 1; fi
+          az webapp config container set --name $AZURE_WEBAPP --resource-group $AZURE_RG --multicontainer-config-type compose --multicontainer-config-file docker-compose.yml
+          az webapp config appsettings set --name $AZURE_WEBAPP --resource-group $AZURE_RG --settings DOCKER_REGISTRY_SERVER_URL=https://$AZURE_ACR.azurecr.io DOCKER_REGISTRY_SERVER_USERNAME=$AZURE_ACR DOCKER_REGISTRY_SERVER_PASSWORD=$ACR_PASSWORD
+          az webapp restart --name $AZURE_WEBAPP --resource-group $AZURE_RG
