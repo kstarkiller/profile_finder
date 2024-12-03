@@ -114,7 +114,19 @@ def test(input: TestInput, token: str = Depends(get_current_user)):
     description="This endpoint retrieves a token for the user.",
     response_model=Token,
 )
-async def login(username: str):
+async def token(username: str):
+    """
+    Create a JWT token for the specified user after checking the user
+
+    Args:
+        username (str): User email
+
+    Returns:
+        dict: JWT token
+
+    Raises:
+        HTTPException: Exception HTTP 400 Bad Request if the username is incorrect
+    """
     email = get_user(username)
     if not email:
         raise HTTPException(status_code=400, detail="Incorrect username")

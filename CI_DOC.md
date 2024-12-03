@@ -113,7 +113,6 @@ docker-compose up -d --build
 #### 1. Test
 
 - Test de l'API RAG
-- Test de l'API BDD
 
 #### 2. Sécurité
 
