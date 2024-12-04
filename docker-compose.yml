@@ -1,7 +1,6 @@
 services:
   postgres:
     image: postgres:latest
-    container_name: pf_postgres
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -21,7 +20,6 @@ services:
   
   mlflow:
     image: ghcr.io/mlflow/mlflow
-    container_name: mlflow
     ports:
       - "5000:5000"
     environment:
@@ -55,7 +53,6 @@ services:
 
   mongo:
     image: mongo:latest
-    container_name: pf_mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PWD}
@@ -76,8 +73,7 @@ services:
   bdd_api:
     build:
       context: ./bdd_api
-    image: pf_bdd_api
-    container_name: pf_bdd_api
+    image: acrprofilefinder.azurecr.io/apidata:latest
     environment:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
@@ -105,8 +101,7 @@ services:
   rag_api:
     build:
       context: ./rag_api
-    image: pf_api
-    container_name: pf_api
+    image: acrprofilefinder.azurecr.io/apirag:latest
     environment:
       MINAI_API_KEY: ${MINAI_API_KEY}
       DB_API_HOST: bdd_api
@@ -145,8 +140,7 @@ services:
   rag_front:
     build:
       context: ./app
-    image: pf_front
-    container_name: pf_front
+    image: acrprofilefinder.azurecr.io/front:latest
     environment:
       DB_API_HOST: bdd_api
       DB_API_PORT: 5050

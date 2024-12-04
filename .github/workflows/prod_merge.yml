@@ -69,13 +69,9 @@ jobs:
         run: |
           az acr login --name $AZURE_ACR
           docker compose build
-          sleep 30
-          docker tag rag_api $IMAGE_TAG_API
-          docker tag bdd_api $IMAGE_TAG_BDD_API
-          docker tag rag_front $IMAGE_TAG_FRONT
           docker tag postgres $IMAGE_TAG_POSTGRES
           docker tag mongo $IMAGE_TAG_MONGO
-          docker tag mlflow $IMAGE_TAG_MLFLOW
+          docker tag ghcr.io/mlflow/mlflow $IMAGE_TAG_MLFLOW
           docker push $IMAGE_TAG_API
           docker push $IMAGE_TAG_BDD_API
           docker push $IMAGE_TAG_FRONT
