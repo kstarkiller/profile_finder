@@ -83,27 +83,21 @@ jobs:
     # needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - name: Créer l'Azure Web App
-        run: |
-          az webapp create --resource-group $AZURE_RG --plan PFAppServicePlan --name $AZURE_WEBAPP --multicontainer-config-type compose
-      - name: Deploy to Azure Web App
-        env:
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          MONGO_USER: ${{ secrets.MONGO_USER }}
-          MONGO_PWD: ${{ secrets.MONGO_PWD }}
-          MONGO_DB: ${{ secrets.MONGO_DB }}
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          MINAI_API_KEY: ${{ secrets.MINAI_API_KEY }}
-        run: |
-          ACR_PASSWORD=$(az acr credential show --name $AZURE_ACR --query "passwords[0].value" -o tsv)
-          if [ -z "$ACR_PASSWORD" ]; then echo "Échec de la récupération du mot de passe ACR"; exit 1; fi
-          az webapp config container set --name $AZURE_WEBAPP --resource-group $AZURE_RG --multicontainer-config-type compose --multicontainer-config-file docker-compose.yml
-          az webapp config appsettings set --name $AZURE_WEBAPP --resource-group $AZURE_RG --settings DOCKER_REGISTRY_SERVER_URL=https://$AZURE_ACR.azurecr.io DOCKER_REGISTRY_SERVER_USERNAME=$AZURE_ACR DOCKER_REGISTRY_SERVER_PASSWORD=$ACR_PASSWORD
-          az webapp restart --name $AZURE_WEBAPP --resource-group $AZURE_RG
+    - uses: actions/checkout@v2
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Create Azure Web App
+      run: |
+        az webapp create --resource-group $AZURE_RG --plan PFAppServicePlan --name $AZURE_WEBAPP --multicontainer-config-type compose --multicontainer-config-file docker-compose.yml
+    - name: Configure Multi-Container Settings
+      run: |
+        ACR_PASSWORD=$(az acr credential show --name $AZURE_ACR --query "passwords[0].value" -o tsv)
+        if [ -z "$ACR_PASSWORD" ]; then echo "Échec de la récupération du mot de passe ACR"; exit 1; fi
+        
+        az webapp config container set --name $AZURE_WEBAPP --resource-group $AZURE_RG --multicontainer-config-type compose --multicontainer-config-file docker-compose.yml
+        
+        az webapp config appsettings set --name $AZURE_WEBAPP --resource-group $AZURE_RG --settings DOCKER_REGISTRY_SERVER_URL=https://$AZURE_ACR.azurecr.io DOCKER_REGISTRY_SERVER_USERNAME=$AZURE_ACR DOCKER_REGISTRY_SERVER_PASSWORD=$ACR_PASSWORD
+        
+        az webapp restart --name $AZURE_WEBAPP --resource-group $AZURE_RG
