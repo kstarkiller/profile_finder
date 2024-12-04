@@ -69,6 +69,7 @@ jobs:
           run: |
             az acr login --name $AZURE_ACR
             docker compose build
+            sleep 30
             docker tag pf_api $IMAGE_TAG_API
             docker tag pf_bdd_api $IMAGE_TAG_BDD_API
             docker tag pf_front $IMAGE_TAG_FRONT
