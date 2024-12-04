@@ -40,47 +40,47 @@ jobs:
   #           pip-audit
   #         continue-on-error: true
 
-  build:
-    # needs: [test]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Install Docker Compose v2
-        run: |
-          mkdir -p ~/.docker/cli-plugins/
-          curl -SL https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
-          chmod +x ~/.docker/cli-plugins/docker-compose
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - name: Build and push Docker images
-        env:
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          MONGO_USER: ${{ secrets.MONGO_USER }}
-          MONGO_PWD: ${{ secrets.MONGO_PWD }}
-          MONGO_DB: ${{ secrets.MONGO_DB }}
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          MINAI_API_KEY: ${{ secrets.MINAI_API_KEY }}
-        run: |
-          az acr login --name $AZURE_ACR
-          docker compose build
-          docker tag postgres $IMAGE_TAG_POSTGRES
-          docker tag mongo $IMAGE_TAG_MONGO
-          docker tag ghcr.io/mlflow/mlflow $IMAGE_TAG_MLFLOW
-          docker push $IMAGE_TAG_API
-          docker push $IMAGE_TAG_BDD_API
-          docker push $IMAGE_TAG_FRONT
-          docker push $IMAGE_TAG_POSTGRES
-          docker push $IMAGE_TAG_MONGO
-          docker push $IMAGE_TAG_MLFLOW
+#   build:
+#     # needs: [test]
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v1
+#       - name: Install Docker Compose v2
+#         run: |
+#           mkdir -p ~/.docker/cli-plugins/
+#           curl -SL https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+#           chmod +x ~/.docker/cli-plugins/docker-compose
+#       - name: Login to Azure
+#         uses: azure/login@v1
+#         with:
+#           creds: ${{ secrets.AZURE_CREDENTIALS }}
+#       - name: Build and push Docker images
+#         env:
+#           DB_USER: ${{ secrets.DB_USER }}
+#           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+#           DB_NAME: ${{ secrets.DB_NAME }}
+#           MONGO_USER: ${{ secrets.MONGO_USER }}
+#           MONGO_PWD: ${{ secrets.MONGO_PWD }}
+#           MONGO_DB: ${{ secrets.MONGO_DB }}
+#           SECRET_KEY: ${{ secrets.SECRET_KEY }}
+#           MINAI_API_KEY: ${{ secrets.MINAI_API_KEY }}
+#         run: |
+#           az acr login --name $AZURE_ACR
+#           docker compose build
+#           docker tag postgres $IMAGE_TAG_POSTGRES
+#           docker tag mongo $IMAGE_TAG_MONGO
+#           docker tag ghcr.io/mlflow/mlflow $IMAGE_TAG_MLFLOW
+#           docker push $IMAGE_TAG_API
+#           docker push $IMAGE_TAG_BDD_API
+#           docker push $IMAGE_TAG_FRONT
+#           docker push $IMAGE_TAG_POSTGRES
+#           docker push $IMAGE_TAG_MONGO
+#           docker push $IMAGE_TAG_MLFLOW
 
   deploy:
-    needs: [build]
+    # needs: [build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
